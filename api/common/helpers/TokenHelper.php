@@ -16,15 +16,12 @@ class TokenHelper
     public static function createUserToken($userId)
     {
         $model = new UserToken();
-        $model->userId = $userId;
+        $model->user_id = $userId;
         $model->token = self::generateToken();
-//        $params = Yii::$app()->getParams();
-//        $interval = $params['restful_token_expired_seconds'];
         $interval = 30 * 24 * 60 * 60;
         $model->expire = date('Y-m-d H:i:s', time() + $interval);
-        $model->ipAddress = \Yii::$app->getRequest()->getUserIP();
-        //UserToken::model()->deleteAllByAttributes(array("userId" => $model->userId, "label" => $model->label, "ipAddress" => $model->ipAddress));
-        if ($model->save())
+        $model->ip_address = \Yii::$app->getRequest()->getUserIP();
+        if ($model->validate() && $model->save())
             return $model;
         else
             return null;
@@ -37,21 +34,20 @@ class TokenHelper
      * @param string $token
      * @return int $userId if authentication is successful
      */
-    public static function authenticateToken($token, $checkExpire = false, $label = null, $ipAddress = null)
+    public static function authenticateToken($token, $checkExpire = false, $ipAddress = null)
     {
         // empty key cannot be authenticated
         if ($token == null || strlen($token) == 0) {
             return self::TOKEN_MISSING;
         }
 
-        $record = self::lookupCachedToken($token);
+        // $record = self::lookupCachedToken($token);
+        $record = null;
         if ($record == null) {
             // lookup auth token in database
             $params = array('token' => $token);
-            if ($label)
-                $params['label'] = $label;
             if ($ipAddress)
-                $params['ipAddress'] = $ipAddress;
+                $params['ip_address'] = $ipAddress;
 
             $record = UserToken::findOne($params);
         }
@@ -70,9 +66,9 @@ class TokenHelper
         }
 
         self::updateExpire($record);
-        self::cacheToken($token, $record);
+        // self::cacheToken($token, $record);
 
-        return $record->userId;
+        return $record->user_id;
     }
 
     /**

@@ -7,6 +7,8 @@ use yii\web\Link;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 use api\common\helpers\TokenHelper;
+use yii\behaviors\TimestampBehavior;
+use yii\db\Expression;
 
 class User extends ActiveRecord implements IdentityInterface
 {
@@ -42,14 +44,11 @@ class User extends ActiveRecord implements IdentityInterface
             ['username', 'unique', 'targetClass' => self::className(), 'message' => 'This username has already been taken.'],
             ['username', 'string', 'min' => 4, 'max' => 255, 'message' => 'Min 4 characters; Max 255 characters.'],
 
-            ['password', 'required', 'message' => 'Please enter an password.'],
-            ['password', 'string', 'min' => 6, 'max' => 255, 'message' => 'Min 6 characters; Max 255 characters.'],            
-
+            ['email', 'filter', 'filter' => 'trim'],
             ['email', 'required', 'message' => 'Please enter an email.'],
             ['email', 'email', 'message' => 'Invalid email address.'],
             ['email', 'unique', 'targetClass' => self::className(), 'message' => 'This email address has already been taken.'],
             ['email', 'string', 'max' => 255, 'message' => 'Max 255 characters.'],
-            ['email', 'filter', 'filter' => 'trim'],
             
             ['status', 'integer'],
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
@@ -61,7 +60,7 @@ class User extends ActiveRecord implements IdentityInterface
     {
         $fields = parent::fields();
         unset($fields['auth_key'], $fields['password_hash'], $fields['password_reset_token'],
-            $fields['updated_at'], $fields['created_at']);
+            $fields['updated_at'], $fields['created_at'], $fields['email_confirm_token']);
         return $fields;
     }
 
@@ -94,6 +93,12 @@ class User extends ActiveRecord implements IdentityInterface
         }
     }
 
+    public static function findByUsername($username, $status = NULL)
+    {
+        if (!$status) $status = self::STATUS_ACTIVE;
+        return static::findOne(['username' => $username, 'status' => $status]);
+    }
+
     public function getId()
     {
         return $this->id;
@@ -107,6 +112,16 @@ class User extends ActiveRecord implements IdentityInterface
     public function validateAuthKey($authKey)
     {
         return $this->getAuthKey() === $authKey;
+    }
+
+    public function validatePassword($password)
+    {
+        return Yii::$app->security->validatePassword($password, $this->password_hash);
+    }
+
+    public function generateAuthKey()
+    {
+        $this->auth_key = Yii::$app->security->generateRandomString();
     }
 
     public function beforeSave($insert)

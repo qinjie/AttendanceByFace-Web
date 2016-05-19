@@ -2,8 +2,9 @@
 
 namespace api\common\models;
 
+use api\common\models\User;
+
 use Yii;
-use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\db\Expression;
@@ -25,11 +26,6 @@ class UserToken extends ActiveRecord
                     ActiveRecord::EVENT_BEFORE_UPDATE => null,
                 ],
                 'value' => new Expression('NOW()'),
-            ],
-            'blameable' => [
-                'class' => BlameableBehavior::className(),
-                'createdByAttribute' => 'user_id',
-                'updatedByAttribute' => null,
             ],
         ];
     }

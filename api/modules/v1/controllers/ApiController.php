@@ -33,7 +33,12 @@ class ApiController extends CustomActiveController {
 
         return $behaviors;
     }
+
     public function actionHome() {
         return 'Welcome to API attendance system';
+    }
+
+    public function actionAbc() {
+        return 'abc';
     }
 }

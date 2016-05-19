@@ -8,9 +8,9 @@ CREATE TABLE `as_user` (
 	`username` varchar(255) NOT NULL,
 	`auth_key` varchar(32) DEFAULT '',
 	`password_hash` varchar(255) DEFAULT '',
-	`password_reset_token` varchar(255) NOT NULL,
+	`password_reset_token` varchar(255) DEFAULT NULL,
 	`email` varchar(255) NOT NULL,
-	`email_confirm_token` varchar(255) NOT NULL,
+	`email_confirm_token` varchar(255) DEFAULT NULL,
 	`status` varchar(10) DEFAULT '10',
 	`created_at` DATETIME DEFAULT NULL,
 	`updated_at` DATETIME DEFAULT NULL,
@@ -25,6 +25,7 @@ CREATE TABLE `as_user_token` (
 	`expire` DATETIME NOT NULL,
 	`created_at` DATETIME NOT NULL,
 	PRIMARY KEY (`id`),
+	UNIQUE KEY (`token`),
 	FOREIGN KEY (user_id) REFERENCES as_user(id) 
 );
 
