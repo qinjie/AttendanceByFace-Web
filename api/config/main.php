@@ -28,7 +28,7 @@ return [
             'format' => 'json',
         ],
         'user' => [
-            'identityClass' => 'common\models\User',
+            'identityClass' => 'api\common\models\User',
             'enableSession' => false,
             'loginUrl' => null,
         ],
