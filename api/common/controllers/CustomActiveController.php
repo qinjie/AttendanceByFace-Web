@@ -28,6 +28,7 @@ class CustomActiveController extends ActiveController
 
         $behaviors['access'] = [
             'class' => AccessControl::className(),
+            'except' => ['login', 'signup'],
             'rules' => [
                 [   
                     'allow' => true,

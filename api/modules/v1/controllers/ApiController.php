@@ -9,7 +9,7 @@ use yii\filters\ContentNegotiator;
 use yii\filters\AccessControl;
 use yii\web\Response;
 
-class ApiController extends Controller {
+class ApiController extends CustomActiveController {
 
 	public function behaviors()
     {
