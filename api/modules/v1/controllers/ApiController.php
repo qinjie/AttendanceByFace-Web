@@ -41,4 +41,8 @@ class ApiController extends CustomActiveController {
     public function actionAbc() {
         return 'abc';
     }
+
+    public function actionError() {
+        return 'error';
+    }
 }

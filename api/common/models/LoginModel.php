@@ -30,11 +30,6 @@ class LoginModel extends Model
         }
     }
 
-    /**
-     * Logs in a user using the provided username and password.
-     *
-     * @return boolean whether the user is logged in successfully
-     */
     public function login()
     {
         if ($this->validate()) {

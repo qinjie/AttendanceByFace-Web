@@ -32,6 +32,9 @@ return [
             'enableSession' => false,
             'loginUrl' => null,
         ],
+        'errorHandler' => [
+            'errorAction' => 'api/error',
+        ],
         'log' => [
             'traceLevel' => 3,
             'targets' => [

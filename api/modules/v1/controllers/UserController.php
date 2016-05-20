@@ -31,6 +31,7 @@ class UserController extends CustomActiveController
     	$model->username = $bodyParams['username'];
     	$model->password = $bodyParams['password'];
     	if ($user = $model->login()) {
+            UserToken::deleteAll(['user_id' => $user->id]);
     		$token = TokenHelper::createUserToken($user->id);
 			return $token->token;
     	}
