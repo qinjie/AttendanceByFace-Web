@@ -7,6 +7,7 @@ use Yii;
 use yii\filters\AccessControl;
 use yii\filters\auth\HttpBearerAuth;
 use yii\web\UnauthorizedHttpException;
+use yii\filters\VerbFilter;
 
 class ApiController extends CustomActiveController {
 
@@ -15,11 +16,12 @@ class ApiController extends CustomActiveController {
 
         $behaviors['authenticator'] = [
             'class' => HttpBearerAuth::className(),
-            'except' => ['home'],
+            'except' => ['home', 'error'],
         ];
 
         $behaviors['access'] = [
             'class' => AccessControl::className(),
+            'except' => ['error'],
             'rules' => [
                 [   
                     'allow' => true
@@ -31,11 +33,20 @@ class ApiController extends CustomActiveController {
             },
         ];
 
+        $behaviors['verbs'] = [
+            'class' => VerbFilter::className(),
+            'actions' => [
+                'home' => ['GET'],
+            ],
+        ];
+
         return $behaviors;
     }
 
     public function actionHome() {
-        return 'Welcome to API attendance system';
+        return [
+            'msg' => 'Welcome to API attendance system'
+        ];
     }
 
     public function actionAbc() {
@@ -43,6 +54,7 @@ class ApiController extends CustomActiveController {
     }
 
     public function actionError() {
-        return 'error';
+        $error = Yii::$app->errorHandler->error;
+        return $error->message;
     }
 }
