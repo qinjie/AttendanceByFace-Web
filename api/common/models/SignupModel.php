@@ -11,6 +11,7 @@ class SignupModel extends Model
     public $username;
     public $email;
     public $password;
+    public $role;
 
     /**
      * @return array the validation rules.
@@ -43,6 +44,8 @@ class SignupModel extends Model
             $user->setPassword($this->password);
             $user->generateAuthKey();
             $user->status = User::STATUS_ACTIVE;
+            $user->role = $this->role;
+            $user->name = User::$roles[$this->role];
 
             if ($user->save()) {
                 return $user;

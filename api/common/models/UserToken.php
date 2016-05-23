@@ -13,7 +13,7 @@ class UserToken extends ActiveRecord
 {
     public static function tableName()
     {
-        return 'as_user_token';
+        return 'user_token';
     }
 
     public function behaviors()
@@ -22,8 +22,8 @@ class UserToken extends ActiveRecord
             'timestamp' => [
                 'class' => TimestampBehavior::className(),
                 'attributes' => [
-                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at'],
-                    ActiveRecord::EVENT_BEFORE_UPDATE => null,
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_date', 'updated_date'],
+                    ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_date'],
                 ],
                 'value' => new Expression('NOW()'),
             ],
@@ -35,9 +35,10 @@ class UserToken extends ActiveRecord
         return [
             [['user_id'], 'required'],
             [['user_id'], 'integer'],
-            [['expire', 'created_at'], 'safe'],
+            [['expire_date', 'created_date'], 'safe'],
             [['token', 'ip_address'], 'string', 'max' => 32],
-            [['token'], 'unique']
+            [['token'], 'unique'],
+            [['title'], 'string', 'max' => 255],
         ];
     }
 

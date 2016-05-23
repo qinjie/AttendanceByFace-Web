@@ -1,7 +1,6 @@
 <?php
 namespace api\common\controllers;
 
-use common\models\User;
 use yii\base\Exception;
 use yii\filters\AccessControl;
 use yii\filters\auth\HttpBearerAuth;
@@ -33,30 +32,20 @@ class CustomActiveController extends ActiveController
 
         $behaviors['authenticator'] = [
             'class' => HttpBearerAuth::className(),
-            'except' => ['login', 'signup'],
         ];
 
         $behaviors['access'] = [
             'class' => AccessControl::className(),
-            'except' => ['login', 'signup'],
             'rules' => [
                 [   
                     'allow' => true,
-                    'roles' => ['@']
+                    'roles' => ['@'],
                 ],
             ],
 
             'denyCallback' => function ($rule, $action) {
                 throw new UnauthorizedHttpException('You are not authorized');
             },
-        ];
-
-        $behaviors['verbs'] = [
-            'class' => VerbFilter::className(),
-            'actions' => [
-                'login' => ['post'],
-                'signup' => ['post'],
-            ]
         ];
 
         return $behaviors;

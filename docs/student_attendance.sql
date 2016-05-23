@@ -106,8 +106,8 @@ CREATE TABLE `user` (
   `status` smallint(6) NOT NULL DEFAULT '10',
   `role` smallint(6) NOT NULL DEFAULT '10',
   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `created_at` int(11) NOT NULL,
-  `updated_at` int(11) NOT NULL,
+  `created_at` int(11) unsigned DEFAULT NULL,
+  `updated_at` int(11) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `username` (`username`)

@@ -48,6 +48,11 @@ return [
                     'levels' => ['warning'],
                     'logFile' => '@app/runtime/logs/api-warning.log'
                 ],
+                [
+                    'class' => 'yii\log\FileTarget',
+                    'levels' => ['trace'],
+                    'logFile' => '@app/runtime/logs/api-trace.log'
+                ],
             ],
         ],
         'urlManager' => [

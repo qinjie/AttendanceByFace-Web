@@ -7,19 +7,33 @@ use Yii;
 
 class TokenHelper
 {
+    const TOKEN_ACTION_ACTIVATE_ACCOUNT = 1;
+    const TOKEN_ACTION_RESET_PASSWORD = 2;
+    const TOKEN_ACTION_CHANGE_EMAIL = 3;
+    const TOKEN_ACTION_ACCESS = 4;
+
+    public static $actions = [
+        1 => 'ACTION_ACTIVATE_ACCOUNT',
+        2 => 'ACTION_RESET_PASSWORD',
+        3 => 'ACTION_CHANGE_EMAIL',
+        4 => 'ACTION_ACCESS',
+    ];
+
     const CACHE_DURATION = 3600; // one hour
-    const CACHE_PREFIX = "api-auth-token-";
+    const CACHE_PREFIX = "api-token-";
     const TOKEN_MISSING = -1;
     const TOKEN_EXPIRED = -2;
     const TOKEN_INVALID = -3;
 
-    public static function createUserToken($userId)
+    public static function createUserToken($userId, $action = null)
     {
         $model = new UserToken();
         $model->user_id = $userId;
         $model->token = self::generateToken();
         $interval = 30 * 24 * 60 * 60;
-        $model->expire = date('Y-m-d H:i:s', time() + $interval);
+        $model->expire_date = date('Y-m-d H:i:s', time() + $interval);
+        $model->action = is_null($action) ? self::TOKEN_ACTION_ACCESS : $action;
+        $model->title = self::$actions[$model->action];
         $model->ip_address = \Yii::$app->getRequest()->getUserIP();
         if ($model->validate() && $model->save())
             return $model;
@@ -34,7 +48,7 @@ class TokenHelper
      * @param string $token
      * @return int $userId if authentication is successful
      */
-    public static function authenticateToken($token, $checkExpire = false, $ipAddress = null)
+    public static function authenticateToken($token, $checkExpire = false, $ipAddress = null, $action = null)
     {
         // empty key cannot be authenticated
         if ($token == null || strlen($token) == 0) {
@@ -46,6 +60,10 @@ class TokenHelper
         if ($record == null) {
             // lookup auth token in database
             $params = array('token' => $token);
+            if ($action)
+                $params['action'] = $action;
+            else
+                $params['action'] = self::TOKEN_ACTION_ACCESS;
             if ($ipAddress)
                 $params['ip_address'] = $ipAddress;
 
@@ -58,15 +76,15 @@ class TokenHelper
         }
         // if need to check whether token has expired.
         $current = time();
-        $expire = strtotime($record->expire);
-        if ($checkExpire && $expire < $current) {
+        $expire_date = strtotime($record->expire_date);
+        if ($checkExpire && $expire_date < $current) {
             self::deleteCachedToken($token);
             UserToken::model()->deleteByPk($record->id);
             return self::TOKEN_EXPIRED;
         }
 
         self::updateExpire($record);
-        // self::cacheToken($token, $record);
+        self::cacheToken($token, $record);
 
         return $record->user_id;
     }
@@ -80,8 +98,8 @@ class TokenHelper
 //        $params = Yii::$app->getParams();
 //        $interval = $params['restful_token_expired_seconds'];
         $interval = 30 * 24 * 60 * 60;
-        $record->expire = date('Y-m-d H:i:s', time() + $interval);
-        $record->save(false, array('expire'));
+        $record->expire_date = date('Y-m-d H:i:s', time() + $interval);
+        $record->save(false, array('expire_date'));
     }
 
     /**

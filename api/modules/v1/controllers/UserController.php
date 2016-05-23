@@ -11,16 +11,62 @@ namespace api\modules\v1\controllers;
 use api\common\controllers\CustomActiveController;
 use api\common\helpers\TokenHelper;
 use api\common\models\UserToken;
+use api\common\models\User;
+use api\common\components\AccessRule;
 
 use Yii;
 use api\common\models\SignupModel;
 use api\common\models\LoginModel;
-use yii\filters\auth\HttpBasicAuth;
+use yii\filters\auth\HttpBearerAuth;
+use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
 use yii\rest\ActiveController;
 use yii\web\ForbiddenHttpException;
 
 class UserController extends CustomActiveController
 {
+    public function behaviors() {
+        $behaviors = parent::behaviors();
+
+        $behaviors['authenticator'] = [
+            'class' => HttpBearerAuth::className(),
+            'only' => ['logout'],
+        ];
+
+        $behaviors['access'] = [
+            'class' => AccessControl::className(),
+            'ruleConfig' => [
+                'class' => AccessRule::className(),
+            ],
+            'rules' => [
+                [   
+                    'actions' => ['login', 'signup'],
+                    'allow' => true,
+                    'roles' => ['?'],
+                ],
+                [
+                    'actions' => ['logout'],
+                    'allow' => true,
+                    'roles' => ['?', '@'],
+                ]
+            ],
+            'denyCallback' => function ($rule, $action) {
+                throw new UnauthorizedHttpException('You are not authorized');
+            },
+        ];
+
+        $behaviors['verbs'] = [
+            'class' => VerbFilter::className(),
+            'actions' => [
+                'login' => ['post'],
+                'signup' => ['post'],
+                'logout' => ['get'],
+            ],
+        ];
+
+        return $behaviors;
+    }
+
     public $modelClass = '';
 
     public function actionLogin() {
@@ -46,6 +92,7 @@ class UserController extends CustomActiveController
     	$model->username = $bodyParams['username'];
     	$model->email = $bodyParams['email'];
     	$model->password = $bodyParams['password'];
+        $model->role = isset($bodyParams['role']) ? $bodyParams['role'] : User::ROLE_USER;
 		if ($user = $model->signup()) {
 			$token = TokenHelper::createUserToken($user->id);
 			return $token->token;
@@ -55,7 +102,7 @@ class UserController extends CustomActiveController
 
     public function actionLogout() {
     	$id = Yii::$app->user->identity->id;
-    	UserToken::deleteAll(['user_id' => $id]);
+    	UserToken::deleteAll(['user_id' => $id, 'action' => TokenHelper::TOKEN_ACTION_ACCESS]);
 		return 'logout successful';
     }
 }

@@ -17,6 +17,16 @@ class User extends ActiveRecord implements IdentityInterface
 	const STATUS_WAIT = 5;
     const STATUS_ACTIVE = 10;
 
+    public static $roles = [
+        10 => 'user',
+        20 => 'student',
+        30 => 'teacher',
+    ];
+
+    const ROLE_USER = 10;
+    const ROLE_STUDENT = 20;
+    const ROLE_TEACHER = 30;
+
     public static function tableName()
     {
         return 'user';
@@ -31,7 +41,8 @@ class User extends ActiveRecord implements IdentityInterface
                     ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
                     ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at']
                 ],
-                'value' => new Expression('NOW()'),
+                // 'value' => new Expression('NOW()'),
+                'value' => time(),
             ],
         ];
     }
@@ -59,8 +70,8 @@ class User extends ActiveRecord implements IdentityInterface
     public function fields()
     {
         $fields = parent::fields();
-        unset($fields['auth_key'], $fields['password_hash'], $fields['password_reset_token'],
-            $fields['updated_at'], $fields['created_at'], $fields['email_confirm_token']);
+        unset($fields['auth_key'], $fields['password_hash'], 
+            $fields['updated_at'], $fields['created_at']);
         return $fields;
     }
 
@@ -142,22 +153,9 @@ class User extends ActiveRecord implements IdentityInterface
         $this->password_hash = Yii::$app->security->generatePasswordHash($password);
     }
 
-    public function onUnsafeAttribute($name, $value)
+    public function afterSave($insert, $changedAttributes)
     {
-        parent::onUnsafeAttribute($name, $value);
-
-        $this->addError(
-            $name,
-            Yii::t('app', 'Unknown parameter `{name}`', ['name' => $name])
-        );
-    }
-
-    public function clearErrors($attribute = null)
-    {
-        if (!$attribute || !isset($this->attributes[$attribute])) {
-            return;
-        }
-
-        parent::clearErrors($attribute);
+        $this->refresh();
+        parent::afterSave($insert, $changedAttributes);
     }
 }
