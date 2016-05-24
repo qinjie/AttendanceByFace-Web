@@ -97,7 +97,7 @@ class User extends ActiveRecord implements IdentityInterface
     public static function findIdentityByAccessToken($token, $type = null)
     {
         $id = TokenHelper::authenticateToken($token, true);
-        if ($id) {
+        if ($id >= 0) {
             return static::findIdentity($id);
         } else {
             return null;

@@ -40,14 +40,14 @@ class UserController extends CustomActiveController
             ],
             'rules' => [
                 [   
-                    'actions' => ['login', 'signup'],
+                    'actions' => ['login', 'signup', 'confirm-email'],
                     'allow' => true,
                     'roles' => ['?'],
                 ],
                 [
                     'actions' => ['logout'],
                     'allow' => true,
-                    'roles' => ['?', '@'],
+                    'roles' => ['@'],
                 ]
             ],
             'denyCallback' => function ($rule, $action) {
@@ -104,5 +104,22 @@ class UserController extends CustomActiveController
     	$id = Yii::$app->user->identity->id;
     	UserToken::deleteAll(['user_id' => $id, 'action' => TokenHelper::TOKEN_ACTION_ACCESS]);
 		return 'logout successful';
+    }
+
+    public function actionConfirmEmail($token = null) {
+        if (empty($token) || !is_string($token)) {
+            throw new BadRequestHttpException('Email confirm token cannot be blank.');
+        }
+        $userId = TokenHelper::authenticateToken($token, true, TokenHelper::TOKEN_ACTION_ACTIVATE_ACCOUNT);
+        $user = User::findOne(['id' => $userId, 'status' => User::STATUS_WAIT]);
+        if (!$userId) {
+            throw new BadRequestHttpException('Wrong Email confirm token.');
+        }
+        $user->status = User::STATUS_ACTIVE;
+        UserToken::removeEmailConfirmToken($user->id, $token);
+        if ($user->save()) {
+            return 'Confirm email successfully';
+        }
+        throw new BadRequestHttpException('Error! Failed to confirm your email.');
     }
 }

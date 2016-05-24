@@ -8,6 +8,7 @@ $params = array_merge(
 
 return [
     'id' => 'app-api',
+    'name' => 'Student Attendance System',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'modules' => [

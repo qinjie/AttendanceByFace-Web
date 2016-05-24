@@ -63,4 +63,8 @@ class UserToken extends ActiveRecord
         else
             return false;
     }
+
+    public static function removeEmailConfirmToken($userId, $token) {
+        return static::deleteAll(['user_id' => $userId, 'token' => $token]);
+    }
 }

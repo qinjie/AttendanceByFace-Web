@@ -48,7 +48,7 @@ class TokenHelper
      * @param string $token
      * @return int $userId if authentication is successful
      */
-    public static function authenticateToken($token, $checkExpire = false, $ipAddress = null, $action = null)
+    public static function authenticateToken($token, $checkExpire = false, $action = null, $ipAddress = null)
     {
         // empty key cannot be authenticated
         if ($token == null || strlen($token) == 0) {

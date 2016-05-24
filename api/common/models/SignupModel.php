@@ -3,6 +3,7 @@
 namespace api\common\models;
 
 use api\common\models\User;
+use api\common\helpers\TokenHelper;
 use yii\base\Model;
 use Yii;
 
@@ -43,11 +44,19 @@ class SignupModel extends Model
             $user->email = $this->email;
             $user->setPassword($this->password);
             $user->generateAuthKey();
-            $user->status = User::STATUS_ACTIVE;
+            $user->status = User::STATUS_WAIT;
             $user->role = $this->role;
             $user->name = User::$roles[$this->role];
 
             if ($user->save()) {
+                $token = TokenHelper::createUserToken($user->id, TokenHelper::TOKEN_ACTION_ACTIVATE_ACCOUNT);
+                # send activation email
+                Yii::$app->mailer->compose(['text' => '@common/mail/emailConfirmToken-html'], ['user' => $user, 'token' => $token->token])
+                    ->setFrom([Yii::$app->params['supportEmail'] => Yii::$app->name])
+                    ->setTo($this->email)
+                    ->setSubject('Email confirmation for ' . Yii::$app->name)
+                    ->send();
+
                 return $user;
             } else {
                 $errors = $user->getErrors();
