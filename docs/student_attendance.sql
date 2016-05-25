@@ -33,6 +33,13 @@ CREATE TABLE `beacon` (
 
 /*Data for the table `beacon` */
 
+insert into `beacon` (`uuid`, `major`, `minor`, `created_at`, `updated_at`) values
+  ('B9407F30-F5F8-466E-AFF9-25556B57FE6D', '52689', '51570', '0000-00-00 00:00:00','2016-04-26 11:09:19'),
+  ('B9407F30-F5F8-466E-AFF9-25556B57FE6D', '16717', '179', '0000-00-00 00:00:00','2016-04-26 11:09:19'),
+  ('B9407F30-F5F8-466E-AFF9-25556B57FE6D', '23254', '34430', '0000-00-00 00:00:00','2016-04-26 11:09:19'),
+  ('B9407F30-F5F8-466E-AFF9-25556B57FE6D', '33078', '31465', '0000-00-00 00:00:00','2016-04-26 11:09:19'),
+  ('B9407F30-F5F8-466E-AFF9-25556B57FE6D', '58949', '29933', '0000-00-00 00:00:00','2016-04-26 11:09:19');
+
 /*Table structure for table `lesson` */
 
 DROP TABLE IF EXISTS `lesson`;
@@ -137,14 +144,14 @@ CREATE TABLE `student` (
   `created_at` timestamp NULL DEFAULT '0000-00-00 00:00:00',
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  KEY `user_id` (`user_id`),
+  UNIQUE KEY `user_id` (`user_id`),
   CONSTRAINT `student_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user1` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
 /*Data for the table `student` */
 
 insert  into `student`(`id`,`card`,`name`,`gender`,`acad`,`uuid`,`user_id`,`created_at`,`updated_at`) values 
-  (1,'AE','10164662A',NULL,'ADRIAN YOO',NULL,NULL,'0000-00-00 00:00:00','2016-04-26 10:49:37'),
+  (1,'AE','10164662A',NULL,'ADRIAN YOO',NULL,53,'0000-00-00 00:00:00','2016-04-26 10:49:37'),
   (2,'AE','10157409D',NULL,'AIK YU CHE',NULL,NULL,'0000-00-00 00:00:00','2016-04-26 10:49:37'),
   (3,'AE','10169807E',NULL,'AKAASH SIN',NULL,NULL,'0000-00-00 00:00:00','2016-04-26 10:49:37');
 

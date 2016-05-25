@@ -1,6 +1,8 @@
 <?php
 namespace api\common\models;
 
+use api\common\models\Student;
+
 use Yii;
 use yii\helpers\Url;
 use yii\web\Link;
@@ -74,6 +76,12 @@ class User extends ActiveRecord implements IdentityInterface
             $fields['updated_at'], $fields['created_at']);
         return $fields;
     }
+    
+    public function extraFields() {
+        $new = ['student'];
+        $fields = array_merge(parent::fields(), $new);
+        return $fields;
+    }
 
     public function getStatusName()
     {
@@ -91,7 +99,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     public static function findIdentity($id)
     {
-        return static::findOne(['id' => $id, 'status' => self::STATUS_ACTIVE]);
+        return self::findOne(['id' => $id, 'status' => self::STATUS_ACTIVE]);
     }
 
     public static function findIdentityByAccessToken($token, $type = null)
@@ -157,5 +165,9 @@ class User extends ActiveRecord implements IdentityInterface
     {
         $this->refresh();
         parent::afterSave($insert, $changedAttributes);
+    }
+
+    public function getStudent() {
+        return $this->hasOne(Student::className(), ['user_id' => 'id']);
     }
 }

@@ -19,7 +19,7 @@ class ApiController extends CustomActiveController {
 
         $behaviors['authenticator'] = [
             'class' => HttpBearerAuth::className(),
-            'except' => ['home', 'error'],
+            'except' => ['home', 'error', 'post'],
         ];
 
         $behaviors['access'] = [
@@ -29,7 +29,7 @@ class ApiController extends CustomActiveController {
             ],
             'rules' => [
                 [   
-                    'actions' => ['home'],
+                    'actions' => ['home', 'post'],
                     'allow' => true,
                     'roles' => ['?', '@'],
                 ],
@@ -93,6 +93,40 @@ class ApiController extends CustomActiveController {
         ];
     }
 
+    public function actionPost() {
+        return Yii::$app->request->bodyParams;        
+        return [
+            [
+                "bookId" => "1",
+                "name" => "Harry Potter and The Prisoner of Azkaban",
+                "price" => "INR 700.00",
+                "inStock" => "52"
+            ],
+           
+            [
+                "bookId" => "2",
+                "name" => "Hamlet",
+                "price" => "INR 1700.00",
+                "inStock" => "47"
+            ],
+
+            [
+                "bookId" => "3",
+                "name" => "Willy Wonka and His Chocolate Factory",
+                "price" => "INR 500.00",
+                "inStock" => "48"
+            ],
+            
+            [
+                "bookId" => "4",
+                "name" => "Before I Fall",
+                "price" => "INR 750.00",
+                "inStock" => "49"
+            ]
+            
+        ];
+    }
+
     public function actionCheckStudent() {
         return [
             'msg' => 'You are student',
@@ -110,13 +144,13 @@ class ApiController extends CustomActiveController {
         return $error->message;
     }
 
-    public function afterAction($action, $result)
-    {
-        $result = parent::afterAction($action, $result);
-        // your custom code here
-        return [
-            'status' => 200,
-            'data' => $result,
-        ];
-    }
+    // public function afterAction($action, $result)
+    // {
+    //     $result = parent::afterAction($action, $result);
+    //     // your custom code here
+    //     return [
+    //         'status' => '200',
+    //         'data' => $result,
+    //     ];
+    // }
 }

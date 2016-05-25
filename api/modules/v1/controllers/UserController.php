@@ -25,6 +25,8 @@ use yii\web\ForbiddenHttpException;
 
 class UserController extends CustomActiveController
 {
+    public $modelClass = '';
+    
     public function behaviors() {
         $behaviors = parent::behaviors();
 
@@ -67,15 +69,17 @@ class UserController extends CustomActiveController
         return $behaviors;
     }
 
-    public $modelClass = '';
-
     public function actionLogin() {
     	$request = Yii::$app->request;
     	$bodyParams = $request->bodyParams;
+        // $username = $request->get('username');
+        // $password = $request->get('password');
+        $username = $bodyParams['username'];
+        $password = $bodyParams['password'];
 
     	$model = new LoginModel();
-    	$model->username = $bodyParams['username'];
-    	$model->password = $bodyParams['password'];
+    	$model->username = $username;
+    	$model->password = $password;
     	if ($user = $model->login()) {
             UserToken::deleteAll(['user_id' => $user->id]);
     		$token = TokenHelper::createUserToken($user->id);
