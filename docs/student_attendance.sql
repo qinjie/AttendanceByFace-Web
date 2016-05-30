@@ -33,12 +33,12 @@ CREATE TABLE `beacon` (
 
 /*Data for the table `beacon` */
 
-insert into `beacon` (`uuid`, `major`, `minor`, `created_at`, `updated_at`) values
-  ('B9407F30-F5F8-466E-AFF9-25556B57FE6D', '52689', '51570', '0000-00-00 00:00:00','2016-04-26 11:09:19'),
-  ('B9407F30-F5F8-466E-AFF9-25556B57FE6D', '16717', '179', '0000-00-00 00:00:00','2016-04-26 11:09:19'),
-  ('B9407F30-F5F8-466E-AFF9-25556B57FE6D', '23254', '34430', '0000-00-00 00:00:00','2016-04-26 11:09:19'),
-  ('B9407F30-F5F8-466E-AFF9-25556B57FE6D', '33078', '31465', '0000-00-00 00:00:00','2016-04-26 11:09:19'),
-  ('B9407F30-F5F8-466E-AFF9-25556B57FE6D', '58949', '29933', '0000-00-00 00:00:00','2016-04-26 11:09:19');
+insert into `beacon` (`id`, `uuid`, `major`, `minor`, `created_at`, `updated_at`) values
+  (1, 'B9407F30-F5F8-466E-AFF9-25556B57FE6D', '52689', '51570', '0000-00-00 00:00:00','2016-04-26 11:09:19'),
+  (2, 'B9407F30-F5F8-466E-AFF9-25556B57FE6D', '16717', '179', '0000-00-00 00:00:00','2016-04-26 11:09:19'),
+  (3, 'B9407F30-F5F8-466E-AFF9-25556B57FE6D', '23254', '34430', '0000-00-00 00:00:00','2016-04-26 11:09:19'),
+  (4, 'B9407F30-F5F8-466E-AFF9-25556B57FE6D', '33078', '31465', '0000-00-00 00:00:00','2016-04-26 11:09:19'),
+  (5, 'B9407F30-F5F8-466E-AFF9-25556B57FE6D', '58949', '29933', '0000-00-00 00:00:00','2016-04-26 11:09:19');
 
 /*Table structure for table `lesson` */
 
@@ -68,37 +68,37 @@ CREATE TABLE `lesson` (
 /*Data for the table `lesson` */
 
 insert  into `lesson`(`id`,`semester`,`module_id`,`subject_area`,`catalog_number`,`class_section`,`component`,`facility`,`venue_id`,`weekday`,`start_time`,`end_time`,`meeting_patten`,`created_at`,`updated_at`) values 
-  (1,NULL,'007685','ELECTRO','   1AMPR','L2L','LEC','05-03-0001',NULL,'MON','10:00','12:00','\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
-  (2,NULL,'007685','ELECTRO','   1AMPR','P2L1','PRA','46-01-0003',NULL,'THUR','15:00','17:00','ODD\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
-  (3,NULL,'011197','ELECTRO','   2CPP2','T2L1','TUT','58-01-0002',NULL,'WED','10:00','12:00','\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
-  (4,NULL,'010152','ELECTRO','   1EGPHY','T2L1','TUT','06-03-0006',NULL,'TUES','15:00','16:00','\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
-  (5,NULL,'008045','ELECTRO','   1APPG','P2L1','PRA','05-02-0015',NULL,'FRI','10:00','12:00','\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
-  (6,NULL,'008045','ELECTRO','   1APPG','P2L1','PRA','08-06-0001',NULL,'TUES','13:00','15:00','\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
-  (7,NULL,'006492','ELECTRO','   1DEL','LL12','LEC','06-05-0001',NULL,'MON','15:00','17:00','\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
-  (8,NULL,'006492','ELECTRO','   1DEL','LL12','LEC','06-05-0001',NULL,'THUR','12:00','13:00','\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
-  (9,NULL,'006492','ELECTRO','   1DEL','P2L1','PRA','06-03-0004',NULL,'MON','08:00','10:00','EVEN\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
-  (10,NULL,'006492','ELECTRO','   1DEL','T2L1','TUT','06-06-0006',NULL,'THUR','10:00','11:00','\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
-  (11,NULL,'009885','ELECTRO','   1EDPT1','P2L1','PRA','04-05-0001',NULL,'TUES','09:00','12:00','\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
-  (12,NULL,'010152','ELECTRO','   1EGPHY','L2L','LEC','04-02-0002',NULL,'THUR','08:00','10:00','\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
-  (13,NULL,'005696','IS MATH','   1EM3A','LL12','LEC','04-02-0002',NULL,'MON','13:00','15:00','\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
-  (14,NULL,'005696','IS MATH','   1EM3A','LL12','LEC','04-02-0002',NULL,'FRI','09:00','10:00','\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
-  (15,NULL,'005696','IS MATH','   1EM3A','T2L1','TUT','04-03-0007',NULL,'THUR','11:00','12:00','\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
-  (16,NULL,'010428','AE','  75INT6','PL23','PRA','',NULL,'WED','17:00','18:00','\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
-  (17,NULL,'007777','AE','   2FAT','LM12','LEC','08-04-0001',NULL,'WED','09:00','10:00','\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
-  (18,NULL,'007777','AE','   2FAT','T1M2','TUT','04-02-0008',NULL,'TUES','15:00','17:00','\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
-  (19,NULL,'006897','ELECTRIC','   2ELTECH','L1M2','LEC','04-03-0009',NULL,'WED','10:00','12:00','\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
-  (20,NULL,'006897','ELECTRIC','   2ELTECH','P1M2','PRA','06-06-0007',NULL,'TUES','13:00','15:00','EVEN\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
-  (21,NULL,'006897','ELECTRIC','   2ELTECH','T1M2','TUT','05-05-0003',NULL,'FRI','11:00','12:00','\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
-  (22,NULL,'009882','ELECTRO','   1EMPTS','P1M2','PRA','04-05-0002',NULL,'FRI','13:00','16:00','\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
-  (23,NULL,'011196','ELECTRO','   2CPP1','T1M2','TUT','05-03-0009',NULL,'WED','13:00','15:00','EVEN\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
-  (24,NULL,'010449','IS IE','   8INNOVA','T05','TUT','72-03-0015',NULL,'MON','13:00','15:00','\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
-  (25,NULL,'005383','IS MATH','   3EG2','T1M2','TUT','04-03-0010',NULL,'THUR','10:00','12:00','\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
-  (26,NULL,'005383','IS MATH','   3EG2','L1M2','LEC','06-04-0007',NULL,'THUR','15:00','16:00','\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
-  (27,NULL,'005383','IS MATH','   3EG2','L1M2','LEC','05-02-0009',NULL,'TUES','10:00','12:00','\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
-  (28,NULL,'009521','IS PDA','   7COMISS','T03','TUT','05-04-0009',NULL,'MON','08:00','12:00','\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
-  (29,NULL,'006898','MECHANIC','   2ENGMEC','P1M2','PRA','47-06-0005',NULL,'TUES','13:00','15:00','ODD\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
-  (30,NULL,'006898','MECHANIC','   2ENGMEC','L1M2','LEC','06-06-0006',NULL,'THUR','13:00','15:00','\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
-  (31,NULL,'006898','MECHANIC','   2ENGMEC','T1M2','TUT','04-03-0005',NULL,'FRI','10:00','11:00','\r','0000-00-00 00:00:00','2016-04-26 11:09:19');
+  (1,NULL,'007685','ELECTRO','   1AMPR','L2L','LEC','05-03-0001',1,'MON','10:00','12:00','\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
+  (2,NULL,'007685','ELECTRO','   1AMPR','P2L1','PRA','46-01-0003',1,'THUR','15:00','17:00','ODD\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
+  (3,NULL,'011197','ELECTRO','   2CPP2','T2L1','TUT','58-01-0002',1,'WED','10:00','12:00','\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
+  (4,NULL,'010152','ELECTRO','   1EGPHY','T2L1','TUT','06-03-0006',1,'TUES','15:00','16:00','\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
+  (5,NULL,'008045','ELECTRO','   1APPG','P2L1','PRA','05-02-0015',1,'FRI','10:00','12:00','\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
+  (6,NULL,'008045','ELECTRO','   1APPG','P2L1','PRA','08-06-0001',1,'TUES','13:00','15:00','\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
+  (7,NULL,'006492','ELECTRO','   1DEL','LL12','LEC','06-05-0001',1,'MON','15:00','17:00','\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
+  (8,NULL,'006492','ELECTRO','   1DEL','LL12','LEC','06-05-0001',1,'THUR','12:00','13:00','\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
+  (9,NULL,'006492','ELECTRO','   1DEL','P2L1','PRA','06-03-0004',1,'MON','08:00','10:00','EVEN\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
+  (10,NULL,'006492','ELECTRO','   1DEL','T2L1','TUT','06-06-0006',1,'THUR','10:00','11:00','\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
+  (11,NULL,'009885','ELECTRO','   1EDPT1','P2L1','PRA','04-05-0001',1,'TUES','09:00','12:00','\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
+  (12,NULL,'010152','ELECTRO','   1EGPHY','L2L','LEC','04-02-0002',1,'THUR','08:00','10:00','\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
+  (13,NULL,'005696','IS MATH','   1EM3A','LL12','LEC','04-02-0002',1,'MON','13:00','15:00','\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
+  (14,NULL,'005696','IS MATH','   1EM3A','LL12','LEC','04-02-0002',1,'FRI','09:00','10:00','\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
+  (15,NULL,'005696','IS MATH','   1EM3A','T2L1','TUT','04-03-0007',1,'THUR','11:00','12:00','\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
+  (16,NULL,'010428','AE','  75INT6','PL23','PRA','',3,'WED','17:00','18:00','\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
+  (17,NULL,'007777','AE','   2FAT','LM12','LEC','08-04-0001',3,'WED','09:00','10:00','\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
+  (18,NULL,'007777','AE','   2FAT','T1M2','TUT','04-02-0008',3,'TUES','15:00','17:00','\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
+  (19,NULL,'006897','ELECTRIC','   2ELTECH','L1M2','LEC','04-03-0009',3,'WED','10:00','12:00','\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
+  (20,NULL,'006897','ELECTRIC','   2ELTECH','P1M2','PRA','06-06-0007',3,'TUES','13:00','15:00','EVEN\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
+  (21,NULL,'006897','ELECTRIC','   2ELTECH','T1M2','TUT','05-05-0003',3,'FRI','11:00','12:00','\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
+  (22,NULL,'009882','ELECTRO','   1EMPTS','P1M2','PRA','04-05-0002',3,'FRI','13:00','16:00','\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
+  (23,NULL,'011196','ELECTRO','   2CPP1','T1M2','TUT','05-03-0009',3,'WED','13:00','15:00','EVEN\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
+  (24,NULL,'010449','IS IE','   8INNOVA','T05','TUT','72-03-0015',2,'MON','13:00','15:00','\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
+  (25,NULL,'005383','IS MATH','   3EG2','T1M2','TUT','04-03-0010',2,'THUR','10:00','12:00','\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
+  (26,NULL,'005383','IS MATH','   3EG2','L1M2','LEC','06-04-0007',2,'THUR','15:00','16:00','\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
+  (27,NULL,'005383','IS MATH','   3EG2','L1M2','LEC','05-02-0009',2,'TUES','10:00','12:00','\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
+  (28,NULL,'009521','IS PDA','   7COMISS','T03','TUT','05-04-0009',2,'MON','08:00','12:00','\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
+  (29,NULL,'006898','MECHANIC','   2ENGMEC','P1M2','PRA','47-06-0005',2,'TUES','13:00','15:00','ODD\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
+  (30,NULL,'006898','MECHANIC','   2ENGMEC','L1M2','LEC','06-06-0006',2,'THUR','13:00','15:00','\r','0000-00-00 00:00:00','2016-04-26 11:09:19'),
+  (31,NULL,'006898','MECHANIC','   2ENGMEC','T1M2','TUT','04-03-0005',2,'FRI','10:00','11:00','\r','0000-00-00 00:00:00','2016-04-26 11:09:19');
 
 /*Table structure for table `user` */
 
@@ -106,10 +106,11 @@ DROP TABLE IF EXISTS `user`;
 
 CREATE TABLE `user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `username` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `username` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `auth_key` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
   `password_hash` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `email` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `profileImg` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `status` smallint(6) NOT NULL DEFAULT '10',
   `role` smallint(6) NOT NULL DEFAULT '10',
   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -264,6 +265,11 @@ CREATE TABLE `venue` (
 
 /*Data for the table `venue` */
 
+insert into `venue` (`id`, `location`, `name`) values
+  (1, 'Location 1', 'Venue 1'),
+  (2, 'Location 2', 'Venue 2'),
+  (3, 'Location 3', 'Venue 3');
+
 /*Table structure for table `venue_beacon` */
 
 DROP TABLE IF EXISTS `venue_beacon`;
@@ -280,7 +286,41 @@ CREATE TABLE `venue_beacon` (
   CONSTRAINT `venue_beacon_ibfk_2` FOREIGN KEY (`beacon_id`) REFERENCES `beacon` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+insert into `venue_beacon` (`id`, `venue_id`, `beacon_id`) values
+  (1, 1, 1),
+  (2, 2, 2),
+  (3, 3, 3);
+
 /*Data for the table `venue_beacon` */
+
+/*Table structure for table `venue_beacon` */
+
+DROP TABLE IF EXISTS `attendance`;
+
+CREATE TABLE `attendance` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `student_id` int(10) unsigned NOT NULL,
+  `lesson_id` int(10) unsigned NOT NULL,
+  `signed_in` datetime DEFAULT NULL,
+  `signed_out` datetime DEFAULT NULL,
+  `is_absent` int(1) unsigned NOT NULL DEFAULT '0',
+  `is_late` tinyint(1) NOT NULL DEFAULT '0',
+  `late_min` int(10) unsigned NOT NULL DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `studentId` (`student_id`,`lesson_id`),
+  KEY `lessonId` (`lesson_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=42 ;
+ALTER TABLE `attendance`
+  ADD CONSTRAINT `attendance_ibfk_1` FOREIGN KEY (`student_id`) REFERENCES `student` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `attendance_ibfk_2` FOREIGN KEY (`lesson_id`) REFERENCES `lesson` (`id`) ON UPDATE CASCADE;
+
+/*Data for the table `attendance` */
+
+INSERT INTO `attendance` (`id`, `student_id`, `lesson_id`, `signed_in`, `signed_out`, `is_absent`, `is_late`, `late_min`, `created_at`, `updated_at`) VALUES
+(40, 10, 1, '2015-07-30 08:11:00', '0000-00-00 00:00:00', 0, 0, 0, NULL, NULL),
+(41, 2, 1, '2015-07-30 08:11:02', '0000-00-00 00:00:00', 0, 0, 0, NULL, NULL);
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

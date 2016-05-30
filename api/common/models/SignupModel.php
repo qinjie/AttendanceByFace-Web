@@ -13,6 +13,7 @@ class SignupModel extends Model
     public $email;
     public $password;
     public $role;
+    public $profileImg;
 
     /**
      * @return array the validation rules.

@@ -3,19 +3,18 @@
 namespace api\modules\v1\models;
 
 use api\common\models\User;
-use api\modules\v1\models\Venue;
 
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\db\Expression;
 
-class Lesson extends ActiveRecord
+class Venue extends ActiveRecord
 {
 
     public static function tableName()
     {
-        return 'lesson';
+        return 'venue';
     }
 
     public function fields() {
@@ -36,9 +35,5 @@ class Lesson extends ActiveRecord
                 'value' => new Expression('NOW()'),
             ],
         ];
-    }
-
-    public function getVenue() {
-        return self::hasOne(Venue::className(), ['id' => 'venue_id']);
     }
 }

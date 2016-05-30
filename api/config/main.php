@@ -64,10 +64,7 @@ return [
             //     [
             //         'class' => 'yii\rest\UrlRule',
             //         'pluralize' => false,
-            //         'controller' => 'v1/api',
-            //         'patterns' => [
-            //             'xxx' => 'login'
-            //         ]
+            //         'controller' => 'v1/lesson',
             //     ]
             // ],
         ]

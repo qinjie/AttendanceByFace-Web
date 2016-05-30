@@ -22,6 +22,7 @@ use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\rest\ActiveController;
 use yii\web\ForbiddenHttpException;
+use yii\web\BadRequestHttpException;
 
 class UserController extends CustomActiveController
 {
@@ -125,5 +126,15 @@ class UserController extends CustomActiveController
             return 'Confirm email successfully';
         }
         throw new BadRequestHttpException('Error! Failed to confirm your email.');
+    }
+
+    public function afterAction($action, $result)
+    {
+        $result = parent::afterAction($action, $result);
+        // your custom code here
+        return [
+            'status' => '200',
+            'data' => $result,
+        ];
     }
 }
