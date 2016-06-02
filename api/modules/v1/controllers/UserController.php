@@ -23,6 +23,7 @@ use yii\filters\VerbFilter;
 use yii\rest\ActiveController;
 use yii\web\ForbiddenHttpException;
 use yii\web\BadRequestHttpException;
+use yii\web\UnauthorizedHttpException;
 
 class UserController extends CustomActiveController
 {
@@ -33,7 +34,7 @@ class UserController extends CustomActiveController
 
         $behaviors['authenticator'] = [
             'class' => HttpBearerAuth::className(),
-            'only' => ['logout'],
+            'except' => ['login', 'signup', 'confirm-email'],
         ];
 
         $behaviors['access'] = [
@@ -48,7 +49,7 @@ class UserController extends CustomActiveController
                     'roles' => ['?'],
                 ],
                 [
-                    'actions' => ['logout'],
+                    'actions' => ['logout', 'person-id', 'face-id', 'set-person-id', 'set-face-id'],
                     'allow' => true,
                     'roles' => ['@'],
                 ]
@@ -86,7 +87,8 @@ class UserController extends CustomActiveController
     		$token = TokenHelper::createUserToken($user->id);
 			return $token->token;
     	}
-    	return $model->errors;
+        throw new BadRequestHttpException('Invalid username or password');
+    	// return $model->errors;
     }
 
     public function actionSignup() {
@@ -102,7 +104,7 @@ class UserController extends CustomActiveController
 			$token = TokenHelper::createUserToken($user->id);
 			return $token->token;
 		}
-    	return $model->errors;
+        throw new BadRequestHttpException('Invalid data');
     }
 
     public function actionLogout() {
@@ -126,6 +128,60 @@ class UserController extends CustomActiveController
             return 'Confirm email successfully';
         }
         throw new BadRequestHttpException('Error! Failed to confirm your email.');
+    }
+
+    public function actionPersonId() {
+        $userId = Yii::$app->user->identity->id;
+        $query = Yii::$app->db->createCommand('
+            select id as user_id,
+                   person_id 
+             from user 
+             where id = :user_id
+        ')
+        ->bindValue(':user_id', $userId);
+        return $query->queryOne();
+    }
+
+    public function actionFaceId() {
+        $userId = Yii::$app->user->identity->id;
+        $query = Yii::$app->db->createCommand('
+            select id as user_id,
+                   face_id 
+             from user 
+             where id = :user_id
+        ')
+        ->bindValue(':user_id', $userId);
+        return $query->queryOne();
+    }
+
+    public function actionSetPersonId() {
+        $userId = Yii::$app->user->identity->id;
+        $request = Yii::$app->request;
+        $bodyParams = $request->bodyParams;
+        $person_id = $bodyParams['person_id'];
+        $query = Yii::$app->db->createCommand('
+            update user 
+             set person_id = :person_id 
+             where id = :user_id
+        ')
+        ->bindValue(':person_id', $person_id)
+        ->bindValue(':user_id', $userId);
+        return $query->execute();
+    }
+
+    public function actionSetFaceId() {
+        $userId = Yii::$app->user->identity->id;
+        $request = Yii::$app->request;
+        $bodyParams = $request->bodyParams;
+        $face_id = $bodyParams['face_id'];
+        $query = Yii::$app->db->createCommand('
+            update user 
+             set face_id = :face_id 
+             where id = :user_id
+        ')
+        ->bindValue(':face_id', $face_id)
+        ->bindValue(':user_id', $userId);
+        return $query->execute();
     }
 
     public function afterAction($action, $result)

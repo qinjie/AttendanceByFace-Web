@@ -100,15 +100,11 @@ class ApiController extends CustomActiveController {
     }
 
     public function actionCheckStudent() {
-        return [
-            'msg' => 'You are student',
-        ];
+        return 'You are student';
     }
 
     public function actionCheckTeacher() {
-        return [
-            'msg' => 'You are teacher',
-        ];
+        return 'You are teacher';
     }
 
     public function actionUpload()

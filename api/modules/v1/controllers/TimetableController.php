@@ -18,6 +18,11 @@ use yii\data\ActiveDataProvider;
 
 class TimetableController extends CustomActiveController {
 
+    const STATUS_NOTYET = 0;
+    const STATUS_PRESENT = 1;
+    const STATUS_ABSENT = 2;
+    const STATUS_LATE = 3;
+
     public function behaviors() {
         $behaviors = parent::behaviors();
 
@@ -57,9 +62,12 @@ class TimetableController extends CustomActiveController {
 
         return $behaviors;
     }
-
+    
     public function actionToday() {
         $dw = date('w');
+        $currentDay = date('d');
+        $currentMonth = date('m');
+        $currentYear = date('Y');
         $weekdays = ['SUN', 'MON', 'TUES', 'WED', 'THUR', 'FRI', 'SAT'];
         $weekday = $weekdays[$dw];
         $userId = Yii::$app->user->identity->id;
@@ -68,26 +76,68 @@ class TimetableController extends CustomActiveController {
             throw new BadRequestHttpException('No student with given user id');
         $query = Yii::$app->db->createCommand('
             select lesson_id, 
+                   subject_area,
                    class_section, 
                    component, 
-                   facility, 
                    start_time, 
                    end_time, 
-                   weekday,
-                   venue_id,
-                   venue.location,
-                   venue.name,
-                   timetable.id as timetable_id 
-             from ((timetable join lesson on timetable.lesson_id = lesson.id) 
-             join student on timetable.student_id = student.id)
-             join venue on lesson.venue_id = venue.id  
-             where timetable.student_id = :student_id 
+                   weekday, 
+                   venue.id as venue_id, 
+                   venue.location, 
+                   venue.name, 
+                   timetable.id as timetable_id, 
+                   beacon.uuid, 
+                   beacon.major, 
+                   beacon.minor 
+             from timetable join lesson on timetable.lesson_id = lesson.id 
+             join venue on lesson.venue_id = venue.id 
+             join venue_beacon on venue.id = venue_beacon.venue_id 
+             join beacon on venue_beacon.beacon_id = beacon.id 
+             where student_id = :student_id 
              and weekday = :weekday 
              order by start_time
         ')
         ->bindValue(':student_id', $student->id)
         ->bindValue(':weekday', $weekday);
-        return $query->queryAll();
+
+        $result = $query->queryAll();
+        for ($iter = 0; $iter < count($result); ++$iter) {
+            $status = Yii::$app->db->createCommand('
+                    select lesson_id, 
+                           student_id,
+                           updated_at,  
+                           is_absent, 
+                           is_late  
+                     from attendance 
+                     where student_id = :student_id 
+                     and lesson_id = :lesson_id 
+                     and dayofmonth(signed_in) = :currentDay 
+                     and month(signed_in) = :currentMonth 
+                     and year(signed_in) = :currentYear 
+                ')
+                ->bindValue(':student_id', $student->id)
+                ->bindValue(':lesson_id', $result[$iter]['lesson_id'])
+                ->bindValue(':currentDay', $currentDay)
+                ->bindValue(':currentMonth', $currentMonth)
+                ->bindValue(':currentYear', $currentYear)
+                ->queryOne();
+            if ($status) {
+                if ($status['is_absent']) {
+                    $result[$iter]['status'] = self::STATUS_ABSENT;
+                    $result[$iter]['recorded_at'] = null;
+                } else if ($status['is_late']) {
+                    $result[$iter]['status'] = self::STATUS_LATE;
+                    $result[$iter]['recorded_at'] = $status['updated_at'];
+                } else {
+                    $result[$iter]['status'] = self::STATUS_PRESENT;
+                    $result[$iter]['recorded_at'] = $status['updated_at'];
+                }
+            } else {
+                $result[$iter]['status'] = self::STATUS_NOTYET;
+                $result[$iter]['recorded_at'] = null;
+            }
+        }
+        return $result;
     }
 
     public function actionTakeAttendance() {
@@ -118,13 +168,13 @@ class TimetableController extends CustomActiveController {
         // ->bindValue(':user_id', $userId);
     }
 
-    public function afterAction($action, $result)
-    {
-        $result = parent::afterAction($action, $result);
-        // your custom code here
-        return [
-            'status' => 200,
-            'data' => $result,
-        ];
-    }
+    // public function afterAction($action, $result)
+    // {
+    //     $result = parent::afterAction($action, $result);
+    //     // your custom code here
+    //     return [
+    //         'status' => 200,
+    //         'data' => $result,
+    //     ];
+    // }
 }

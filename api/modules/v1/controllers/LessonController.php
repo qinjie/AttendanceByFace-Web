@@ -23,6 +23,7 @@ class LessonController extends CustomActiveController {
 
         $behaviors['authenticator'] = [
             'class' => HttpBearerAuth::className(),
+            'except' => ['test'],
         ];
 
         $behaviors['access'] = [
@@ -30,6 +31,7 @@ class LessonController extends CustomActiveController {
             'ruleConfig' => [
                 'class' => AccessRule::className(),
             ],
+            'except' => ['test'],
             'rules' => [
                 [   
                     'actions' => ['detail'],
@@ -65,6 +67,18 @@ class LessonController extends CustomActiveController {
         ')
         ->bindValue(':lesson_id', $id);
         return $query->queryOne();
+    }
+
+    public function actionTest($id) {
+        return Lesson::find()
+            ->joinWith('venue')
+            ->select([
+                'subject_area',
+                'class_section',
+                'location',
+                'name'
+            ])
+            ->one();
     }
 
     public function afterAction($action, $result)
