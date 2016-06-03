@@ -81,13 +81,13 @@ class LessonController extends CustomActiveController {
             ->one();
     }
 
-    public function afterAction($action, $result)
-    {
-        $result = parent::afterAction($action, $result);
-        // your custom code here
-        return [
-            'status' => 200,
-            'data' => $result,
-        ];
-    }
+    // public function afterAction($action, $result)
+    // {
+    //     $result = parent::afterAction($action, $result);
+    //     // your custom code here
+    //     return [
+    //         'status' => 200,
+    //         'data' => $result,
+    //     ];
+    // }
 }

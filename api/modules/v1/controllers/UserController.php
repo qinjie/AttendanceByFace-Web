@@ -85,7 +85,9 @@ class UserController extends CustomActiveController
     	if ($user = $model->login()) {
             UserToken::deleteAll(['user_id' => $user->id]);
     		$token = TokenHelper::createUserToken($user->id);
-			return $token->token;
+			return [
+                'token' => $token->token,
+            ];
     	}
         throw new BadRequestHttpException('Invalid username or password');
     	// return $model->errors;
@@ -102,7 +104,9 @@ class UserController extends CustomActiveController
         $model->role = isset($bodyParams['role']) ? $bodyParams['role'] : User::ROLE_USER;
 		if ($user = $model->signup()) {
 			$token = TokenHelper::createUserToken($user->id);
-			return $token->token;
+			return [
+                'token' => $token->token,
+            ];
 		}
         throw new BadRequestHttpException('Invalid data');
     }
@@ -115,19 +119,31 @@ class UserController extends CustomActiveController
 
     public function actionConfirmEmail($token = null) {
         if (empty($token) || !is_string($token)) {
-            throw new BadRequestHttpException('Email confirm token cannot be blank.');
+            // throw new BadRequestHttpException('Email confirm token cannot be blank.');
+            $viewPath = '/attendance-system/api/views/confirmation-error.html';
+            header('Location: '.$viewPath);
+            exit(0);
         }
         $userId = TokenHelper::authenticateToken($token, true, TokenHelper::TOKEN_ACTION_ACTIVATE_ACCOUNT);
         $user = User::findOne(['id' => $userId, 'status' => User::STATUS_WAIT]);
         if (!$userId) {
-            throw new BadRequestHttpException('Wrong Email confirm token.');
+            // throw new BadRequestHttpException('Wrong Email confirm token.');
+            $viewPath = '/attendance-system/api/views/confirmation-error.html';
+            header('Location: '.$viewPath);
+            exit(0);
         }
         $user->status = User::STATUS_ACTIVE;
         UserToken::removeEmailConfirmToken($user->id, $token);
         if ($user->save()) {
-            return 'Confirm email successfully';
+            // return 'Confirm email successfully';
+            $viewPath = '/attendance-system/api/views/confirmation-success.html';
+            header('Location: '.$viewPath);
+            exit(0);
         }
-        throw new BadRequestHttpException('Error! Failed to confirm your email.');
+        // throw new BadRequestHttpException('Error! Failed to confirm your email.');
+        $viewPath = '/attendance-system/api/views/confirmation-error.html';
+        header('Location: '.$viewPath);
+        exit(0);
     }
 
     public function actionPersonId() {
@@ -151,7 +167,10 @@ class UserController extends CustomActiveController
              where id = :user_id
         ')
         ->bindValue(':user_id', $userId);
-        return $query->queryOne();
+        $result = $query->queryOne();
+        if ($result['face_id'])
+            $result['face_id'] = json_decode($result['face_id']);
+        return $result;
     }
 
     public function actionSetPersonId() {
@@ -166,7 +185,9 @@ class UserController extends CustomActiveController
         ')
         ->bindValue(':person_id', $person_id)
         ->bindValue(':user_id', $userId);
-        return $query->execute();
+        return [
+            'result' => $query->execute(),
+        ];
     }
 
     public function actionSetFaceId() {
@@ -181,16 +202,18 @@ class UserController extends CustomActiveController
         ')
         ->bindValue(':face_id', $face_id)
         ->bindValue(':user_id', $userId);
-        return $query->execute();
-    }
-
-    public function afterAction($action, $result)
-    {
-        $result = parent::afterAction($action, $result);
-        // your custom code here
         return [
-            'status' => '200',
-            'data' => $result,
+            'result' => $query->execute(),
         ];
     }
+
+    // public function afterAction($action, $result)
+    // {
+    //     $result = parent::afterAction($action, $result);
+    //     // your custom code here
+    //     return [
+    //         'status' => '200',
+    //         'data' => $result,
+    //     ];
+    // }
 }

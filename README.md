@@ -12,8 +12,7 @@ Authorization: 'Bearer <token>'
 ####Response:
 ```
 {
-    status: 200,
-    data: 'You are student'
+    result: 'You are student'
 }
 ```
 
@@ -32,8 +31,7 @@ Authorization: 'Bearer <token>'
 ####Response:
 ```
 {
-    status: 200,
-    data: 'You are teacher'
+    result: 'You are teacher'
 }
 ```
 
@@ -54,8 +52,7 @@ Authorization: 'Bearer <token>'
 ####Response:
 ```
 {
-    status: 200,
-    data: <token>
+    token: '3kj2rh3k2rhk2j3hkj42hk43h2kh4j32'
 }
 ```
 
@@ -78,8 +75,7 @@ Authorization: 'Bearer <token>'
 ####Response:
 ```
 {
-    status: 200,
-    data: <token>
+    token: '3kj2rh3k2rhk2j3hkj42hk43h2kh4j32'
 }
 ```
 
@@ -104,10 +100,7 @@ Authorization: 'Bearer <token>'
 ```
 ####Response:
 ```
-{
-    status: 200,
-    data: 'logout successful'
-}
+logout successful
 ```
 
 ***
@@ -124,11 +117,8 @@ Authorization: 'Bearer <token>'
 ####Response:
 ```
 {
-    status: 200,
-    data: {
-        user_id,
-        person_id
-    }
+    user_id: '1',
+    person_id: '23dkj3hd2jg3k2hj2'
 }
 ```
 
@@ -146,11 +136,11 @@ Authorization: 'Bearer <token>'
 ####Response:
 ```
 {
-    status: 200,
-    data: {
-        user_id,
-        face_id
-    }
+    user_id: '1',
+    face_id: [
+        'ef2323f2df23d', 
+        '23d23d23e23'
+    ]
 }
 ```
 
@@ -173,8 +163,7 @@ Authorization: 'Bearer <token>'
 ####Response:
 ```
 {
-    status: 200,
-    data: 1
+    result: 1
 }
 ```
 
@@ -197,8 +186,7 @@ Authorization: 'Bearer <token>'
 ####Response:
 ```
 {
-    status: 200,
-    data: 1
+    result: 1
 }
 ```
 

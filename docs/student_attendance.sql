@@ -40,6 +40,25 @@ insert into `beacon` (`id`, `uuid`, `major`, `minor`, `created_at`, `updated_at`
   (4, 'B9407F30-F5F8-466E-AFF9-25556B57FE6D', '33078', '31465', '0000-00-00 00:00:00','2016-04-26 11:09:19'),
   (5, 'B9407F30-F5F8-466E-AFF9-25556B57FE6D', '58949', '29933', '0000-00-00 00:00:00','2016-04-26 11:09:19');
 
+/*Table structure for table `lecturer` */
+
+DROP TABLE IF EXISTS `lecturer`;
+
+CREATE TABLE `lesson` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(120) NOT NULL,
+  `created_at` timestamp NULL DEFAULT '0000-00-00 00:00:00',
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=latin1;
+
+/*Data for the table `lecturer` */
+
+insert  into `lecturer` (`id`,`name`) values 
+  (1, 'Lecturer 1'),
+  (2, 'Lecturer 2'),
+  (3, 'Lecturer 3');
+
 /*Table structure for table `lesson` */
 
 DROP TABLE IF EXISTS `lesson`;
@@ -166,48 +185,50 @@ CREATE TABLE `timetable` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `student_id` int(10) unsigned NOT NULL,
   `lesson_id` int(10) unsigned NOT NULL,
+  `lecturer_id` int(10) unsigned NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `student_id` (`student_id`,`lesson_id`),
   KEY `lesson_id` (`lesson_id`),
   CONSTRAINT `timetable_ibfk_1` FOREIGN KEY (`student_id`) REFERENCES `student` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `timetable_ibfk_2` FOREIGN KEY (`lesson_id`) REFERENCES `lesson` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `timetable_ibfk_2` FOREIGN KEY (`lesson_id`) REFERENCES `lesson` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `timetable_ibfk_3` FOREIGN KEY (`lecturer_id`) REFERENCES `lecturer` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=63 DEFAULT CHARSET=latin1;
 
 /*Data for the table `timetable` */
 
-insert  into `timetable`(`id`,`student_id`,`lesson_id`,`created_at`) values 
-  (32,1,1,'2016-04-26 11:10:06'),
-  (33,1,2,'2016-04-26 11:10:06'),
-  (34,1,3,'2016-04-26 11:10:06'),
-  (35,1,4,'2016-04-26 11:10:06'),
-  (36,1,5,'2016-04-26 11:10:06'),
-  (37,1,6,'2016-04-26 11:10:06'),
-  (38,1,7,'2016-04-26 11:10:06'),
-  (39,1,8,'2016-04-26 11:10:06'),
-  (40,1,9,'2016-04-26 11:10:06'),
-  (41,1,10,'2016-04-26 11:10:06'),
-  (42,1,11,'2016-04-26 11:10:06'),
-  (43,1,12,'2016-04-26 11:10:06'),
-  (44,1,13,'2016-04-26 11:10:06'),
-  (45,1,14,'2016-04-26 11:10:06'),
-  (46,1,15,'2016-04-26 11:10:06'),
-  (47,1,16,'2016-04-26 11:10:06'),
-  (48,2,17,'2016-04-26 11:10:06'),
-  (49,3,18,'2016-04-26 11:10:06'),
-  (50,3,19,'2016-04-26 11:10:06'),
-  (51,3,20,'2016-04-26 11:10:06'),
-  (52,3,21,'2016-04-26 11:10:06'),
-  (53,3,22,'2016-04-26 11:10:06'),
-  (54,3,23,'2016-04-26 11:10:06'),
-  (55,3,24,'2016-04-26 11:10:06'),
-  (56,3,25,'2016-04-26 11:10:06'),
-  (57,3,26,'2016-04-26 11:10:06'),
-  (58,3,27,'2016-04-26 11:10:06'),
-  (59,3,28,'2016-04-26 11:10:06'),
-  (60,3,29,'2016-04-26 11:10:06'),
-  (61,3,30,'2016-04-26 11:10:06'),
-  (62,3,31,'2016-04-26 11:10:06');
+insert  into `timetable`(`id`,`student_id`,`lesson_id`,`created_at`, `lecturer_id`) values 
+  (32,1,1,'2016-04-26 11:10:06',1),
+  (33,1,2,'2016-04-26 11:10:06',1),
+  (34,1,3,'2016-04-26 11:10:06',1),
+  (35,1,4,'2016-04-26 11:10:06',2),
+  (36,1,5,'2016-04-26 11:10:06',2),
+  (37,1,6,'2016-04-26 11:10:06',2),
+  (38,1,7,'2016-04-26 11:10:06',2),
+  (39,1,8,'2016-04-26 11:10:06',3),
+  (40,1,9,'2016-04-26 11:10:06',3),
+  (41,1,10,'2016-04-26 11:10:06',3),
+  (42,1,11,'2016-04-26 11:10:06',3),
+  (43,1,12,'2016-04-26 11:10:06',2),
+  (44,1,13,'2016-04-26 11:10:06',1),
+  (45,1,14,'2016-04-26 11:10:06',1),
+  (46,1,15,'2016-04-26 11:10:06',2),
+  (47,1,16,'2016-04-26 11:10:06',2),
+  (48,2,17,'2016-04-26 11:10:06',2),
+  (49,3,18,'2016-04-26 11:10:06',1),
+  (50,3,19,'2016-04-26 11:10:06',1),
+  (51,3,20,'2016-04-26 11:10:06',3),
+  (52,3,21,'2016-04-26 11:10:06',3),
+  (53,3,22,'2016-04-26 11:10:06',3),
+  (54,3,23,'2016-04-26 11:10:06',3),
+  (55,3,24,'2016-04-26 11:10:06',3),
+  (56,3,25,'2016-04-26 11:10:06',1),
+  (57,3,26,'2016-04-26 11:10:06',1),
+  (58,3,27,'2016-04-26 11:10:06',1),
+  (59,3,28,'2016-04-26 11:10:06',1),
+  (60,3,29,'2016-04-26 11:10:06',2),
+  (61,3,30,'2016-04-26 11:10:06',2),
+  (62,3,31,'2016-04-26 11:10:06',2);
 
 /*Table structure for table `user_token` */
 

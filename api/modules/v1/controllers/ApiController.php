@@ -100,11 +100,15 @@ class ApiController extends CustomActiveController {
     }
 
     public function actionCheckStudent() {
-        return 'You are student';
+        return [
+            'result' => 'You are student',
+        ];
     }
 
     public function actionCheckTeacher() {
-        return 'You are teacher';
+        return [
+            'result' => 'You are teacher',
+        ];
     }
 
     public function actionUpload()
@@ -147,13 +151,13 @@ class ApiController extends CustomActiveController {
         return $error->message;
     }
 
-    public function afterAction($action, $result)
-    {
-        $result = parent::afterAction($action, $result);
-        // your custom code here
-        return [
-            'status' => '200',
-            'data' => $result,
-        ];
-    }
+    // public function afterAction($action, $result)
+    // {
+    //     $result = parent::afterAction($action, $result);
+    //     // your custom code here
+    //     return [
+    //         'status' => '200',
+    //         'data' => $result,
+    //     ];
+    // }
 }
