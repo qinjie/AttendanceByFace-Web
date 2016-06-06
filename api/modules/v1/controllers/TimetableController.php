@@ -59,7 +59,7 @@ class TimetableController extends CustomActiveController {
             ],
             'rules' => [
                 [   
-                    'actions' => ['today', 'week'],
+                    'actions' => ['today', 'week', 'total-week'],
                     'allow' => true,
                     'roles' => [User::ROLE_STUDENT],
                 ],
@@ -122,6 +122,8 @@ class TimetableController extends CustomActiveController {
         ->bindValue(':weekday', $weekday);
         $result = $query->queryAll();
 
+        usort($result, 'self::cmpLesson');
+
         for ($iter = 0; $iter < count($result); ++$iter) {
             $status = Yii::$app->db->createCommand('
                     select lesson_id, 
@@ -159,6 +161,15 @@ class TimetableController extends CustomActiveController {
             }
         }
         return $result;
+    }
+
+    public function actionTotalWeek() {
+        $numberWeeks = 5;
+        $total_timetable = [];
+        for ($iter = 0; $iter < $numberWeeks; ++$iter) {
+            $total_timetable[] = self::actionWeek($iter);
+        }
+        return $total_timetable;
     }
 
     public function actionWeek($week) {
