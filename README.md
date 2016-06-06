@@ -224,3 +224,57 @@ Authorization: 'Bearer <token>'
     }
 ]
 ```
+
+***
+
+###GET ```timetable/week?week=1```
+```
+=> Get all lessons for one week. For each week day, sort lessons by start time
+```
+####Header:
+```
+Authorization: 'Bearer <token>'
+```
+####Request: None
+####Response:
+```
+{
+  "MON": [
+    {
+      "lesson_id": "1",
+      "subject_area": "ELECTRO",
+      "class_section": "L2L",
+      "component": "LEC",
+      "weekday": 0,
+      "start_time": "10:00",
+      "end_time": "12:00",
+      "location": "Location 1",
+      "meeting_pattern": ""
+    }
+  ],
+  "TUES": [
+    {
+      "lesson_id": "6",
+      "subject_area": "ELECTRO",
+      "class_section": "P2L1",
+      "component": "PRA",
+      "weekday": 1,
+      "start_time": "13:00",
+      "end_time": "15:00",
+      "location": "Location 1",
+      "meeting_pattern": ""
+    },
+    {
+      "lesson_id": "4",
+      "subject_area": "ELECTRO",
+      "class_section": "T2L1",
+      "component": "TUT",
+      "weekday": 1,
+      "start_time": "15:00",
+      "end_time": "16:00",
+      "location": "Location 1",
+      "meeting_pattern": ""
+    }
+  ]
+}
+```
