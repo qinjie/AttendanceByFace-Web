@@ -27,6 +27,7 @@ use yii\web\UnauthorizedHttpException;
 
 class UserController extends CustomActiveController
 {
+    public $uploadPath = '/upload/';
     public $modelClass = '';
     
     public function behaviors() {
@@ -74,8 +75,6 @@ class UserController extends CustomActiveController
     public function actionLogin() {
     	$request = Yii::$app->request;
     	$bodyParams = $request->bodyParams;
-        // $username = $request->get('username');
-        // $password = $request->get('password');
         $username = $bodyParams['username'];
         $password = $bodyParams['password'];
 
@@ -90,12 +89,35 @@ class UserController extends CustomActiveController
             ];
     	}
         throw new BadRequestHttpException('Invalid username or password');
-    	// return $model->errors;
     }
 
     public function actionSignup() {
-    	$request = Yii::$app->request;
-    	$bodyParams = $request->bodyParams;
+        // $allowedTypes = ['image/png', 'image/jpg'];
+        // $fileType = $_FILES['profileImg']['type'];
+        // if (!in_array($fileType, $allowedTypes))
+        //     throw new BadRequestHttpException('Profile image must be png or jpg');
+
+        // $postdata = fopen( $_FILES[ 'profileImg' ][ 'tmp_name' ], "r" );
+        // /* Get file extension */
+        // $extension = substr( $_FILES[ 'profileImg' ][ 'name' ], strrpos( $_FILES[ 'profileImg' ][ 'name' ], '.' ) );
+
+        //  Generate unique name 
+        // $fileUrl = $this->documentPath . uniqid() . $extension;
+        // $filename = $_SERVER['DOCUMENT_ROOT'] . $fileUrl;
+
+        // /* Open a file for writing */
+        // $fp = fopen( $filename, "w" );
+
+        // /* Read the data 1 KB at a time
+        //   and write to the file */
+        // while( $data = fread( $postdata, 1024 ) )
+        //     fwrite( $fp, $data );
+
+        // /* Close the streams */
+        // fclose( $fp );
+        // fclose( $postdata );
+
+    	$bodyParams = Yii::$app->request->bodyParams;
 
     	$model = new SignupModel();
     	$model->username = $bodyParams['username'];
@@ -119,7 +141,6 @@ class UserController extends CustomActiveController
 
     public function actionConfirmEmail($token = null) {
         if (empty($token) || !is_string($token)) {
-            // throw new BadRequestHttpException('Email confirm token cannot be blank.');
             $viewPath = '/attendance-system/api/views/confirmation-error.html';
             header('Location: '.$viewPath);
             exit(0);
@@ -127,7 +148,6 @@ class UserController extends CustomActiveController
         $userId = TokenHelper::authenticateToken($token, true, TokenHelper::TOKEN_ACTION_ACTIVATE_ACCOUNT);
         $user = User::findOne(['id' => $userId, 'status' => User::STATUS_WAIT]);
         if (!$userId) {
-            // throw new BadRequestHttpException('Wrong Email confirm token.');
             $viewPath = '/attendance-system/api/views/confirmation-error.html';
             header('Location: '.$viewPath);
             exit(0);
@@ -135,12 +155,10 @@ class UserController extends CustomActiveController
         $user->status = User::STATUS_ACTIVE;
         UserToken::removeEmailConfirmToken($user->id, $token);
         if ($user->save()) {
-            // return 'Confirm email successfully';
             $viewPath = '/attendance-system/api/views/confirmation-success.html';
             header('Location: '.$viewPath);
             exit(0);
         }
-        // throw new BadRequestHttpException('Error! Failed to confirm your email.');
         $viewPath = '/attendance-system/api/views/confirmation-error.html';
         header('Location: '.$viewPath);
         exit(0);
@@ -177,7 +195,7 @@ class UserController extends CustomActiveController
         $userId = Yii::$app->user->identity->id;
         $request = Yii::$app->request;
         $bodyParams = $request->bodyParams;
-        $person_id = $bodyParams['person_id'];
+        $person_id = $bodyParams;
         $query = Yii::$app->db->createCommand('
             update user 
              set person_id = :person_id 
@@ -194,7 +212,7 @@ class UserController extends CustomActiveController
         $userId = Yii::$app->user->identity->id;
         $request = Yii::$app->request;
         $bodyParams = $request->bodyParams;
-        $face_id = $bodyParams['face_id'];
+        $face_id = json_encode($bodyParams);
         $query = Yii::$app->db->createCommand('
             update user 
              set face_id = :face_id 

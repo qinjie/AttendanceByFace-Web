@@ -24,6 +24,11 @@ class Lesson extends ActiveRecord
         return $fields;
     }
 
+    public function extraFields() {
+        $fields = parent::fields();
+        return array_merge($fields, ['venue']);
+    }
+
     public function behaviors()
     {
         return [

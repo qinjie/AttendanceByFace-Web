@@ -16,34 +16,14 @@ use yii\web\BadRequestHttpException;
 use yii\filters\VerbFilter;
 use yii\data\ActiveDataProvider;
 
-// function cmpTime($t1, $t2) {
-//     $h1 = intval($t1[0] + $t1[1]);
-//     $m1 = intval($t1[3] + $t1[4]);
-
-//     $h2 = intval($t2[0] + $t2[1]);
-//     $m2 = intval($t2[3] + $t2[4]);
-
-//     if ($h1 == $h2) {
-//         if ($m1 == $m2) return 0;
-//         else return $m1 - $m2;
-//     } else {
-//         return $h1 - $h2;
-//     }
-// } 
-
-// function cmpLesson($l1, $l2) {
-//     if ($l1['weekday'] == $l2['weekday']) 
-//         return cmpTime($l1['start_time'], $l2['start_time']);
-//     else
-//         return $l1['weekday'] - $l2['weekday'];
-// }
-
 class TimetableController extends CustomActiveController {
 
     const STATUS_NOTYET = 0;
     const STATUS_PRESENT = 1;
     const STATUS_ABSENT = 2;
     const STATUS_LATE = 3;
+
+    const ATTENDANCE_INTERVAL = 15; // 15 minutes
 
     public function behaviors() {
         $behaviors = parent::behaviors();
@@ -59,7 +39,7 @@ class TimetableController extends CustomActiveController {
             ],
             'rules' => [
                 [   
-                    'actions' => ['today', 'week', 'total-week'],
+                    'actions' => ['today', 'week', 'total-week', 'check-attendance'],
                     'allow' => true,
                     'roles' => [User::ROLE_STUDENT],
                 ],
@@ -92,6 +72,7 @@ class TimetableController extends CustomActiveController {
         $currentYear = date('Y');
         $weekdays = ['SUN', 'MON', 'TUES', 'WED', 'THUR', 'FRI', 'SAT'];
         $weekday = $weekdays[$dw];
+
         $userId = Yii::$app->user->identity->id;
         $student = Student::findOne(['user_id' => $userId]);
         if (!$student)
@@ -119,12 +100,16 @@ class TimetableController extends CustomActiveController {
              and weekday = :weekday 
         ')
         ->bindValue(':student_id', $student->id)
-        ->bindValue(':weekday', $weekday);
+        ->bindValue(':weekday', /*$weekday*/ 'TUES');
         $result = $query->queryAll();
 
         usort($result, 'self::cmpLesson');
 
         for ($iter = 0; $iter < count($result); ++$iter) {
+            // Tets
+            $result[$iter]['weekday'] = $weekday;
+            // Test
+            
             $status = Yii::$app->db->createCommand('
                     select lesson_id, 
                            student_id,
@@ -328,6 +313,39 @@ class TimetableController extends CustomActiveController {
             }
         }
         return $result;
+    }
+
+    public function actionCheckAttendance() {
+        date_default_timezone_set("Asia/Singapore");
+        $currentTime = date('H:i');
+
+        $userId = Yii::$app->user->identity->id;
+        $student = Student::findOne(['user_id' => $userId]);
+        if (!$student)
+            throw new BadRequestHttpException('No student with given user id');        
+        $request = Yii::$app->request;
+        $bodyParams = $request->bodyParams;
+        $timetable_id = $bodyParams['timetable_id'];
+
+        $query = Yii::$app->db->createCommand('
+            select lesson_id, 
+                   start_time, 
+                   end_time, 
+                   timetable.id as timetable_id 
+             from timetable join lesson on timetable.lesson_id = lesson.id 
+             where student_id = :student_id 
+             and timetable.id = :timetable_id 
+        ')
+        ->bindValue(':student_id', $student->id)
+        ->bindValue(':timetable_id', $timetable_id);
+        $result = $query->queryOne();
+        if (!$result) {
+            throw new BadRequestHttpException('Invalid timetable id');        
+        }
+        $diff = abs(round((strtotime($currentTime) - strtotime($result['start_time'])) / 60));
+        return [
+            'result' => $diff <= self::ATTENDANCE_INTERVAL,
+        ];
     }
 
     public function actionTakeAttendance() {

@@ -125,8 +125,8 @@ DROP TABLE IF EXISTS `user`;
 
 CREATE TABLE `user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `person_id` varchar(255) DEFAULT NULL,
-  `face_id` varchar(1000) DEFAULT NULL,
+  `person_id` varchar(255) DEFAULT '',
+  `face_id` varchar(1000) DEFAULT '',
   `username` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `auth_key` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
   `password_hash` varchar(255) COLLATE utf8_unicode_ci NOT NULL,

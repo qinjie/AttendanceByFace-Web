@@ -69,15 +69,15 @@ class LessonController extends CustomActiveController {
         return $query->queryOne();
     }
 
-    public function actionTest($id) {
+    public function actionTest() {
         return Lesson::find()
-            ->joinWith('venue')
-            ->select([
-                'subject_area',
-                'class_section',
-                'location',
-                'name'
-            ])
+            ->with('venue')
+            // ->select([
+            //     'subject_area',
+            //     'class_section',
+            //     'location',
+            //     'name'
+            // ])
             ->one();
     }
 

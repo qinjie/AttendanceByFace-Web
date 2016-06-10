@@ -156,9 +156,7 @@ Authorization: 'Bearer <token>'
 ```
 ####Request:
 ```
-{
-    person_id
-}
+person_id
 ```
 ####Response:
 ```
@@ -179,9 +177,7 @@ Authorization: 'Bearer <token>'
 ```
 ####Request:
 ```
-{
-    face_id
-}
+face_id
 ```
 ####Response:
 ```
@@ -194,7 +190,7 @@ Authorization: 'Bearer <token>'
 
 ###GET ```timetable/today```
 ```
-=> Get all lessons for today
+=> Get all lessons for today, sorted by start time
 ```
 ####Header:
 ```
@@ -293,44 +289,69 @@ Authorization: 'Bearer <token>'
 ####Response:
 ```
 [
-    {
-      "MON": [
-        {
-          "lesson_id": "1",
-          "subject_area": "ELECTRO",
-          "class_section": "L2L",
-          "component": "LEC",
-          "weekday": 0,
-          "start_time": "10:00",
-          "end_time": "12:00",
-          "location": "Location 1",
-          "meeting_pattern": ""
-        }
-      ],
-      "TUES": [
-        {
-          "lesson_id": "6",
-          "subject_area": "ELECTRO",
-          "class_section": "P2L1",
-          "component": "PRA",
-          "weekday": 1,
-          "start_time": "13:00",
-          "end_time": "15:00",
-          "location": "Location 1",
-          "meeting_pattern": ""
-        },
-        {
-          "lesson_id": "4",
-          "subject_area": "ELECTRO",
-          "class_section": "T2L1",
-          "component": "TUT",
-          "weekday": 1,
-          "start_time": "15:00",
-          "end_time": "16:00",
-          "location": "Location 1",
-          "meeting_pattern": ""
-        }
-      ]
-    }
+  {
+    "MON": [
+      {
+        "lesson_id": "1",
+        "subject_area": "ELECTRO",
+        "class_section": "L2L",
+        "component": "LEC",
+        "weekday": 0,
+        "start_time": "10:00",
+        "end_time": "12:00",
+        "location": "Location 1",
+        "meeting_pattern": ""
+      }
+    ],
+    "TUES": [
+      {
+        "lesson_id": "6",
+        "subject_area": "ELECTRO",
+        "class_section": "P2L1",
+        "component": "PRA",
+        "weekday": 1,
+        "start_time": "13:00",
+        "end_time": "15:00",
+        "location": "Location 1",
+        "meeting_pattern": ""
+      },
+      {
+        "lesson_id": "4",
+        "subject_area": "ELECTRO",
+        "class_section": "T2L1",
+        "component": "TUT",
+        "weekday": 1,
+        "start_time": "15:00",
+        "end_time": "16:00",
+        "location": "Location 1",
+        "meeting_pattern": ""
+      }
+    ]
+  }
 ]
+```
+
+***
+
+###POST ```timetable/check-attendance```
+```
+=> Return whether or not user can take attendance now. 
+Check if request time is from (start_time - 15 minutes) 
+to (start_time + 15 minutes)
+```
+####Header:
+```
+Authorization: 'Bearer <token>'
+```
+####Request:
+```
+{
+  timetable_id
+}
+```
+####Response:
+```
+{
+  result: ('true', 'false')
+}
 ```

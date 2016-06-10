@@ -123,7 +123,8 @@ class ApiController extends CustomActiveController {
         $extension = substr( $_FILES[ 'profileImg' ][ 'name' ], strrpos( $_FILES[ 'profileImg' ][ 'name' ], '.' ) );
 
         /* Generate unique name */
-        $filename = $_SERVER['DOCUMENT_ROOT'] . $this->documentPath . uniqid() . $extension;
+        $fileUrl = $this->documentPath . uniqid() . $extension;
+        $filename = $_SERVER['DOCUMENT_ROOT'] . $fileUrl;
         // return $filename;
 
         /* Open a file for writing */
@@ -140,7 +141,7 @@ class ApiController extends CustomActiveController {
 
         /* the result object that is sent to client*/
         return array_merge([
-            'filename' => $filename,
+            'fileUrl' => $fileUrl,
             'document' => $_FILES[ 'profileImg' ][ 'name' ],
             'created_at' => date( "Y-m-d H:i:s" ),
         ], Yii::$app->request->bodyParams);
