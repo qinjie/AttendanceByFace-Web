@@ -355,3 +355,27 @@ Authorization: 'Bearer <token>'
   result: ('true', 'false')
 }
 ```
+
+***
+
+###POST ```timetable/take-attendance```
+```
+=> Take attendance. One student can take attendance only once for 1 subject.
+```
+####Header:
+```
+Authorization: 'Bearer <token>'
+```
+####Request:
+```
+{
+  timetable_id,
+  face_percent: (0 => 100)
+}
+```
+####Response:
+```
+{
+  result: ('true', 'false')
+}
+```

@@ -24,6 +24,7 @@ class TimetableController extends CustomActiveController {
     const STATUS_LATE = 3;
 
     const ATTENDANCE_INTERVAL = 15; // 15 minutes
+    const FACE_THRESHOLD = 50;
 
     public function behaviors() {
         $behaviors = parent::behaviors();
@@ -39,7 +40,7 @@ class TimetableController extends CustomActiveController {
             ],
             'rules' => [
                 [   
-                    'actions' => ['today', 'week', 'total-week', 'check-attendance'],
+                    'actions' => ['today', 'week', 'total-week', 'check-attendance', 'take-attendance'],
                     'allow' => true,
                     'roles' => [User::ROLE_STUDENT],
                 ],
@@ -135,10 +136,12 @@ class TimetableController extends CustomActiveController {
                     $result[$iter]['recorded_at'] = null;
                 } else if ($status['is_late']) {
                     $result[$iter]['status'] = self::STATUS_LATE;
-                    $result[$iter]['recorded_at'] = $status['updated_at'];
+                    $time = strtotime($status['updated_at']);
+                    $result[$iter]['recorded_at'] = date('H:i', $time);
                 } else {
                     $result[$iter]['status'] = self::STATUS_PRESENT;
-                    $result[$iter]['recorded_at'] = $status['updated_at'];
+                    $time = strtotime($status['updated_at']);
+                    $result[$iter]['recorded_at'] = date('H:i', $time);
                 }
             } else {
                 $result[$iter]['status'] = self::STATUS_NOTYET;
@@ -316,9 +319,6 @@ class TimetableController extends CustomActiveController {
     }
 
     public function actionCheckAttendance() {
-        date_default_timezone_set("Asia/Singapore");
-        $currentTime = date('H:i');
-
         $userId = Yii::$app->user->identity->id;
         $student = Student::findOne(['user_id' => $userId]);
         if (!$student)
@@ -327,7 +327,7 @@ class TimetableController extends CustomActiveController {
         $bodyParams = $request->bodyParams;
         $timetable_id = $bodyParams['timetable_id'];
 
-        $query = Yii::$app->db->createCommand('
+        $timetable = Yii::$app->db->createCommand('
             select lesson_id, 
                    start_time, 
                    end_time, 
@@ -337,43 +337,87 @@ class TimetableController extends CustomActiveController {
              and timetable.id = :timetable_id 
         ')
         ->bindValue(':student_id', $student->id)
-        ->bindValue(':timetable_id', $timetable_id);
-        $result = $query->queryOne();
-        if (!$result) {
+        ->bindValue(':timetable_id', $timetable_id)
+        ->queryOne();
+
+        if (!$timetable) {
             throw new BadRequestHttpException('Invalid timetable id');        
         }
-        $diff = abs(round((strtotime($currentTime) - strtotime($result['start_time'])) / 60));
+        $result = $this->checkTimetable($timetable, $student->id);
+
         return [
-            'result' => $diff <= self::ATTENDANCE_INTERVAL,
+            'result' => $result,
         ];
+    }
+
+    private function checkTimetable($timetable, $studentId) {
+        date_default_timezone_set("Asia/Singapore");
+        $currentTime = date('H:i');
+
+        $attendance = Yii::$app->db->createCommand('
+            select lesson_id, 
+                   student_id 
+             from attendance 
+             where student_id = :student_id 
+             and lesson_id = :lesson_id 
+        ')
+        ->bindValue(':student_id', $studentId)
+        ->bindValue(':lesson_id', $timetable['lesson_id'])
+        ->queryOne();
+
+        $diff = abs(round((strtotime($currentTime) - strtotime($timetable['start_time'])) / 60));
+        return $diff <= self::ATTENDANCE_INTERVAL && !(bool)$attendance;
+    }
+
+    private function getLateMinutes($timetable) {
+        date_default_timezone_set("Asia/Singapore");
+        $currentTime = date('H:i');
+        $lateMin = round((strtotime($currentTime) - strtotime($timetable['start_time'])) / 60);
+        return max($lateMin, 0);
     }
 
     public function actionTakeAttendance() {
         $userId = Yii::$app->user->identity->id;
+        $student = Student::findOne(['user_id' => $userId]);
+        if (!$student)
+            throw new BadRequestHttpException('No student with given user id');        
         $request = Yii::$app->request;
         $bodyParams = $request->bodyParams;
         $timetable_id = $bodyParams['timetable_id'];
-        return 'take attendance successfully';
+        $face_percent = $bodyParams['face_percent'];
 
-        // $query = Yii::$app->db->createCommand('
-        //     select venue.id as venue_id,
-        //            beacon_id 
-        //      from timetable join lesson on timetable.lesson_id = lesson.id
-        //      join venue on lesson.venue_id = venue.id
-        //      join venue_beacon on venue.id = venue_beacon.venue_id
-        //      join beacon on beacon.id = venue_beacon.beacon_id
-        //      join student on timetable.student_id = student.id
-        //      where beacon.major = :major and 
-        //            beacon.minor = :minor and 
-        //            beacon.uuid = :uuid and 
-        //            timetable.id = :timetable_id and 
-        //            student.user_id = :user_id 
-        // ')
-        // ->bindValue(':major', $major)
-        // ->bindValue(':minor', $minor)
-        // ->bindValue(':uuid', $uuid)
-        // ->bindValue(':timetable_id', $timetable_id)
-        // ->bindValue(':user_id', $userId);
+        $timetable = Yii::$app->db->createCommand('
+            select lesson_id, 
+                   start_time, 
+                   end_time, 
+                   timetable.id as timetable_id 
+             from timetable join lesson on timetable.lesson_id = lesson.id 
+             where student_id = :student_id 
+             and timetable.id = :timetable_id 
+        ')
+        ->bindValue(':student_id', $student->id)
+        ->bindValue(':timetable_id', $timetable_id)
+        ->queryOne();
+
+        if ($face_percent >= self::FACE_THRESHOLD) {
+            if ($this->checkTimetable($timetable, $student->id)) {
+                $lateMinutes = $this->getLateMinutes($timetable);
+                $query = Yii::$app->db->createCommand('
+                    insert into attendance  
+                     (student_id, lesson_id, is_absent, is_late, late_min) values 
+                     (:student_id, :lesson_id, :is_absent, :is_late, :late_min) 
+                ')                
+                ->bindValue(':student_id', $student->id)
+                ->bindValue(':lesson_id', $timetable['lesson_id'])
+                ->bindValue(':is_absent', 0)
+                ->bindValue(':is_late', intval($lateMinutes > 0))
+                ->bindValue(':late_min', $lateMinutes);
+                return [
+                    'result' => $query->execute(),
+                ];
+            }
+        }
+        throw new BadRequestHttpException('Invalid attendance info');
     }
 
     // public function afterAction($action, $result)
