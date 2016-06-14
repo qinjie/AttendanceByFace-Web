@@ -23,7 +23,7 @@ DROP TABLE IF EXISTS `beacon`;
 
 CREATE TABLE `beacon` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `uuid` varchar(32) NOT NULL,
+  `uuid` varchar(100) NOT NULL,
   `major` varchar(10) DEFAULT NULL,
   `minor` varchar(10) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -150,6 +150,8 @@ insert  into `user`(`id`,`username`,`auth_key`,`password_hash`,`email`,`status`,
   (18,NULL,'','$2y$13$SZVzEK9bqUSf4CDFW3cbK.glXDubG6XzDhVnq3seXvNsxEI8.8s5e','teacher@mail.ru',1,1447745333,1461926244,'Teacher',20),
   (23,NULL,'','$2y$13$/3TLZjGEkzg3VuksfqwUgetN58T/b3Vjp7vmklwryCXmlkPG2oLMa','manager@mail.ru',1,1460811289,1461926211,'Student',10),
   (52,NULL,'BP4dN0s5LU5OItOd4XnytTFnR5phJ5X_','$2y$13$R31I9.Ah7CKIjclBtyPPk.Bi.st9jZoh8yBbuKszkjgW4/C.WK7Yq','principle@mail.ru',1,1461214049,1461926225,'Student',10);
+  (53,'1234','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','1234@gmail.com',10,1461214049,1461926225,'student',20);
+  (54,'5678','ev0ddY438lQUVzIBT4Cz6FfonldlZGwn','$2y$13$pm7wYtxExchdumcLXrb6DOTP0KeQSUda3hylys/JQ6t0aqjYtUbpq','5678@gmail.com',10,1461214049,1461926225,'student',20);
 
 /*Table structure for table `student` */
 
@@ -174,7 +176,7 @@ CREATE TABLE `student` (
 
 insert  into `student`(`id`,`card`,`name`,`gender`,`acad`,`uuid`,`user_id`,`created_at`,`updated_at`) values 
   (1,'AE','10164662A',NULL,'ADRIAN YOO',NULL,53,'0000-00-00 00:00:00','2016-04-26 10:49:37'),
-  (2,'AE','10157409D',NULL,'AIK YU CHE',NULL,NULL,'0000-00-00 00:00:00','2016-04-26 10:49:37'),
+  (2,'AE','10157409D',NULL,'AIK YU CHE',NULL,54,'0000-00-00 00:00:00','2016-04-26 10:49:37'),
   (3,'AE','10169807E',NULL,'AKAASH SIN',NULL,NULL,'0000-00-00 00:00:00','2016-04-26 10:49:37');
 
 /*Table structure for table `timetable` */
@@ -215,20 +217,20 @@ insert  into `timetable`(`id`,`student_id`,`lesson_id`,`created_at`, `lecturer_i
   (46,1,15,'2016-04-26 11:10:06',2),
   (47,1,16,'2016-04-26 11:10:06',2),
   (48,2,17,'2016-04-26 11:10:06',2),
-  (49,3,18,'2016-04-26 11:10:06',1),
-  (50,3,19,'2016-04-26 11:10:06',1),
-  (51,3,20,'2016-04-26 11:10:06',3),
-  (52,3,21,'2016-04-26 11:10:06',3),
-  (53,3,22,'2016-04-26 11:10:06',3),
-  (54,3,23,'2016-04-26 11:10:06',3),
-  (55,3,24,'2016-04-26 11:10:06',3),
-  (56,3,25,'2016-04-26 11:10:06',1),
-  (57,3,26,'2016-04-26 11:10:06',1),
-  (58,3,27,'2016-04-26 11:10:06',1),
-  (59,3,28,'2016-04-26 11:10:06',1),
-  (60,3,29,'2016-04-26 11:10:06',2),
-  (61,3,30,'2016-04-26 11:10:06',2),
-  (62,3,31,'2016-04-26 11:10:06',2);
+  (49,2,18,'2016-04-26 11:10:06',1),
+  (50,2,19,'2016-04-26 11:10:06',1),
+  (51,2,20,'2016-04-26 11:10:06',3),
+  (52,2,21,'2016-04-26 11:10:06',3),
+  (53,2,22,'2016-04-26 11:10:06',3),
+  (54,2,23,'2016-04-26 11:10:06',3),
+  (55,2,24,'2016-04-26 11:10:06',3),
+  (56,2,25,'2016-04-26 11:10:06',1),
+  (57,2,26,'2016-04-26 11:10:06',1),
+  (58,2,27,'2016-04-26 11:10:06',1),
+  (59,2,28,'2016-04-26 11:10:06',1),
+  (60,2,29,'2016-04-26 11:10:06',2),
+  (61,2,30,'2016-04-26 11:10:06',2),
+  (62,2,31,'2016-04-26 11:10:06',2);
 
 /*Table structure for table `user_token` */
 

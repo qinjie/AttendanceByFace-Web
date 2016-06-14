@@ -23,8 +23,8 @@ class TimetableController extends CustomActiveController {
     const STATUS_ABSENT = 2;
     const STATUS_LATE = 3;
 
-    const ATTENDANCE_INTERVAL = 15; // 15 minutes
-    const FACE_THRESHOLD = 50;
+    const ATTENDANCE_INTERVAL = 1500; // 15 minutes
+    const FACE_THRESHOLD = 20;
 
     public function behaviors() {
         $behaviors = parent::behaviors();
@@ -384,7 +384,7 @@ class TimetableController extends CustomActiveController {
         $request = Yii::$app->request;
         $bodyParams = $request->bodyParams;
         $timetable_id = $bodyParams['timetable_id'];
-        $face_percent = $bodyParams['face_percent'];
+        $face_percent = doubleval($bodyParams['face_percent']);
 
         $timetable = Yii::$app->db->createCommand('
             select lesson_id, 
@@ -415,9 +415,12 @@ class TimetableController extends CustomActiveController {
                 return [
                     'result' => $query->execute(),
                 ];
+            } else {
+                throw new BadRequestHttpException('Invalid attendance info');
             }
+        } else {
+            throw new BadRequestHttpException('Face percent must be above 50');
         }
-        throw new BadRequestHttpException('Invalid attendance info');
     }
 
     // public function afterAction($action, $result)
