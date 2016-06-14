@@ -129,6 +129,7 @@ CREATE TABLE `user` (
   `face_id` varchar(1000) DEFAULT '',
   `username` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `auth_key` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `device_hash` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `password_hash` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `email` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `profileImg` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,

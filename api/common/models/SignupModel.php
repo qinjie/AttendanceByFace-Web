@@ -34,6 +34,9 @@ class SignupModel extends Model
 
             ['password', 'required'],
             ['password', 'string', 'min' => 6],
+            
+            ['device_hash', 'required'],
+            ['device_hash', 'string', 'max' => 255],
         ];
     }
 
@@ -45,9 +48,10 @@ class SignupModel extends Model
             $user->email = $this->email;
             $user->setPassword($this->password);
             $user->generateAuthKey();
-            $user->status = User::STATUS_WAIT;
+            $user->status = User::STATUS_WAIT_EMAIL_DEVICE;
             $user->role = $this->role;
             $user->name = User::$roles[$this->role];
+            $user->device_hash = $this->device_hash;
 
             if ($user->save()) {
                 $token = TokenHelper::createUserToken($user->id, TokenHelper::TOKEN_ACTION_ACTIVATE_ACCOUNT);
