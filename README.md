@@ -376,6 +376,8 @@ Authorization: 'Bearer <token>'
 ####Response:
 ```
 {
-  result: ('true', 'false')
+  is_late: (true, false),
+  late_min,
+  recorded_at
 }
 ```
