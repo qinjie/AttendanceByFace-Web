@@ -14,10 +14,13 @@ use yii\db\Expression;
 
 class User extends ActiveRecord implements IdentityInterface
 {
-	const STATUS_DELETED = 0;
-	const STATUS_BLOCKED = 1;
-	const STATUS_WAIT = 5;
+    const STATUS_WAIT_EMAIL_DEVICE = 0;
+    const STATUS_WAIT_DEVICE = 1;
+    const STATUS_WAIT_EMAIL = 2;
+
     const STATUS_ACTIVE = 10;
+    const STATUS_BLOCKED = 11;
+    const STATUS_DELETED = 12;
 
     public static $roles = [
         10 => 'user',
@@ -94,7 +97,10 @@ class User extends ActiveRecord implements IdentityInterface
             self::STATUS_DELETED => 'Deleted',
             self::STATUS_BLOCKED => 'Blocked',
             self::STATUS_ACTIVE => 'Active',
-            self::STATUS_WAIT => 'Pending Confirmation',];
+            self::STATUS_WAIT_EMAIL => 'Pending Email Verification',
+            self::STATUS_WAIT_DEVICE => 'Pending Device Verification',
+            self::STATUS_WAIT_EMAIL_DEVICE => 'Pending Email and Device Verification',
+        ];
     }
 
     public static function findIdentity($id)
@@ -136,6 +142,10 @@ class User extends ActiveRecord implements IdentityInterface
     public function validatePassword($password)
     {
         return Yii::$app->security->validatePassword($password, $this->password_hash);
+    }
+
+    public function validateDevice($device_hash) {
+        return $this->device_hash == $device_hash;
     }
 
     public function generateAuthKey()

@@ -66,6 +66,7 @@ class UserController extends CustomActiveController
                 'login' => ['post'],
                 'signup' => ['post'],
                 'logout' => ['get'],
+                'register-device' => ['post'],
             ],
         ];
 
@@ -77,10 +78,12 @@ class UserController extends CustomActiveController
     	$bodyParams = $request->bodyParams;
         $username = $bodyParams['username'];
         $password = $bodyParams['password'];
+        $device_hash = $bodyParams['device_hash'];
 
     	$model = new LoginModel();
     	$model->username = $username;
     	$model->password = $password;
+        $model->device_hash = $device_hash;
     	if ($user = $model->login()) {
             UserToken::deleteAll(['user_id' => $user->id]);
     		$token = TokenHelper::createUserToken($user->id);
@@ -88,7 +91,9 @@ class UserController extends CustomActiveController
                 'token' => $token->token,
             ];
     	}
-        throw new BadRequestHttpException('Invalid username or password');
+        // throw new BadRequestHttpException('Invalid username or password');
+        // throw new BadRequestHttpException($user->errors);
+        return $user->errors;
     }
 
     public function actionSignup() {
@@ -123,7 +128,8 @@ class UserController extends CustomActiveController
     	$model->username = $bodyParams['username'];
     	$model->email = $bodyParams['email'];
     	$model->password = $bodyParams['password'];
-        $model->role = isset($bodyParams['role']) ? $bodyParams['role'] : User::ROLE_USER;
+        $model->role = isset($bodyParams['role']) ? $bodyParams['role'] : User::ROLE_STUDENT;
+        $model->device_hash = $bodyParams['device_hash'];
 		if ($user = $model->signup()) {
 			$token = TokenHelper::createUserToken($user->id);
 			return [
@@ -162,6 +168,10 @@ class UserController extends CustomActiveController
         $viewPath = '/attendance-system/api/views/confirmation-error.html';
         header('Location: '.$viewPath);
         exit(0);
+    }
+
+    public function actionRegisterDevice() {
+        return 'register device';
     }
 
     public function actionPersonId() {
