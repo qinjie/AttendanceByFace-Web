@@ -412,8 +412,12 @@ class TimetableController extends CustomActiveController {
                 ->bindValue(':is_absent', 0)
                 ->bindValue(':is_late', intval($lateMinutes > 0))
                 ->bindValue(':late_min', $lateMinutes);
+
+                date_default_timezone_set("Asia/Singapore");
                 return [
-                    'result' => $query->execute(),
+                    'is_late' => $lateMinutes > 0,
+                    'late_min' => $lateMinutes,
+                    'recorded_at' => date('H:i'),
                 ];
             } else {
                 throw new BadRequestHttpException('Invalid attendance info');
