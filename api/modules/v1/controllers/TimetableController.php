@@ -366,7 +366,7 @@ class TimetableController extends CustomActiveController {
         ->queryOne();
 
         $diff = abs(round((strtotime($currentTime) - strtotime($timetable['start_time'])) / 60));
-        return $diff <= self::ATTENDANCE_INTERVAL && !(bool)$attendance;
+        return $diff <= self::ATTENDANCE_INTERVAL /* && !(bool)$attendance */;
     }
 
     private function getLateMinutes($timetable) {

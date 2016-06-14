@@ -333,9 +333,9 @@ CREATE TABLE `attendance` (
   `late_min` int(10) unsigned NOT NULL DEFAULT '0',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `studentId` (`student_id`,`lesson_id`),
-  KEY `lessonId` (`lesson_id`)
+  PRIMARY KEY (`id`)
+/* For test: UNIQUE KEY `studentId` (`student_id`,`lesson_id`), */
+  -- KEY `lessonId` (`lesson_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=42 ;
 ALTER TABLE `attendance`
   ADD CONSTRAINT `attendance_ibfk_1` FOREIGN KEY (`student_id`) REFERENCES `student` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
