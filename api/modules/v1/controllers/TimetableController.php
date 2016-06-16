@@ -20,8 +20,8 @@ class TimetableController extends CustomActiveController {
 
     const STATUS_NOTYET = 0;
     const STATUS_PRESENT = 1;
-    const STATUS_ABSENT = 2;
-    const STATUS_LATE = 3;
+    const STATUS_LATE = 2;
+    const STATUS_ABSENT = 3;
 
     const ATTENDANCE_INTERVAL = 1500; // 15 minutes
     const FACE_THRESHOLD = 20;
