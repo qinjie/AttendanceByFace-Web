@@ -346,7 +346,9 @@ ALTER TABLE `attendance`
 
 INSERT INTO `attendance` (`id`, `student_id`, `lesson_id`, `signed_in`, `signed_out`, `is_absent`, `is_late`, `late_min`, `created_at`, `updated_at`) VALUES
 (40, 10, 1, '2015-07-30 08:11:00', '0000-00-00 00:00:00', 0, 0, 0, NULL, NULL),
-(41, 2, 1, '2015-07-30 08:11:02', '0000-00-00 00:00:00', 0, 0, 0, NULL, NULL);
+(41, 2, 1, '2015-07-30 08:11:02', '0000-00-00 00:00:00', 0, 0, 0, NULL, NULL),
+(42, 1, 11, '2015-07-30 08:11:02', '0000-00-00 00:00:00', 0, 0, 0, '2016-06-16 08:50:00', NULL),
+(43, 1, 6, '2015-07-30 08:11:02', '0000-00-00 00:00:00', 0, 1, 10, '2016-06-16 13:10:00', NULL);
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

@@ -114,15 +114,15 @@ class TimetableController extends CustomActiveController {
             $status = Yii::$app->db->createCommand('
                     select lesson_id, 
                            student_id,
-                           updated_at,  
+                           created_at,  
                            is_absent, 
                            is_late  
                      from attendance 
                      where student_id = :student_id 
                      and lesson_id = :lesson_id 
-                     and dayofmonth(signed_in) = :currentDay 
-                     and month(signed_in) = :currentMonth 
-                     and year(signed_in) = :currentYear 
+                     and dayofmonth(created_at) = :currentDay 
+                     and month(created_at) = :currentMonth 
+                     and year(created_at) = :currentYear 
                 ')
                 ->bindValue(':student_id', $student->id)
                 ->bindValue(':lesson_id', $result[$iter]['lesson_id'])
@@ -130,17 +130,18 @@ class TimetableController extends CustomActiveController {
                 ->bindValue(':currentMonth', $currentMonth)
                 ->bindValue(':currentYear', $currentYear)
                 ->queryOne();
+            
             if ($status) {
                 if ($status['is_absent']) {
                     $result[$iter]['status'] = self::STATUS_ABSENT;
                     $result[$iter]['recorded_at'] = null;
                 } else if ($status['is_late']) {
                     $result[$iter]['status'] = self::STATUS_LATE;
-                    $time = strtotime($status['updated_at']);
+                    $time = strtotime($status['created_at']);
                     $result[$iter]['recorded_at'] = date('H:i', $time);
                 } else {
                     $result[$iter]['status'] = self::STATUS_PRESENT;
-                    $time = strtotime($status['updated_at']);
+                    $time = strtotime($status['created_at']);
                     $result[$iter]['recorded_at'] = date('H:i', $time);
                 }
             } else {
