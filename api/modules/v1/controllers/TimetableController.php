@@ -3,7 +3,7 @@ namespace api\modules\v1\controllers;
 
 use api\common\controllers\CustomActiveController;
 use api\common\models\User;
-use api\modules\v1\models\Timetable;
+use api\modules\v1\models\Attendance;
 use api\common\models\Student;
 use api\common\components\AccessRule;
 
@@ -352,7 +352,6 @@ class TimetableController extends CustomActiveController {
     }
 
     private function checkTimetable($timetable, $studentId) {
-        date_default_timezone_set("Asia/Singapore");
         $currentTime = date('H:i');
 
         $attendance = Yii::$app->db->createCommand('
@@ -371,7 +370,6 @@ class TimetableController extends CustomActiveController {
     }
 
     private function getLateMinutes($timetable) {
-        date_default_timezone_set("Asia/Singapore");
         $currentTime = date('H:i');
         $lateMin = round((strtotime($currentTime) - strtotime($timetable['start_time'])) / 60);
         return max($lateMin, 0);
@@ -403,24 +401,20 @@ class TimetableController extends CustomActiveController {
         if ($face_percent >= self::FACE_THRESHOLD) {
             if ($this->checkTimetable($timetable, $student->id)) {
                 $lateMinutes = $this->getLateMinutes($timetable);
-                $query = Yii::$app->db->createCommand('
-                    insert into attendance  
-                     (student_id, lesson_id, is_absent, is_late, late_min) values 
-                     (:student_id, :lesson_id, :is_absent, :is_late, :late_min) 
-                ')                
-                ->bindValue(':student_id', $student->id)
-                ->bindValue(':lesson_id', $timetable['lesson_id'])
-                ->bindValue(':is_absent', 0)
-                ->bindValue(':is_late', intval($lateMinutes > 0))
-                ->bindValue(':late_min', $lateMinutes);
-                $query->execute();
+                $attendance = new Attendance();
+                $attendance->student_id = $student->id;
+                $attendance->lesson_id = $timetable['lesson_id'];
+                $attendance->is_absent = 0;
+                $attendance->is_late = intval($lateMinutes > 0);
+                $attendance->late_min = $lateMinutes;
 
-                date_default_timezone_set("Asia/Singapore");
-                return [
-                    'is_late' => $lateMinutes > 0,
-                    'late_min' => $lateMinutes,
-                    'recorded_at' => date('H:i'),
-                ];
+                if ($attendance->save()) {
+                    return [
+                        'is_late' => $lateMinutes > 0,
+                        'late_min' => $lateMinutes,
+                        'recorded_at' => date('H:i'),
+                    ];
+                }
             } else {
                 throw new BadRequestHttpException('Invalid attendance info');
             }
