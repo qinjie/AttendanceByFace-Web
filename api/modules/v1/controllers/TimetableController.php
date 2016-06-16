@@ -413,6 +413,7 @@ class TimetableController extends CustomActiveController {
                 ->bindValue(':is_absent', 0)
                 ->bindValue(':is_late', intval($lateMinutes > 0))
                 ->bindValue(':late_min', $lateMinutes);
+                $query->execute();
 
                 date_default_timezone_set("Asia/Singapore");
                 return [
