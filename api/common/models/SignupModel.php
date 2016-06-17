@@ -14,6 +14,7 @@ class SignupModel extends Model
     public $password;
     public $role;
     public $profileImg;
+    public $device_hash;
 
     /**
      * @return array the validation rules.

@@ -415,6 +415,8 @@ class TimetableController extends CustomActiveController {
                         'late_min' => $lateMinutes,
                         'recorded_at' => date('H:i'),
                     ];
+                } else {
+                    throw new BadRequestHttpException('Cannot insert new attendance');
                 }
             } else {
                 throw new BadRequestHttpException('Invalid attendance info');

@@ -69,7 +69,8 @@ Authorization: 'Bearer <token>'
     username: '1234',
     password: '123456',
     email: '123@mail.com',
-    role: (10: role user, 20: role student, 30: role teacher)
+    role: (10: role user, 20: role student, 30: role teacher),
+    device_hash
 }
 ```
 ####Response:
