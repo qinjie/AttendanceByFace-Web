@@ -79,12 +79,6 @@ class User extends ActiveRecord implements IdentityInterface
             $fields['updated_at'], $fields['created_at']);
         return $fields;
     }
-    
-    public function extraFields() {
-        $new = ['student'];
-        $fields = array_merge(parent::fields(), $new);
-        return $fields;
-    }
 
     public function getStatusName()
     {
@@ -118,10 +112,9 @@ class User extends ActiveRecord implements IdentityInterface
         }
     }
 
-    public static function findByUsername($username, $status = NULL)
+    public static function findByUsername($username)
     {
-        if (!$status) $status = self::STATUS_ACTIVE;
-        return static::findOne(['username' => $username, 'status' => $status]);
+        return static::findOne(['username' => $username]);
     }
 
     public function getId()

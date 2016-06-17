@@ -46,13 +46,29 @@ Authorization: 'Bearer <token>'
 ```
 {
     username: '1234',
-    password: '123456'
+    password: '123456',
+    device_hash
 }
 ```
 ####Response:
+- Success: 200
 ```
 {
     token: '3kj2rh3k2rhk2j3hkj42hk43h2kh4j32'
+}
+```
+- Error: 400
+```
+{
+  code: (
+    0: CODE_INCORRECT_USERNAME,
+    1: CODE_INCORRECT_PASSWORD,
+    2: CODE_INCORRECT_DEVICE,
+    3: CODE_UNVERIFIED_EMAIL,
+    4: CODE_UNVERIFIED_DEVICE,
+    5: CODE_UNVERIFIED_EMAIL_DEVICE,
+    6: CODE_INVALID_ACCOUNT
+  )
 }
 ```
 
@@ -106,6 +122,37 @@ logout successful
 
 ***
 
+###POST ```user/register-device```
+```
+=> Register new device for a user
+```
+####Header: None
+####Request:
+```
+{
+    username: '1234',
+    password: '123456',
+    device_hash
+}
+```
+####Response:
+- Success: 200
+```
+{}
+```
+- Error: 400
+```
+{
+  code: (
+    0: CODE_INCORRECT_USERNAME,
+    1: CODE_INCORRECT_PASSWORD,
+    6: CODE_INVALID_ACCOUNT,
+    7: CODE_DUPLICATE_DEVICE
+  )
+}
+```
+
+***
 ###GET ```user/person-id```
 ```
 => Get person Id for face++
