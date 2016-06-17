@@ -163,7 +163,7 @@ class UserController extends CustomActiveController
         }
 
         if ($user->status == User::STATUS_WAIT_EMAIL_DEVICE)
-            $user->status = User::STATUS_WAIT_DEVICE
+            $user->status = User::STATUS_WAIT_DEVICE;
         else if ($user->status == User::STATUS_WAIT_EMAIL)
             $user->status = User::STATUS_ACTIVE;
         
