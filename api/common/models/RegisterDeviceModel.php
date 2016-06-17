@@ -6,7 +6,7 @@ use Yii;
 use yii\base\Model;
 
 
-class LoginModel extends Model
+class RegisterDeviceModel extends Model
 {
     public $username;
     public $password;
@@ -32,12 +32,12 @@ class LoginModel extends Model
 
     public function validateDevice($attribute, $params) {
         $user = $this->getUser();
-        if (!$this->errors && !$user->validateDevice($this->device_hash)) {
-            $this->addError($attribute, 'Incorrect device.');
+        if (!$this->errors && $user->device_hash == $this->device_hash) {
+            $this->addError($attribute, 'Already registered device.');
         }
     }
 
-    public function login()
+    public function registerDevice()
     {
         if ($this->validate()) {
             return $this->_user;

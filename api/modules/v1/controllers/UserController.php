@@ -17,6 +17,7 @@ use api\common\components\AccessRule;
 use Yii;
 use api\common\models\SignupModel;
 use api\common\models\LoginModel;
+use api\common\models\RegisterDeviceModel;
 use yii\filters\auth\HttpBearerAuth;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
@@ -29,13 +30,22 @@ class UserController extends CustomActiveController
 {
     public $uploadPath = '/upload/';
     public $modelClass = '';
+
+    const CODE_INCORRECT_USERNAME = 0;
+    const CODE_INCORRECT_PASSWORD = 1;
+    const CODE_INCORRECT_DEVICE = 2;
+    const CODE_UNVERIFIED_EMAIL = 3;
+    const CODE_UNVERIFIED_DEVICE = 4;
+    const CODE_UNVERIFIED_EMAIL_DEVICE = 5;
+    const CODE_INVALID_ACCOUNT = 6;
+    const CODE_DUPLICATE_DEVICE = 7;
     
     public function behaviors() {
         $behaviors = parent::behaviors();
 
         $behaviors['authenticator'] = [
             'class' => HttpBearerAuth::className(),
-            'except' => ['login', 'signup', 'confirm-email'],
+            'except' => ['login', 'signup', 'confirm-email', 'register-device'],
         ];
 
         $behaviors['access'] = [
@@ -45,7 +55,7 @@ class UserController extends CustomActiveController
             ],
             'rules' => [
                 [   
-                    'actions' => ['login', 'signup', 'confirm-email'],
+                    'actions' => ['login', 'signup', 'confirm-email', 'register-device'],
                     'allow' => true,
                     'roles' => ['?'],
                 ],
@@ -85,15 +95,27 @@ class UserController extends CustomActiveController
     	$model->password = $password;
         $model->device_hash = $device_hash;
     	if ($user = $model->login()) {
-            UserToken::deleteAll(['user_id' => $user->id]);
-    		$token = TokenHelper::createUserToken($user->id);
-			return [
-                'token' => $token->token,
-            ];
-    	}
-        // throw new BadRequestHttpException('Invalid username or password');
-        // throw new BadRequestHttpException($user->errors);
-        return $user->errors;
+            if ($user->status == User::STATUS_WAIT_EMAIL_DEVICE)
+                throw new BadRequestHttpException(null, self::CODE_UNVERIFIED_EMAIL_DEVICE);
+            if ($user->status == User::STATUS_WAIT_EMAIL)
+                throw new BadRequestHttpException(null, self::CODE_UNVERIFIED_EMAIL);
+            if ($user->status == User::STATUS_WAIT_DEVICE)
+                throw new BadRequestHttpException(null, self::CODE_UNVERIFIED_DEVICE);
+            if ($user->status == User::STATUS_ACTIVE) {
+                UserToken::deleteAll(['user_id' => $user->id]);
+                $token = TokenHelper::createUserToken($user->id);
+                return [
+                    'token' => $token->token,
+                ];
+            } else throw new BadRequestHttpException(null, self::CODE_INVALID_ACCOUNT);
+    	} else {
+            if (isset($model->errors['username']))
+                throw new BadRequestHttpException(null, self::CODE_INCORRECT_USERNAME);
+            if (isset($model->errors['password']))
+                throw new BadRequestHttpException(null, self::CODE_INCORRECT_PASSWORD);
+            if (isset($model->errors['device_hash']))
+                throw new BadRequestHttpException(null, self::CODE_INCORRECT_DEVICE);
+        }
     }
 
     public function actionSignup() {
@@ -179,7 +201,37 @@ class UserController extends CustomActiveController
     }
 
     public function actionRegisterDevice() {
-        return 'register device';
+        $request = Yii::$app->request;
+        $bodyParams = $request->bodyParams;
+        $username = $bodyParams['username'];
+        $password = $bodyParams['password'];
+        $device_hash = $bodyParams['device_hash'];
+
+        $model = new RegisterDeviceModel();
+        $model->username = $username;
+        $model->password = $password;
+        $model->device_hash = $device_hash;
+        if ($user = $model->registerDevice()) {
+            if ($user->status == User::STATUS_BLOCKED || $user->status == User::STATUS_DELETED)
+                throw new BadRequestHttpException(null, self::CODE_INVALID_ACCOUNT);
+            else {
+                $user->device_hash = $device_hash;
+                if ($user->status == User::STATUS_WAIT_EMAIL)
+                    $user->status = User::STATUS_WAIT_EMAIL_DEVICE;
+                else if ($user->status == User::STATUS_ACTIVE)
+                    $user->status = User::STATUS_WAIT_DEVICE;
+                if ($user->save()) {
+                    return [];
+                }
+            }
+        } else {
+            if (isset($model->errors['username']))
+                throw new BadRequestHttpException(null, self::CODE_INCORRECT_USERNAME);
+            if (isset($model->errors['password']))
+                throw new BadRequestHttpException(null, self::CODE_INCORRECT_PASSWORD);
+            if (isset($model->errors['device_hash']))
+                throw new BadRequestHttpException(null, self::CODE_DUPLICATE_DEVICE);
+        }
     }
 
     public function actionPersonId() {
