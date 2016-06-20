@@ -23,8 +23,8 @@ class TimetableController extends CustomActiveController {
     const STATUS_LATE = 2;
     const STATUS_ABSENT = 3;
 
-    const ATTENDANCE_INTERVAL = 1500; // 15 minutes
-    const FACE_THRESHOLD = 20;
+    const ATTENDANCE_INTERVAL = 15; // 15 minutes
+    const FACE_THRESHOLD = 30;
 
     public function behaviors() {
         $behaviors = parent::behaviors();
@@ -101,14 +101,14 @@ class TimetableController extends CustomActiveController {
              and weekday = :weekday 
         ')
         ->bindValue(':student_id', $student->id)
-        ->bindValue(':weekday', /*$weekday*/ 'TUES');
+        ->bindValue(':weekday', $weekday /*'TUES'*/);
         $result = $query->queryAll();
 
         usort($result, 'self::cmpLesson');
 
         for ($iter = 0; $iter < count($result); ++$iter) {
             // Tets
-            $result[$iter]['weekday'] = $weekday;
+            // $result[$iter]['weekday'] = $weekday;
             // Test
             
             $status = Yii::$app->db->createCommand('
@@ -366,7 +366,7 @@ class TimetableController extends CustomActiveController {
         ->queryOne();
 
         $diff = abs(round((strtotime($currentTime) - strtotime($timetable['start_time'])) / 60));
-        return $diff <= self::ATTENDANCE_INTERVAL /* && !(bool)$attendance */;
+        return $diff <= self::ATTENDANCE_INTERVAL && !(bool)$attendance;
     }
 
     private function getLateMinutes($timetable) {
