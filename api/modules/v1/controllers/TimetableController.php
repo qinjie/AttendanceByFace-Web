@@ -348,6 +348,7 @@ class TimetableController extends CustomActiveController {
 
         return [
             'result' => $result,
+            'currentTime' => date('H:i'),
         ];
     }
 
