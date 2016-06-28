@@ -400,7 +400,8 @@ Authorization: 'Bearer <token>'
 ####Response:
 ```
 {
-  result: ('true', 'false')
+  result: ('true', 'false'),
+  currentTime: '10:00'
 }
 ```
 
