@@ -23,8 +23,7 @@ def connect():
 	print 'Connecting to MySQL database...'
 	conn = MySQLConnection(host='localhost',
 												 database='stud_attendance',
-												 user='root',
-												 password='x')
+												 user='ftpweb',									 password='qw1234er')
 	if conn.is_connected():
 		print 'Connection established'
 		return conn
