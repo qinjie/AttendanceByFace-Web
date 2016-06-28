@@ -26,6 +26,11 @@ class TimetableController extends CustomActiveController {
     const ATTENDANCE_INTERVAL = 15; // 15 minutes
     const FACE_THRESHOLD = 30;
 
+    const DEFAULT_START_DATE = '2016-06-27';    // Monday
+    const DEFAULT_END_DATE = '2016-08-21';  // Sunday
+
+    const SECONDS_IN_DAY = 86400;   // number seconds of a day
+
     public function behaviors() {
         $behaviors = parent::behaviors();
 
@@ -40,7 +45,8 @@ class TimetableController extends CustomActiveController {
             ],
             'rules' => [
                 [   
-                    'actions' => ['today', 'week', 'total-week', 'check-attendance', 'take-attendance'],
+                    'actions' => ['today', 'week', 'total-week', 'check-attendance', 
+                        'take-attendance', 'attendance-history'],
                     'allow' => true,
                     'roles' => [User::ROLE_STUDENT],
                 ],
@@ -107,48 +113,58 @@ class TimetableController extends CustomActiveController {
         usort($result, 'self::cmpLesson');
 
         for ($iter = 0; $iter < count($result); ++$iter) {
-            // Tets
+            // Test
             // $result[$iter]['weekday'] = $weekday;
             // Test
-            
-            $status = Yii::$app->db->createCommand('
-                    select lesson_id, 
-                           student_id,
-                           created_at,  
-                           is_absent, 
-                           is_late  
-                     from attendance 
-                     where student_id = :student_id 
-                     and lesson_id = :lesson_id 
-                     and dayofmonth(created_at) = :currentDay 
-                     and month(created_at) = :currentMonth 
-                     and year(created_at) = :currentYear 
-                ')
-                ->bindValue(':student_id', $student->id)
-                ->bindValue(':lesson_id', $result[$iter]['lesson_id'])
-                ->bindValue(':currentDay', $currentDay)
-                ->bindValue(':currentMonth', $currentMonth)
-                ->bindValue(':currentYear', $currentYear)
-                ->queryOne();
-            
-            if ($status) {
-                if ($status['is_absent']) {
-                    $result[$iter]['status'] = self::STATUS_ABSENT;
-                    $result[$iter]['recorded_at'] = null;
-                } else if ($status['is_late']) {
-                    $result[$iter]['status'] = self::STATUS_LATE;
-                    $time = strtotime($status['created_at']);
-                    $result[$iter]['recorded_at'] = date('H:i', $time);
-                } else {
-                    $result[$iter]['status'] = self::STATUS_PRESENT;
-                    $time = strtotime($status['created_at']);
-                    $result[$iter]['recorded_at'] = date('H:i', $time);
-                }
-            } else {
-                $result[$iter]['status'] = self::STATUS_NOTYET;
-                $result[$iter]['recorded_at'] = null;
-            }
+            $statusInfo = $this->getStatusInfo($student->id, $result[$iter],
+                $currentDay, $currentMonth, $currentYear);
+            $result[$iter]['status'] = $statusInfo['status'];
+            $result[$iter]['recorded_at'] = $statusInfo['recorded_at'];
         }
+        return $result;
+    }
+
+    private function getStatusInfo($student_id, $lesson, 
+        $currentDay, $currentMonth, $currentYear) {
+        $status = Yii::$app->db->createCommand('
+                select lesson_id, 
+                       student_id,
+                       created_at,  
+                       is_absent, 
+                       is_late  
+                 from attendance 
+                 where student_id = :student_id 
+                 and lesson_id = :lesson_id 
+                 and dayofmonth(updated_at) = :currentDay 
+                 and month(updated_at) = :currentMonth 
+                 and year(updated_at) = :currentYear 
+            ')
+            ->bindValue(':student_id', $student_id)
+            ->bindValue(':lesson_id', $lesson['lesson_id'])
+            ->bindValue(':currentDay', $currentDay)
+            ->bindValue(':currentMonth', $currentMonth)
+            ->bindValue(':currentYear', $currentYear)
+            ->queryOne();
+        
+        $result = [];
+        if ($status) {
+            if ($status['is_absent']) {
+                $result['status'] = self::STATUS_ABSENT;
+                $result['recorded_at'] = null;
+            } else if ($status['is_late']) {
+                $result['status'] = self::STATUS_LATE;
+                $time = strtotime($status['updated_at']);
+                $result['recorded_at'] = date('H:i', $time);
+            } else {
+                $result['status'] = self::STATUS_PRESENT;
+                $time = strtotime($status['updated_at']);
+                $result['recorded_at'] = date('H:i', $time);
+            }
+        } else {
+            $result['status'] = self::STATUS_NOTYET;
+            $result['recorded_at'] = null;
+        }
+
         return $result;
     }
 
@@ -290,9 +306,9 @@ class TimetableController extends CustomActiveController {
                      from attendance 
                      where student_id = :student_id 
                      and lesson_id = :lesson_id 
-                     and dayofmonth(signed_in) = :currentDay 
-                     and month(signed_in) = :currentMonth 
-                     and year(signed_in) = :currentYear 
+                     and dayofmonth(updated_at) = :currentDay 
+                     and month(updated_at) = :currentMonth 
+                     and year(updated_at) = :currentYear 
                 ')
                 ->bindValue(':student_id', $student->id)
                 ->bindValue(':lesson_id', $result[$iter]['lesson_id'])
@@ -320,6 +336,10 @@ class TimetableController extends CustomActiveController {
     }
 
     public function actionCheckAttendance() {
+        $dw = date('w');
+        $weekdays = ['SUN', 'MON', 'TUES', 'WED', 'THUR', 'FRI', 'SAT'];
+        $weekday = $weekdays[$dw];
+
         $userId = Yii::$app->user->identity->id;
         $student = Student::findOne(['user_id' => $userId]);
         if (!$student)
@@ -336,9 +356,11 @@ class TimetableController extends CustomActiveController {
              from timetable join lesson on timetable.lesson_id = lesson.id 
              where student_id = :student_id 
              and timetable.id = :timetable_id 
+             and weekday = :weekday 
         ')
         ->bindValue(':student_id', $student->id)
         ->bindValue(':timetable_id', $timetable_id)
+        ->bindValue(':weekday', $weekday)
         ->queryOne();
 
         if (!$timetable) {
@@ -354,16 +376,24 @@ class TimetableController extends CustomActiveController {
 
     private function checkTimetable($timetable, $studentId) {
         $currentTime = date('H:i');
-
+        $currentDay = date('d');
+        $currentMonth = date('m');
+        $currentYear = date('Y');
         $attendance = Yii::$app->db->createCommand('
             select lesson_id, 
                    student_id 
              from attendance 
              where student_id = :student_id 
              and lesson_id = :lesson_id 
+             and year(created_at) = :currentYear 
+             and month(created_at) = :currentMonth 
+             and day(created_at) = :currentDay 
         ')
         ->bindValue(':student_id', $studentId)
         ->bindValue(':lesson_id', $timetable['lesson_id'])
+        ->bindValue(':currentYear', $currentYear)
+        ->bindValue(':currentMonth', $currentMonth)
+        ->bindValue(':currentDay', $currentDay)
         ->queryOne();
 
         $diff = abs(round((strtotime($currentTime) - strtotime($timetable['start_time'])) / 60));
@@ -377,6 +407,10 @@ class TimetableController extends CustomActiveController {
     }
 
     public function actionTakeAttendance() {
+        $dw = date('w');
+        $weekdays = ['SUN', 'MON', 'TUES', 'WED', 'THUR', 'FRI', 'SAT'];
+        $weekday = $weekdays[$dw];
+
         $userId = Yii::$app->user->identity->id;
         $student = Student::findOne(['user_id' => $userId]);
         if (!$student)
@@ -394,9 +428,11 @@ class TimetableController extends CustomActiveController {
              from timetable join lesson on timetable.lesson_id = lesson.id 
              where student_id = :student_id 
              and timetable.id = :timetable_id 
+             and weekday = :weekday 
         ')
         ->bindValue(':student_id', $student->id)
         ->bindValue(':timetable_id', $timetable_id)
+        ->bindValue(':weekday', $weekday)
         ->queryOne();
 
         if ($face_percent >= self::FACE_THRESHOLD) {
@@ -424,6 +460,58 @@ class TimetableController extends CustomActiveController {
         } else {
             throw new BadRequestHttpException('Face percent must be above 50');
         }
+    }
+
+    public function actionAttendanceHistory($semester = null, $class_section = null, 
+        $status = null, $start_date = null, $end_date = null) {
+        $userId = Yii::$app->user->identity->id;
+        $student = Student::findOne(['user_id' => $userId]);
+        if (!$student)
+            throw new BadRequestHttpException('No student with given user id');
+
+        if (!$start_date)
+            $start_date = strtotime(self::DEFAULT_START_DATE);
+        if (!$end_date)
+            $end_date = strtotime(self::DEFAULT_END_DATE);
+        if (!$class_section) {
+            $class_section = $this->getAllClassSections($student->id, $semester);
+        } else {
+            $class_section = array($class_section);
+        }
+        
+        for ($iter = 0; $iter < count($class_section); ++$iter) {
+            return $this->getAttendanceHistoryForClass($class_section[$iter],
+                $start_date, $end_date);
+        }
+        return $class_section;
+        return date('H:i', $start_date);
+    }
+
+    private function getAttendanceHistoryForClass($class_section, $start_date, $end_date) {
+        $count = 0;
+        for ($iter_time = $start_date; $iter_time <= $end_date; $iter_time += self::SECONDS_IN_DAY) {
+            $currentDay = date('d', $iter_time);
+            $currentMonth = date('m', $iter_time);
+            $currentYear = date('Y', $iter_time);
+            
+        }
+        return $count;
+    }
+
+    private function getAllClassSections($student_id, $semester = null) {
+        $listClassSections = Yii::$app->db->createCommand('
+            select distinct class_section 
+             from timetable join lesson on timetable.lesson_id = lesson.id 
+             where student_id = :student_id 
+        ')
+        ->bindValue(':student_id', $student_id)
+        ->queryAll();
+
+        $func = function($val) {
+            return $val['class_section'];
+        };
+        $listClassSections = array_map($func, $listClassSections);
+        return $listClassSections;
     }
 
     // public function afterAction($action, $result)

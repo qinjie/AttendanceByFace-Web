@@ -400,7 +400,8 @@ Authorization: 'Bearer <token>'
 ####Response:
 ```
 {
-  result: ('true', 'false')
+  result: ('true', 'false'),
+  currentTime: '10:00'
 }
 ```
 
@@ -427,5 +428,33 @@ Authorization: 'Bearer <token>'
   is_late: (true, false),
   late_min,
   recorded_at
+}
+```
+
+***
+
+###GET ```timetable/attendance-history```
+```
+=> Get attendance history of a student, based on following filters:
+- class_section (Ex: T1M2, L1M2)
+- semester
+- status (
+    0 - STATUS_NOTYET
+    1 - STATUS_PRESENT
+    2 - STATUS_LATE
+    3 - STATUS_ABSENT
+  )
+- start_date (Ex: '2016-06-16 00:00:00')
+- end_date (Ex: '2016-06-16 00:00:00')
+```
+###Request: None
+###Response:
+```
+{
+  "T1M2": [
+    {
+      date
+    }
+  ]
 }
 ```
