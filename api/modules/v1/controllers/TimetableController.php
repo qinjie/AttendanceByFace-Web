@@ -46,7 +46,7 @@ class TimetableController extends CustomActiveController {
             'rules' => [
                 [   
                     'actions' => ['today', 'week', 'total-week', 'check-attendance', 
-                        'take-attendance', 'attendance-history'],
+                        'take-attendance', 'attendance-history', 'list-class-section'],
                     'allow' => true,
                     'roles' => [User::ROLE_STUDENT],
                 ],
@@ -129,7 +129,7 @@ class TimetableController extends CustomActiveController {
         $status = Yii::$app->db->createCommand('
                 select lesson_id, 
                        student_id,
-                       created_at,  
+                       updated_at,  
                        is_absent, 
                        is_late  
                  from attendance 
@@ -512,6 +512,15 @@ class TimetableController extends CustomActiveController {
         };
         $listClassSections = array_map($func, $listClassSections);
         return $listClassSections;
+    }
+
+    public function actionListClassSection($semester = null) {
+        $userId = Yii::$app->user->identity->id;
+        $student = Student::findOne(['user_id' => $userId]);
+        if (!$student)
+            throw new BadRequestHttpException('No student with given user id');
+
+        return $this->getAllClassSections($student->id, $semester);
     }
 
     // public function afterAction($action, $result)
