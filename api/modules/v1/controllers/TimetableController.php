@@ -26,7 +26,7 @@ class TimetableController extends CustomActiveController {
     const ATTENDANCE_INTERVAL = 15; // 15 minutes
     const FACE_THRESHOLD = 30;
 
-    const DEFAULT_START_DATE = '2016-06-27';    // Monday
+    const DEFAULT_START_DATE = '2016-06-13';    // Monday
     const DEFAULT_END_DATE = '2016-08-21';  // Sunday
 
     const SECONDS_IN_DAY = 86400;   // number seconds of a day
@@ -469,31 +469,64 @@ class TimetableController extends CustomActiveController {
         if (!$student)
             throw new BadRequestHttpException('No student with given user id');
 
+        $start_time = $end_time = 0;
         if (!$start_date)
-            $start_date = strtotime(self::DEFAULT_START_DATE);
+            $start_time = strtotime(self::DEFAULT_START_DATE);
+        else
+            $start_time = strtotime($start_date);
         if (!$end_date)
-            $end_date = strtotime(self::DEFAULT_END_DATE);
+            $end_time = strtotime(self::DEFAULT_END_DATE);
+        else
+            $end_time = strtotime($end_date);
         if (!$class_section) {
             $class_section = $this->getAllClassSections($student->id, $semester);
         } else {
             $class_section = array($class_section);
         }
         
+        $result = [];
         for ($iter = 0; $iter < count($class_section); ++$iter) {
-            return $this->getAttendanceHistoryForClass($class_section[$iter],
-                $start_date, $end_date);
+            $result[$class_section[$iter]] = $this->getAttendanceHistoryForClass($student->id, $class_section[$iter],
+                $start_time, $end_time);
         }
-        return $class_section;
-        return date('H:i', $start_date);
+        return $result;
+        return date('H:i', $start_time);
     }
 
-    private function getAttendanceHistoryForClass($class_section, $start_date, $end_date) {
+    private function getAttendanceHistoryForClass($student_id, $class_section, $start_time, $end_time) {
+        $start_date = date('Y-m-d', $start_time);
+        $end_date = date('Y-m-d', $end_time);
+        $listAttendance = Yii::$app->db->createCommand('
+            select date(attendance.updated_at) as date, 
+                   class_section, 
+                   component, 
+                   semester, 
+                   is_absent, 
+                   is_late, 
+                   late_min, 
+                   lesson_id, 
+                   attendance.id as attendance_id 
+             from attendance join lesson on attendance.lesson_id = lesson.id 
+             where student_id = :student_id 
+             and class_section = :class_section 
+             and attendance.updated_at >= :start_date 
+             and attendance.updated_at <= :end_date 
+             order by attendance.updated_at
+        ')
+        ->bindValue(':student_id', $student_id)
+        ->bindValue(':class_section', $class_section)
+        ->bindValue(':start_date', $start_date)
+        ->bindValue(':end_date', $end_date)
+        ->queryAll();
+        return $listAttendance;
+        
         $count = 0;
-        for ($iter_time = $start_date; $iter_time <= $end_date; $iter_time += self::SECONDS_IN_DAY) {
+        for ($iter_time = $start_time; $iter_time <= $end_time; $iter_time += self::SECONDS_IN_DAY) {
             $currentDay = date('d', $iter_time);
             $currentMonth = date('m', $iter_time);
             $currentYear = date('Y', $iter_time);
-            
+            $currentDate = date('Y-m-d', $iter_time);
+
         }
         return $count;
     }
