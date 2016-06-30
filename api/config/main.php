@@ -16,6 +16,10 @@ return [
             'basePath' => '@app/modules/v1',
             'class' => 'api\modules\v1\Module'
         ],
+        'ios' => [
+            'basePath' => '@app/modules/ios', 
+            'class' => 'api\modules\ios\Module'
+        ],
     ],
     'components' => [
         'request' => [

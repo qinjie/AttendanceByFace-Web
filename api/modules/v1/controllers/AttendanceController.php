@@ -57,13 +57,6 @@ class AttendanceController extends CustomActiveController {
             },
         ];
 
-        $behaviors['verbs'] = [
-            'class' => VerbFilter::className(),
-            'actions' => [
-                'take-attendance' => ['post'],
-            ],
-        ];
-
         return $behaviors;
     }
     
