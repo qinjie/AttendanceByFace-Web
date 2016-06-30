@@ -27,7 +27,7 @@ class TimetableController extends CustomActiveController {
     const FACE_THRESHOLD = 30;
 
     const DEFAULT_START_DATE = '2016-06-13';    // Monday
-    const DEFAULT_END_DATE = '2016-08-21';  // Sunday
+    const DEFAULT_END_DATE = '2016-07-11';  // Sunday, 5 weeks
 
     const SECONDS_IN_DAY = 86400;   // number seconds of a day
 
@@ -500,7 +500,9 @@ class TimetableController extends CustomActiveController {
             select class_section, 
                    lesson.id as lesson_id, 
                    weekday, 
-                   meeting_pattern 
+                   meeting_pattern, 
+                   component, 
+                   semester 
              from lesson 
              where class_section = :class_section 
         ')
@@ -523,7 +525,6 @@ class TimetableController extends CustomActiveController {
                    is_late, 
                    late_min, 
                    lesson_id, 
-                   attendance.id as attendance_id, 
                    weekday 
              from attendance join lesson on attendance.lesson_id = lesson.id 
              where student_id = :student_id 
@@ -554,11 +555,34 @@ class TimetableController extends CustomActiveController {
                 $numberInWeek = $this->weekDayToNumber($lesson['weekday']);
                 $currentDate = date('Y-m-d', $iter_week + self::SECONDS_IN_DAY * $numberInWeek);
                 
-                $attendance = $this->getAttendanceInDate($listAttendance, $currentDate, $lessonId);
-                if ($attendance) $attendanceHistory[] = $attendance;
+                $foundAttendance = $this->getAttendanceInDate($listAttendance, $currentDate, $lessonId);
+                $attendance = [];
+                if ($foundAttendance) {
+                    $attendance['date'] = $foundAttendance['date'];
+                    $attendance['lesson_id'] = $foundAttendance['lesson_id'];
+                    $attendance['class_section'] = $foundAttendance['class_section'];
+                    $attendance['component'] = $foundAttendance['component'];
+                    $attendance['semester'] = $foundAttendance['semester'];
+                    $attendance['weekday'] = $foundAttendance['weekday'];
+                    $status = self::STATUS_PRESENT;
+                    if ($foundAttendance['is_absent'])
+                        $status = self::STATUS_ABSENT;
+                    else if ($foundAttendance['is_late'])
+                        $status = self::STATUS_LATE;
+                    $attendance['status'] = $status;
+                } else {
+                    $attendance['date'] = $currentDate;
+                    $attendance['lesson_id'] = $lesson['lesson_id'];
+                    $attendance['class_section'] = $lesson['class_section'];
+                    $attendance['component'] = $lesson['component'];
+                    $attendance['semester'] = $lesson['semester'];
+                    $attendance['weekday'] = $lesson['weekday'];
+                    $attendance['status'] = self::STATUS_NOTYET;
+                }
+                $attendanceHistory[] = $attendance;
             }
         }
-        return $listAttendance;
+        // return $listAttendance;
         return $attendanceHistory;
     }
 
