@@ -486,14 +486,32 @@ class TimetableController extends CustomActiveController {
         
         $result = [];
         for ($iter = 0; $iter < count($class_section); ++$iter) {
-            $result[$class_section[$iter]] = $this->getAttendanceHistoryForClass($student->id, $class_section[$iter],
-                $start_time, $end_time);
+            $listLesson = $this->getAllLessonsOfClass($semester, $class_section[$iter]);
+            // $result[$class_section[$iter]] = $listLesson;
+            $result[$class_section[$iter]] = $this->getAttendanceHistoryForClass($student->id, 
+                $class_section[$iter], $listLesson, $start_time, $end_time);
         }
         return $result;
         return date('H:i', $start_time);
     }
 
-    private function getAttendanceHistoryForClass($student_id, $class_section, $start_time, $end_time) {
+    private function getAllLessonsOfClass($semester, $class_section) {
+        $listLesson = Yii::$app->db->createCommand('
+            select class_section, 
+                   lesson.id as lesson_id, 
+                   weekday, 
+                   meeting_pattern 
+             from lesson 
+             where class_section = :class_section 
+        ')
+        ->bindValue(':class_section', $class_section)
+        ->queryAll();
+
+        return $listLesson;
+    }
+
+    private function getAttendanceHistoryForClass($student_id, $class_section, $listLesson,
+        $start_time, $end_time) {
         $start_date = date('Y-m-d', $start_time);
         $end_date = date('Y-m-d', $end_time);
         $listAttendance = Yii::$app->db->createCommand('
@@ -505,7 +523,8 @@ class TimetableController extends CustomActiveController {
                    is_late, 
                    late_min, 
                    lesson_id, 
-                   attendance.id as attendance_id 
+                   attendance.id as attendance_id, 
+                   weekday 
              from attendance join lesson on attendance.lesson_id = lesson.id 
              where student_id = :student_id 
              and class_section = :class_section 
@@ -518,17 +537,41 @@ class TimetableController extends CustomActiveController {
         ->bindValue(':start_date', $start_date)
         ->bindValue(':end_date', $end_date)
         ->queryAll();
-        return $listAttendance;
+        // return $listAttendance;
         
+        $attendanceHistory = [];
+        // For each week
         $count = 0;
-        for ($iter_time = $start_time; $iter_time <= $end_time; $iter_time += self::SECONDS_IN_DAY) {
-            $currentDay = date('d', $iter_time);
-            $currentMonth = date('m', $iter_time);
-            $currentYear = date('Y', $iter_time);
-            $currentDate = date('Y-m-d', $iter_time);
-
+        for ($iter_week = $start_time; $iter_week <= $end_time; $iter_week += self::SECONDS_IN_DAY * 7) {
+            ++$count;
+            
+            for ($iter = 0; $iter < count($listLesson); ++$iter) {
+                $lesson = $listLesson[$iter];
+                $lessonId = $lesson['lesson_id'];
+                $meeting_pattern = $lesson['meeting_pattern'];
+                if ($meeting_pattern == 'ODD' && $count % 2 == 0) continue;
+                if ($meeting_pattern == 'EVEN' && $count % 2 == 1) continue;
+                $numberInWeek = $this->weekDayToNumber($lesson['weekday']);
+                $currentDate = date('Y-m-d', $iter_week + self::SECONDS_IN_DAY * $numberInWeek);
+                
+                $attendance = $this->getAttendanceInDate($listAttendance, $currentDate, $lessonId);
+                if ($attendance) $attendanceHistory[] = $attendance;
+            }
         }
-        return $count;
+        return $listAttendance;
+        return $attendanceHistory;
+    }
+
+    private function getAttendanceInDate($listAttendance, $date, $lessonId) {
+        $result = null;
+        for ($iter = 0; $iter < count($listAttendance); ++$iter) {
+            if ($listAttendance[$iter]['date'] == $date 
+                && $listAttendance[$iter]['lesson_id'] == $lessonId) {
+                $result = $listAttendance[$iter];
+                break;
+            }
+        }
+        return $result;
     }
 
     private function getAllClassSections($student_id, $semester = null) {
