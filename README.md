@@ -433,7 +433,7 @@ Authorization: 'Bearer <token>'
 
 ***
 
-###GET ```timetable/attendance-history```
+###GET ```attendance/attendance-history```
 ```
 => Get attendance history of a student, based on following filters:
 - class_section (Ex: T1M2, L1M2)
@@ -453,8 +453,67 @@ Authorization: 'Bearer <token>'
 {
   "T1M2": [
     {
-      date
+      "date": "2016-06-13",
+      "lesson_id": "1",
+      "class_section": "L2L",
+      "component": "LEC",
+      "semester": "1",
+      "weekday": "MON",
+      "status": 0
+    },
+    {
+      "date": "2016-06-16",
+      "lesson_id": "12",
+      "class_section": "L2L",
+      "component": "LEC",
+      "semester": "1",
+      "weekday": "THUR",
+      "status": 0
+    }
+  ],
+  "PL23": [
+    {
+      "date": "2016-06-15",
+      "lesson_id": "16",
+      "class_section": "PL23",
+      "component": "PRA",
+      "semester": "1",
+      "weekday": "WED",
+      "status": 0
     }
   ]
 }
+```
+
+***
+
+###GET ```attendance/list-class-section?semester=1```
+```
+=> Get all class sections in a semester for a student
+```
+###Request: None
+###Response:
+```
+[
+  "L2L",
+  "P2L1",
+  "T2L1",
+  "LL12",
+  "PL23"
+]
+```
+
+***
+
+###GET ```attendance/list-semester```
+```
+=> Get all semesters for a student
+```
+###Request: None
+###Response:
+```
+[
+  "1",
+  "2"
+]
 ```
