@@ -517,3 +517,41 @@ Authorization: 'Bearer <token>'
   "2"
 ]
 ```
+
+***
+
+###GET ```timetable/next-days?days=1```
+```
+=> Get timetable for some next days
+```
+###Request: None
+###Response:
+```
+{
+  "2016-06-30": [
+    {
+      "lesson_id": "12",
+      "start_time": "08:00",
+      "end_time": "10:00",
+      "class_section": "L2L",
+      "component": "LEC",
+      "subject_area": "ELECTRO",
+      "meeting_pattern": "",
+      "weekday": "THUR",
+      "location": "Location 1"
+    },
+    {
+      "lesson_id": "10",
+      "start_time": "10:00",
+      "end_time": "11:00",
+      "class_section": "T2L1",
+      "component": "TUT",
+      "subject_area": "ELECTRO",
+      "meeting_pattern": "",
+      "weekday": "THUR",
+      "location": "Location 1"
+    }
+  ],
+  "2016-07-01": []
+}
+```

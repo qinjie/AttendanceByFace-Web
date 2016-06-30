@@ -46,7 +46,7 @@ class TimetableController extends CustomActiveController {
             'rules' => [
                 [   
                     'actions' => ['today', 'week', 'total-week', 'check-attendance', 
-                        'take-attendance'],
+                        'take-attendance', 'next-days'],
                     'allow' => true,
                     'roles' => [User::ROLE_STUDENT],
                 ]
@@ -455,6 +455,57 @@ class TimetableController extends CustomActiveController {
         } else {
             throw new BadRequestHttpException('Face percent must be above 50');
         }
+    }
+
+    public function actionNextDays($days = 1) {
+        $userId = Yii::$app->user->identity->id;
+        $student = Student::findOne(['user_id' => $userId]);
+        if (!$student)
+            throw new BadRequestHttpException('No student with given user id');        
+
+        $currentTime = strtotime(date('Y-m-d'));
+        $listLesson = $this->getAllLessonsOfStudent($student->id);
+        $listAttendance = [];
+        for ($iter_day = 0; $iter_day < $days; ++$iter_day) {
+            $time = $currentTime + $iter_day * self::SECONDS_IN_DAY;
+            $dw = date('w', $time);
+            $weekdays = ['SUN', 'MON', 'TUES', 'WED', 'THUR', 'FRI', 'SAT'];
+            $weekday = $weekdays[$dw];
+            $listLessonInDay = $this->getLessonsInWeekday($listLesson, $weekday);
+            $listAttendance[date('Y-m-d', $time)] = $listLessonInDay;
+        }
+        return $listAttendance;
+    }
+
+    private function getLessonsInWeekday($listLesson, $weekday) {
+        $result = [];
+        for ($iter = 0; $iter < count($listLesson); ++$iter) {
+            if ($listLesson[$iter]['weekday'] == $weekday)
+                $result[] = $listLesson[$iter];
+        }
+        usort($result, 'self::cmpLesson');
+        return $result;
+    }
+
+    private function getAllLessonsOfStudent($student_id) {
+        $listLesson = Yii::$app->db->createCommand('
+            select lesson_id, 
+                   start_time, 
+                   end_time, 
+                   class_section, 
+                   component, 
+                   subject_area, 
+                   meeting_pattern, 
+                   weekday, 
+                   location 
+             from timetable join lesson on timetable.lesson_id = lesson.id 
+             join venue on lesson.venue_id = venue.id 
+             where student_id = :student_id 
+        ')
+        ->bindValue(':student_id', $student_id)
+        ->queryAll();
+
+        return $listLesson;
     }
 
     // public function afterAction($action, $result)
