@@ -28,6 +28,7 @@ class TimetableController extends CustomActiveController {
 
     const DEFAULT_START_DATE = '2016-06-13';    // Monday
     const DEFAULT_END_DATE = '2016-07-11';  // Sunday, 5 weeks
+    const DEFAULT_SEMESTER = 2;
 
     const SECONDS_IN_DAY = 86400;   // number seconds of a day
 
@@ -100,9 +101,11 @@ class TimetableController extends CustomActiveController {
              join beacon on venue_beacon.beacon_id = beacon.id 
              where student_id = :student_id 
              and weekday = :weekday 
+             and semester = :semester
         ')
         ->bindValue(':student_id', $student->id)
-        ->bindValue(':weekday', $weekday /*'TUES'*/);
+        ->bindValue(':weekday', $weekday /*'TUES'*/)
+        ->bindValue(':semester', self::DEFAULT_SEMESTER);
         $result = $query->queryAll();
 
         usort($result, 'self::cmpLesson');
