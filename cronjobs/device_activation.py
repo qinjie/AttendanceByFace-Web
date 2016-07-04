@@ -1,5 +1,6 @@
 from mysql.connector import MySQLConnection, Error
 from time import gmtime, strftime
+from db import dbConfig
 
 STATUS_WAIT_EMAIL_DEVICE = 0
 STATUS_WAIT_DEVICE = 1
@@ -21,10 +22,7 @@ def iter_row(cursor, size=10):
 """ Connect to MySQL database """
 def connect():
 	print 'Connecting to MySQL database...'
-	conn = MySQLConnection(host='localhost',
-												 database='stud_attendance',
-												 user='ftpweb',
-												 password='qw1234er')
+	conn = MySQLConnection(**dbConfig)
 	if conn.is_connected():
 		print 'Connection established'
 		return conn

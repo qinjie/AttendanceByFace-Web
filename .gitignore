@@ -31,3 +31,7 @@ phpunit.phar
 
 # vagrant runtime
 /.vagrant
+
+# cronjob local config
+db.py
+*.pyc
