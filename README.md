@@ -459,7 +459,9 @@ Authorization: 'Bearer <token>'
       "component": "LEC",
       "semester": "1",
       "weekday": "MON",
-      "status": 0
+      "status": 0,
+      "start_time": "10:00",
+      "end_time": "12:00"
     },
     {
       "date": "2016-06-16",
@@ -468,7 +470,9 @@ Authorization: 'Bearer <token>'
       "component": "LEC",
       "semester": "1",
       "weekday": "THUR",
-      "status": 0
+      "status": 0,
+      "start_time": "10:00",
+      "end_time": "12:00"
     }
   ],
   "PL23": [
@@ -479,7 +483,9 @@ Authorization: 'Bearer <token>'
       "component": "PRA",
       "semester": "1",
       "weekday": "WED",
-      "status": 0
+      "status": 0,
+      "start_time": "10:00",
+      "end_time": "12:00"
     }
   ]
 }
