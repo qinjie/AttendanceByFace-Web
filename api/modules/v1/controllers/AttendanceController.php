@@ -116,8 +116,7 @@ class AttendanceController extends CustomActiveController {
             $result[$class_section[$iter]] = $this->getAttendanceHistoryForClass($student->id, 
                 $semester, $class_section[$iter], $listLesson, $start_time, $end_time);
         }
-        return $result;
-        return date('H:i', $start_time);
+        return (object)$result;
     }
 
     private function getAllLessonsOfClass($semester = '', $class_section) {
