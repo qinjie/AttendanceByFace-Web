@@ -57,7 +57,7 @@ class SignupModel extends Model
             if ($user->save()) {
                 $token = TokenHelper::createUserToken($user->id, TokenHelper::TOKEN_ACTION_ACTIVATE_ACCOUNT);
                 # send activation email
-                Yii::$app->mailer->compose(['text' => '@common/mail/emailConfirmToken-html'], ['user' => $user, 'token' => $token->token])
+                Yii::$app->mailer->compose(['html' => '@common/mail/emailConfirmToken-html'], ['user' => $user, 'token' => $token->token])
                     ->setFrom([Yii::$app->params['supportEmail'] => Yii::$app->name])
                     ->setTo($this->email)
                     ->setSubject('Email confirmation for ' . Yii::$app->name)
