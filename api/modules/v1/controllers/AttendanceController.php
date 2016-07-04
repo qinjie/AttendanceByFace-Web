@@ -127,7 +127,9 @@ class AttendanceController extends CustomActiveController {
                    weekday, 
                    meeting_pattern, 
                    component, 
-                   semester 
+                   semester, 
+                   start_time, 
+                   end_time 
              from lesson 
              where class_section = :class_section 
              and semester = :semester 
@@ -152,7 +154,9 @@ class AttendanceController extends CustomActiveController {
                    is_late, 
                    late_min, 
                    lesson_id, 
-                   weekday 
+                   weekday, 
+                   start_time, 
+                   end_time 
              from attendance join lesson on attendance.lesson_id = lesson.id 
              where student_id = :student_id 
              and class_section = :class_section 
@@ -192,6 +196,8 @@ class AttendanceController extends CustomActiveController {
                     $attendance['component'] = $foundAttendance['component'];
                     $attendance['semester'] = $foundAttendance['semester'];
                     $attendance['weekday'] = $foundAttendance['weekday'];
+                    $attendance['start_time'] = $foundAttendance['start_time'];
+                    $attendance['end_time'] = $foundAttendance['end_time'];
                     $status = self::STATUS_PRESENT;
                     if ($foundAttendance['is_absent'])
                         $status = self::STATUS_ABSENT;
@@ -206,6 +212,8 @@ class AttendanceController extends CustomActiveController {
                     $attendance['semester'] = $lesson['semester'];
                     $attendance['weekday'] = $lesson['weekday'];
                     $attendance['status'] = self::STATUS_NOTYET;
+                    $attendance['start_time'] = $lesson['start_time'];
+                    $attendance['end_time'] = $lesson['end_time'];
                 }
                 $attendanceHistory[] = $attendance;
             }

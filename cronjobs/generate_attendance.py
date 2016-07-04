@@ -27,6 +27,11 @@ def connect():
 		return None
 
 
+""" Get all students in a semester """
+def getAllStudentsInSemester(semester):
+	pass
+
+
 def run():
 	try:
 		conn = connect()
@@ -36,7 +41,7 @@ def run():
 		print(e)
 
 	finally:
-		conn.close()	
+		conn.close()
 
 
 
