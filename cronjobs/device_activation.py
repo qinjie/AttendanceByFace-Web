@@ -23,7 +23,8 @@ def connect():
 	print 'Connecting to MySQL database...'
 	conn = MySQLConnection(host='localhost',
 												 database='stud_attendance',
-												 user='ftpweb',									 password='qw1234er')
+												 user='root',
+												 password='x')
 	if conn.is_connected():
 		print 'Connection established'
 		return conn
@@ -75,8 +76,8 @@ def activate_devices(list_userId, conn):
 
 
 def run():
+	conn = connect()
 	try:
-		conn = connect()
 		if (conn):
 			list_userId = []
 			for row in get_inactive_devices(conn):
