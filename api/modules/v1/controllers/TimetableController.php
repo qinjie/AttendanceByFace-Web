@@ -504,8 +504,10 @@ class TimetableController extends CustomActiveController {
              from timetable join lesson on timetable.lesson_id = lesson.id 
              join venue on lesson.venue_id = venue.id 
              where student_id = :student_id 
+             and semester = :semester 
         ')
         ->bindValue(':student_id', $student_id)
+        ->bindValue(':semester', self::DEFAULT_SEMESTER)
         ->queryAll();
 
         return $listLesson;
