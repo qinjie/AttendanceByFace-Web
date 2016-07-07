@@ -29,7 +29,7 @@ class AttendanceController extends CustomActiveController {
     const DEFAULT_START_DATE = '2016-06-13';    // Monday
     const DEFAULT_END_DATE = '2016-07-11';  // Sunday, 5 weeks
 
-    const SECONDS_IN_DAY = 86400;   // number seconds of a day
+    const SECONDS_IN_DAY = 86400;
 
     public function behaviors() {
         $behaviors = parent::behaviors();

@@ -400,11 +400,11 @@ ALTER TABLE `attendance`
 
 /*Data for the table `attendance` */
 
-INSERT INTO `attendance` (`id`, `student_id`, `lesson_id`, `signed_in`, `signed_out`, `is_absent`, `is_late`, `late_min`, `created_at`, `updated_at`) VALUES
-  (40, 1, 1, NULL, NULL, 0, 0, 0, '2015-07-30 08:11:00', '2016-06-13 09:50:00'),
-  (41, 1, 12, NULL, NULL, 1, 0, 0, '2015-07-30 08:11:00', '2016-06-16 23:00:00'),
-  (42, 1, 1, NULL, NULL, 0, 1, 10, '2015-07-30 08:11:00', '2016-06-20 10:10:00'),
-  (43, 1, 12, NULL, NULL, 1, 0, 0, '2015-07-30 08:11:00', '2016-06-23 10:30:00');
+-- INSERT INTO `attendance` (`id`, `student_id`, `lesson_id`, `signed_in`, `signed_out`, `is_absent`, `is_late`, `late_min`, `created_at`, `updated_at`) VALUES
+--   (40, 1, 1, NULL, NULL, 0, 0, 0, '2015-07-30 08:11:00', '2016-06-13 09:50:00'),
+--   (41, 1, 12, NULL, NULL, 1, 0, 0, '2015-07-30 08:11:00', '2016-06-16 23:00:00'),
+--   (42, 1, 1, NULL, NULL, 0, 1, 10, '2015-07-30 08:11:00', '2016-06-20 10:10:00'),
+--   (43, 1, 12, NULL, NULL, 1, 0, 0, '2015-07-30 08:11:00', '2016-06-23 10:30:00');
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

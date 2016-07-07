@@ -30,7 +30,8 @@ class TimetableController extends CustomActiveController {
     const DEFAULT_END_DATE = '2016-07-11';  // Sunday, 5 weeks
     const DEFAULT_SEMESTER = 2;
 
-    const SECONDS_IN_DAY = 86400;   // number seconds of a day
+    const SECONDS_IN_DAY = 24 * 60 * 60;
+    const SECONDS_IN_WEEK = 7 * 24 * 60 * 60;
 
     public function behaviors() {
         $behaviors = parent::behaviors();
@@ -76,6 +77,13 @@ class TimetableController extends CustomActiveController {
         $weekdays = ['SUN', 'MON', 'TUES', 'WED', 'THUR', 'FRI', 'SAT'];
         $weekday = $weekdays[$dw];
 
+        $meeting_pattern = '';
+        $t1 = strtotime(date('Y-m-d'));
+        $t2 = strtotime(self::DEFAULT_START_DATE);
+        $week = intval(($t1 - $t2 + self::SECONDS_IN_WEEK - 1) / self::SECONDS_IN_WEEK);
+        if ($week % 2 == 0) $meeting_pattern = 'EVEN';
+        else $meeting_pattern = 'ODD';
+
         $userId = Yii::$app->user->identity->id;
         $student = Student::findOne(['user_id' => $userId]);
         if (!$student)
@@ -88,6 +96,7 @@ class TimetableController extends CustomActiveController {
                    start_time, 
                    end_time, 
                    weekday, 
+                   meeting_pattern, 
                    venue.id as venue_id, 
                    venue.location, 
                    venue.name, 
@@ -101,19 +110,18 @@ class TimetableController extends CustomActiveController {
              join beacon on venue_beacon.beacon_id = beacon.id 
              where student_id = :student_id 
              and weekday = :weekday 
-             and semester = :semester
+             and semester = :semester 
+             and (meeting_pattern = \'\' or meeting_pattern = :meeting_pattern) 
         ')
         ->bindValue(':student_id', $student->id)
-        ->bindValue(':weekday', $weekday /*'TUES'*/)
-        ->bindValue(':semester', self::DEFAULT_SEMESTER);
+        ->bindValue(':weekday', $weekday)
+        ->bindValue(':semester', self::DEFAULT_SEMESTER)
+        ->bindValue(':meeting_pattern', $meeting_pattern);
         $result = $query->queryAll();
 
         usort($result, 'self::cmpLesson');
 
         for ($iter = 0; $iter < count($result); ++$iter) {
-            // Test
-            // $result[$iter]['weekday'] = $weekday;
-            // Test
             $statusInfo = $this->getStatusInfo($student->id, $result[$iter],
                 $currentDay, $currentMonth, $currentYear);
             $result[$iter]['status'] = $statusInfo['status'];

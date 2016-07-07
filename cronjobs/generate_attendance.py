@@ -28,26 +28,12 @@ def connect_db():
 		return None
 
 
-""" Get all students in a semester """
-def get_all_students_in_semester(conn, semester):
-	cursor = conn.cursor()
-	sql = """SELECT DISTINCT student_id 
-		FROM timetable JOIN lesson ON timetable.lesson_id = lesson.id 
-		WHERE lesson.semester = {semester}""".format(
-			semester = semester
-	)
-	cursor.execute(sql)
-	for row in iter_row(cursor, 20):
-		yield row
-	cursor.close()
-
-
 """ Get all lessons of a student """
-def get_all_timetable(conn, semester):
+def get_all_timetable_today(conn, semester):
 	cursor = None
 	try:
 		cursor = conn.cursor()
-		sql = """SELECT student_id, lesson_id, meeting_pattern 
+		sql = """SELECT student_id, lesson_id, weekday,  
 			FROM timetable JOIN lesson ON timetable.lesson_id = lesson.id 
 			WHERE lesson.semester = {semester}""".format(semester = semester)
 		cursor.execute(sql)
@@ -78,10 +64,10 @@ def generate_attendance(conn, timetable, start_date, end_date):
 	cursor = None
 	try:
 		cursor = conn.cursor()
-
 		student_id = timetable[0]
 		lesson_id = timetable[1]
 		meeting_pattern = timetable[2]
+		print '(student_id, lesson_id)', student_id, lesson_id
 
 		start_time = int(time.mktime(
 			datetime.datetime.strptime(start_date, "%Y-%m-%d").timetuple()
@@ -96,7 +82,7 @@ def generate_attendance(conn, timetable, start_date, end_date):
 			iter_week += SECONDS_IN_DAY
 			if meeting_pattern == 'ODD' and count % 2 == 0: continue
 			if meeting_pattern == 'EVEN' and count % 2 == 1: continue
-			sql = """INSERT INTO attendance (student_id, lesson_id) 
+			sql = """INSERT INTO attendance (student_id, lesson_id, is_absent, is_late, late_min) 
 					VALUES ({student_id}, {lesson_id})""".format(
 				student_id = student_id,
 				lesson_id = lesson_id
@@ -117,6 +103,7 @@ def run():
 	try:
 		conn = connect_db()
 		for row in get_all_timetable(conn, DEFAULT_SEMESTER):
+			print 'generate_attendance', row[0], row[1]
 			generate_attendance(conn, row, DEFAULT_START_DATE, DEFAULT_END_DATE)
 
 	except Error as e:
