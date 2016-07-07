@@ -86,7 +86,6 @@ class TimetableController extends CustomActiveController {
         $currentYear = date('Y');
         $weekdays = ['SUN', 'MON', 'TUES', 'WED', 'THUR', 'FRI', 'SAT'];
         $weekday = $weekdays[$dw];
-
         $meeting_pattern = $this->getTodayMeetingPattern();
 
         $userId = Yii::$app->user->identity->id;
@@ -350,6 +349,7 @@ class TimetableController extends CustomActiveController {
         $dw = date('w');
         $weekdays = ['SUN', 'MON', 'TUES', 'WED', 'THUR', 'FRI', 'SAT'];
         $weekday = $weekdays[$dw];
+        $meeting_pattern = $this->getTodayMeetingPattern();
 
         $userId = Yii::$app->user->identity->id;
         $student = Student::findOne(['user_id' => $userId]);
@@ -368,10 +368,12 @@ class TimetableController extends CustomActiveController {
              where student_id = :student_id 
              and timetable.id = :timetable_id 
              and weekday = :weekday 
+             and (meeting_pattern = \'\' or meeting_pattern = :meeting_pattern) 
         ')
         ->bindValue(':student_id', $student->id)
         ->bindValue(':timetable_id', $timetable_id)
         ->bindValue(':weekday', $weekday)
+        ->bindValue(':meeting_pattern', $meeting_pattern)
         ->queryOne();
 
         if (!$timetable) {
