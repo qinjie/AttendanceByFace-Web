@@ -388,8 +388,8 @@ CREATE TABLE `attendance` (
   `is_absent` int(1) unsigned NOT NULL DEFAULT '0',
   `is_late` tinyint(1) NOT NULL DEFAULT '0',
   `late_min` int(10) unsigned NOT NULL DEFAULT '0',
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 /* For test: UNIQUE KEY `studentId` (`student_id`,`lesson_id`), */
   -- KEY `lessonId` (`lesson_id`)
