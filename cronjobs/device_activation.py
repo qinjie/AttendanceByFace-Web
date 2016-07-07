@@ -49,39 +49,27 @@ Table user:
 13 - updated_at
 '''
 def get_inactive_devices(conn):
-	cursor = None
-	try:
-		cursor = conn.cursor()
-		cursor.execute('SELECT * FROM user WHERE status = %s or status = %s',
-			(STATUS_WAIT_DEVICE, STATUS_WAIT_EMAIL_DEVICE))
-		for row in iter_row(cursor, 20):
-			yield row
-	except:
-		pass
-	finally:
-		cursor.close()
+	cursor = conn.cursor()
+	cursor.execute('SELECT * FROM user WHERE status = %s or status = %s',
+		(STATUS_WAIT_DEVICE, STATUS_WAIT_EMAIL_DEVICE))
+	for row in iter_row(cursor, 20):
+		yield row
 
 
 def activate_devices(list_userId, conn):
-	cursor = None
-	try:
-		cursor = conn.cursor()
-		sql = """UPDATE user SET status = {s1} WHERE id IN ({c}) AND status = {s2}""".format(
-			c = ', '.join(['%s'] * len(list_userId)),
-			s1 = STATUS_WAIT_EMAIL,
-			s2 = STATUS_WAIT_EMAIL_DEVICE)
-		cursor.execute(sql, list_userId)
-		sql = """UPDATE user SET status = {s1} WHERE id IN ({c}) AND status = {s2}""".format(
-			c = ', '.join(['%s'] * len(list_userId)),
-			s1 = STATUS_ACTIVE,
-			s2 = STATUS_WAIT_DEVICE)
-		cursor.execute(sql, list_userId)
-		conn.commit()
-		print 'Activate_devices %s' % list_userId
-	except:
-		pass
-	finally:
-		cursor.close()
+	cursor = conn.cursor()
+	sql = """UPDATE user SET status = {s1} WHERE id IN ({c}) AND status = {s2}""".format(
+		c = ', '.join(['%s'] * len(list_userId)),
+		s1 = STATUS_WAIT_EMAIL,
+		s2 = STATUS_WAIT_EMAIL_DEVICE)
+	cursor.execute(sql, list_userId)
+	sql = """UPDATE user SET status = {s1} WHERE id IN ({c}) AND status = {s2}""".format(
+		c = ', '.join(['%s'] * len(list_userId)),
+		s1 = STATUS_ACTIVE,
+		s2 = STATUS_WAIT_DEVICE)
+	cursor.execute(sql, list_userId)
+	conn.commit()
+	print 'Activate_devices %s' % list_userId
 
 
 """ Main process """

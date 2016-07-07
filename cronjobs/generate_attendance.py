@@ -5,7 +5,8 @@ from db import dbConfig
 
 DEFAULT_START_DATE = '2016-06-13'
 DEFAULT_END_DATE = '2016-08-21'
-SECONDS_IN_DAY = 86400
+SECONDS_IN_DAY = 24 * 60 * 60
+SECONDS_IN_WEEK = 7 * 24 * 60 * 60
 DEFAULT_SEMESTER = 2
 
 def iter_row(cursor, size=10):
@@ -28,21 +29,41 @@ def connect_db():
 		return None
 
 
+""" Get meeting pattern for today """
+def today_meeting_pattern():
+	now = datetime.datetime.now()
+	currentYear = now.year
+	currentMonth = now.month
+	currentDay = now.day
+	currentYMD = str(currentYear) + '-' + str(currentMonth) + '-' + str(currentDay)
+	t1 = int(time.mktime(datetime.datetime.strptime(currentYMD, "%Y-%m-%d").timetuple()))
+	t2 = int(time.mktime(datetime.datetime.strptime(DEFAULT_START_DATE, "%Y-%m-%d").timetuple()))
+	week = (t1 - t2 + SECONDS_IN_WEEK - 1) / SECONDS_IN_WEEK
+	if week % 2 == 0: 
+		return 'EVEN'
+	else: 
+		return 'ODD'
+
+
 """ Get all lessons of a student """
-def get_all_timetable_today(conn, semester):
-	cursor = None
-	try:
-		cursor = conn.cursor()
-		sql = """SELECT student_id, lesson_id, weekday,  
-			FROM timetable JOIN lesson ON timetable.lesson_id = lesson.id 
-			WHERE lesson.semester = {semester}""".format(semester = semester)
-		cursor.execute(sql)
-		for row in iter_row(cursor, 20):
-			yield row
-	except:
-		pass
-	finally:
-		cursor.close()	
+def get_not_recorded_timetable_today(conn, semester):
+	cursor = conn.cursor()
+	meeting_pattern = today_meeting_pattern()
+	weekday = number_to_weekday(datetime.datetime.now().weekday())
+	sql = """SELECT timetable.student_id, timetable.lesson_id 
+		FROM timetable JOIN lesson ON timetable.lesson_id = lesson.id 
+		LEFT JOIN attendance ON (timetable.lesson_id = attendance.lesson_id AND timetable.student_id = attendance.student_id) 
+		WHERE semester = {semester} 
+		AND (meeting_pattern = '' OR meeting_pattern = '{meeting_pattern}') 
+		AND weekday = '{weekday}' 
+		AND attendance.id IS NULL""".format(
+		semester = semester,
+		meeting_pattern = meeting_pattern,
+		weekday = weekday
+	)
+	cursor.execute(sql)
+	for row in iter_row(cursor, 20):
+		yield row
 
 
 """ Convert weekday to number """
@@ -59,42 +80,30 @@ def weekday_to_number(weekday):
 	return map_weekday_number[weekday]
 
 
-""" Generate attendance records for student_id and lesson_id """
-def generate_attendance(conn, timetable, start_date, end_date):
-	cursor = None
-	try:
-		cursor = conn.cursor()
-		student_id = timetable[0]
+""" Convert number to weekday """
+def number_to_weekday(number):
+	map_number_weekday = {
+		0: 'MON',
+		1: 'TUES',
+		2: 'WED',
+		3: 'THUR',
+		4: 'FRI',
+		5: 'SAT',
+		6: 'SUN'
+	}
+	return map_number_weekday[number]
+
+
+""" Generate absent attendance records for student_id and lesson_id """
+def add_absent_attendance(conn, timetable):
+	cursor = conn.cursor()
+	sql = """INSERT INTO attendance (student_id, lesson_id, is_absent, is_late, late_min) VALUES 
+		({student_id}, {lesson_id}, 1, 0, 0)""".format(
+		student_id = timetable[0],
 		lesson_id = timetable[1]
-		meeting_pattern = timetable[2]
-		print '(student_id, lesson_id)', student_id, lesson_id
-
-		start_time = int(time.mktime(
-			datetime.datetime.strptime(start_date, "%Y-%m-%d").timetuple()
-		))
-		end_time = int(time.mktime(
-			datetime.datetime.strptime(end_date, "%Y-%m-%d").timetuple()
-		))
-		count = 0
-		iter_week = start_time
-		while (iter_week <= end_time):
-			++count
-			iter_week += SECONDS_IN_DAY
-			if meeting_pattern == 'ODD' and count % 2 == 0: continue
-			if meeting_pattern == 'EVEN' and count % 2 == 1: continue
-			sql = """INSERT INTO attendance (student_id, lesson_id, is_absent, is_late, late_min) 
-					VALUES ({student_id}, {lesson_id})""".format(
-				student_id = student_id,
-				lesson_id = lesson_id
-			)
-			cursor.execute(sql)
-		conn.commit()
-	except:
-		pass
-	finally:
-		pass
-		# cursor.close()
-
+	)
+	cursor.execute(sql)
+	conn.commit()
 
 
 """ Main process """
@@ -102,9 +111,8 @@ def run():
 	conn = None	
 	try:
 		conn = connect_db()
-		for row in get_all_timetable(conn, DEFAULT_SEMESTER):
-			print 'generate_attendance', row[0], row[1]
-			generate_attendance(conn, row, DEFAULT_START_DATE, DEFAULT_END_DATE)
+		for row in get_not_recorded_timetable_today(conn, DEFAULT_SEMESTER):
+			add_absent_attendance(conn, row)
 
 	except Error as e:
 		print(e)
