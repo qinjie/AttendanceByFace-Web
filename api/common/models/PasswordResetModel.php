@@ -36,15 +36,24 @@ class PasswordResetModel extends Model
             return false;
         }
 
-        return Yii::$app
-            ->mailer
-            ->compose(
-                ['html' => 'passwordResetToken-html', 'text' => 'passwordResetToken-text'],
-                ['user' => $user]
-            )
-            ->setFrom([Yii::$app->params['supportEmail'] => Yii::$app->name . ' robot'])
-            ->setTo($this->email)
-            ->setSubject('Password reset for ' . Yii::$app->name)
-            ->send();
+        $randomPassword = Yii::$app->security->generateRandomString(6);
+        $user->setPassword($randomPassword);
+        if ($user->save()) {
+            Yii::$app
+                ->mailer
+                ->compose(
+                    ['html' => '@common/mail/passwordResetToken-html'],
+                    [
+                        'user' => $user,
+                        'newPassword' => $randomPassword
+                    ]
+                )
+                ->setFrom([Yii::$app->params['supportEmail'] => Yii::$app->name . ' robot'])
+                ->setTo($this->email)
+                ->setSubject('Password reset for ' . Yii::$app->name)
+                ->send();
+            return $user;
+        }
+        return null;
     }
 }

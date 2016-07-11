@@ -18,6 +18,7 @@ use Yii;
 use api\common\models\SignupModel;
 use api\common\models\LoginModel;
 use api\common\models\ChangePasswordModel;
+use api\common\models\PasswordResetModel;
 use api\common\models\RegisterDeviceModel;
 use yii\filters\auth\HttpBearerAuth;
 use yii\filters\AccessControl;
@@ -186,6 +187,18 @@ class UserController extends CustomActiveController
                 throw new BadRequestHttpException(null, self::CODE_INCORRECT_PASSWORD);
             if (isset($model->errors['newPassword']))
                 throw new BadRequestHttpException(null, self::CODE_INVALID_PASSWORD);
+        }
+        throw new BadRequestHttpException('Invalid data');
+    }
+
+    public function actionResetPassword() {
+        $bodyParams = Yii::$app->request->bodyParams;
+        $email = $bodyParams['email'];
+
+        $model = new PasswordResetModel();
+        $model->email = $email;
+        if ($model->sendEmail()) {
+            return 'reset password successfully';
         }
         throw new BadRequestHttpException('Invalid data');
     }

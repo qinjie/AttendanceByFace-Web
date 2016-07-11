@@ -103,6 +103,25 @@ change password successfully
 
 ***
 
+###POST ```user/reset-password```
+```
+=> Request a new password
+```
+####Header: None
+####Request:
+```
+{
+    email: 'abc@mail.com'
+}
+```
+####Response:
+- Success: 200
+```
+reset password successfully
+```
+
+***
+
 ###POST ```user/signup```
 ```
 => Sign up new user
