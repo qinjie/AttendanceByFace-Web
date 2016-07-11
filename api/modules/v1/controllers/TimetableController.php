@@ -517,9 +517,11 @@ class TimetableController extends CustomActiveController {
                    subject_area, 
                    meeting_pattern, 
                    weekday, 
-                   location 
+                   location, 
+                   lecturer.name as lecturer_name 
              from timetable join lesson on timetable.lesson_id = lesson.id 
              join venue on lesson.venue_id = venue.id 
+             join lecturer on timetable.lecturer_id = lecturer.id 
              where student_id = :student_id 
              and semester = :semester 
         ')
