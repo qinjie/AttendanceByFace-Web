@@ -17,6 +17,7 @@ use api\common\components\AccessRule;
 use Yii;
 use api\common\models\SignupModel;
 use api\common\models\LoginModel;
+use api\common\models\ChangePasswordModel;
 use api\common\models\RegisterDeviceModel;
 use yii\filters\auth\HttpBearerAuth;
 use yii\filters\AccessControl;
@@ -39,6 +40,7 @@ class UserController extends CustomActiveController
     const CODE_UNVERIFIED_EMAIL_DEVICE = 5;
     const CODE_INVALID_ACCOUNT = 6;
     const CODE_DUPLICATE_DEVICE = 7;
+    const CODE_INVALID_PASSWORD = 8;
     
     public function behaviors() {
         $behaviors = parent::behaviors();
@@ -60,7 +62,8 @@ class UserController extends CustomActiveController
                     'roles' => ['?'],
                 ],
                 [
-                    'actions' => ['logout', 'person-id', 'face-id', 'set-person-id', 'set-face-id'],
+                    'actions' => ['logout', 'person-id', 'face-id', 'set-person-id', 'set-face-id',
+                        'change-password'],
                     'allow' => true,
                     'roles' => ['@'],
                 ]
@@ -116,6 +119,7 @@ class UserController extends CustomActiveController
             if (isset($model->errors['device_hash']))
                 throw new BadRequestHttpException(null, self::CODE_INCORRECT_DEVICE);
         }
+        throw new BadRequestHttpException('Invalid data');
     }
 
     public function actionSignup() {
@@ -165,6 +169,25 @@ class UserController extends CustomActiveController
     	$id = Yii::$app->user->identity->id;
     	UserToken::deleteAll(['user_id' => $id, 'action' => TokenHelper::TOKEN_ACTION_ACCESS]);
 		return 'logout successful';
+    }
+
+    public function actionChangePassword() {
+        $user = Yii::$app->user->identity;
+        $bodyParams = Yii::$app->request->bodyParams;
+
+        $model = new ChangePasswordModel();
+        $model->user = $user;
+        $model->oldPassword = $bodyParams['oldPassword'];
+        $model->newPassword = $bodyParams['newPassword'];
+        if ($model->changePassword())
+            return 'change password successfully';
+        else {
+            if (isset($model->errors['oldPassword']))
+                throw new BadRequestHttpException(null, self::CODE_INCORRECT_PASSWORD);
+            if (isset($model->errors['newPassword']))
+                throw new BadRequestHttpException(null, self::CODE_INVALID_PASSWORD);
+        }
+        throw new BadRequestHttpException('Invalid data');
     }
 
     public function actionConfirmEmail($token = null) {

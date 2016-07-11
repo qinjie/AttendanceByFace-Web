@@ -74,6 +74,35 @@ Authorization: 'Bearer <token>'
 
 ***
 
+###POST ```user/change-password```
+```
+=> Change password
+```
+####Header: None
+####Request:
+```
+{
+    oldPassword: '123456',
+    newPassword: '111111'
+}
+```
+####Response:
+- Success: 200
+```
+change password successfully
+```
+- Error: 400
+```
+{
+  code: (
+    1: CODE_INCORRECT_PASSWORD,
+    8: CODE_INVALID_PASSWORD
+  )
+}
+```
+
+***
+
 ###POST ```user/signup```
 ```
 => Sign up new user
