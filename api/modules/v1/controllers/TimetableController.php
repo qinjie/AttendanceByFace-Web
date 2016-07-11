@@ -30,8 +30,8 @@ class TimetableController extends CustomActiveController {
     const DEFAULT_END_DATE = '2016-07-11';  // Sunday, 5 weeks
     const DEFAULT_SEMESTER = 2;
 
-    const SECONDS_IN_DAY = 24 * 60 * 60;
-    const SECONDS_IN_WEEK = 7 * 24 * 60 * 60;
+    const SECONDS_IN_DAY = 86400;   // 24 * 60 * 60
+    const SECONDS_IN_WEEK = 604800; // 7 * 24 * 60 * 60
 
     public function behaviors() {
         $behaviors = parent::behaviors();
