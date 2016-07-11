@@ -107,11 +107,13 @@ class TimetableController extends CustomActiveController {
                    timetable.id as timetable_id, 
                    beacon.uuid, 
                    beacon.major, 
-                   beacon.minor 
+                   beacon.minor, 
+                   lecturer.name as lecturer_name 
              from timetable join lesson on timetable.lesson_id = lesson.id 
              join venue on lesson.venue_id = venue.id 
              join venue_beacon on venue.id = venue_beacon.venue_id 
              join beacon on venue_beacon.beacon_id = beacon.id 
+             join lecturer on timetable.lecturer_id = lecturer.id 
              where student_id = :student_id 
              and weekday = :weekday 
              and semester = :semester 

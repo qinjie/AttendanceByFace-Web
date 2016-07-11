@@ -63,7 +63,7 @@ class UserController extends CustomActiveController
                 ],
                 [
                     'actions' => ['logout', 'person-id', 'face-id', 'set-person-id', 'set-face-id',
-                        'change-password'],
+                        'change-password', 'reset-password'],
                     'allow' => true,
                     'roles' => ['@'],
                 ]
