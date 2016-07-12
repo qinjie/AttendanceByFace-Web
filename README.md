@@ -312,7 +312,8 @@ Authorization: 'Bearer <token>'
         major,
         minor,
         status: (0: not yet, 1: present, 2: absent, 3: late),
-        recorded_at
+        recorded_at,
+        lecturer_name
     }
 ]
 ```
@@ -592,7 +593,8 @@ Authorization: 'Bearer <token>'
       "subject_area": "ELECTRO",
       "meeting_pattern": "",
       "weekday": "THUR",
-      "location": "Location 1"
+      "location": "Location 1",
+      "lecturer_name": "Zhang Qinjie"
     },
     {
       "lesson_id": "10",
@@ -603,7 +605,8 @@ Authorization: 'Bearer <token>'
       "subject_area": "ELECTRO",
       "meeting_pattern": "",
       "weekday": "THUR",
-      "location": "Location 1"
+      "location": "Location 1",
+      "lecturer_name": "Zhang Qinjie"
     }
   ],
   "2016-07-01": []
