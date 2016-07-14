@@ -47,7 +47,7 @@ DROP TABLE IF EXISTS `lecturer`;
 CREATE TABLE `lecturer` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(120) NOT NULL,
-  `created_at` timestamp NULL DEFAULT '0000-00-00 00:00:00',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=latin1;
@@ -55,9 +55,9 @@ CREATE TABLE `lecturer` (
 /*Data for the table `lecturer` */
 
 insert  into `lecturer` (`id`,`name`) values 
-  (1, 'Zhang Qinjie'),
-  (2, 'Lecturer 2'),
-  (3, 'Lecturer 3');
+  ("1", "Zhang Qinjie"),
+  ("2", "Lecturer 2"),
+  ("3", "Lecturer 3");
 
 /*Table structure for table `lesson` */
 

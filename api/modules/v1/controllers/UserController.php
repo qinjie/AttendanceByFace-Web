@@ -124,31 +124,6 @@ class UserController extends CustomActiveController
     }
 
     public function actionSignup() {
-        // $allowedTypes = ['image/png', 'image/jpg'];
-        // $fileType = $_FILES['profileImg']['type'];
-        // if (!in_array($fileType, $allowedTypes))
-        //     throw new BadRequestHttpException('Profile image must be png or jpg');
-
-        // $postdata = fopen( $_FILES[ 'profileImg' ][ 'tmp_name' ], "r" );
-        // /* Get file extension */
-        // $extension = substr( $_FILES[ 'profileImg' ][ 'name' ], strrpos( $_FILES[ 'profileImg' ][ 'name' ], '.' ) );
-
-        //  Generate unique name 
-        // $fileUrl = $this->documentPath . uniqid() . $extension;
-        // $filename = $_SERVER['DOCUMENT_ROOT'] . $fileUrl;
-
-        // /* Open a file for writing */
-        // $fp = fopen( $filename, "w" );
-
-        // /* Read the data 1 KB at a time
-        //   and write to the file */
-        // while( $data = fread( $postdata, 1024 ) )
-        //     fwrite( $fp, $data );
-
-        // /* Close the streams */
-        // fclose( $fp );
-        // fclose( $postdata );
-
     	$bodyParams = Yii::$app->request->bodyParams;
 
     	$model = new SignupModel();
