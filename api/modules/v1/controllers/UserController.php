@@ -106,7 +106,7 @@ class UserController extends CustomActiveController
             if ($user->status == User::STATUS_WAIT_DEVICE)
                 throw new BadRequestHttpException(null, self::CODE_UNVERIFIED_DEVICE);
             if ($user->status == User::STATUS_ACTIVE) {
-                UserToken::deleteAll(['user_id' => $user->id]);
+                UserToken::deleteAll(['user_id' => $user->id, 'action' => TokenHelper::TOKEN_ACTION_ACCESS]);
                 $token = TokenHelper::createUserToken($user->id);
                 return [
                     'token' => $token->token,
