@@ -14,7 +14,6 @@ class SignupStudentModel extends Model
     public $email;
     public $password;
     public $role;
-    public $profileImg;
     public $device_hash;
 
     /**
@@ -31,7 +30,7 @@ class SignupStudentModel extends Model
             ['email', 'filter', 'filter' => 'trim'],
             ['email', 'required'],
             ['email', 'email'],
-            ['email', 'match', 'pattern' => '/^s[0-9]{8}@connect.np.edu.sg$/i'],
+            ['email', 'match', 'pattern' => '/^s[0-9]{8}@connect.np.edu.sg$/'],
             ['email', 'string', 'max' => 255],
             ['email', 'unique', 'targetClass' => 'api\common\models\User', 'message' => 'This email address has already been taken.'],
 
@@ -62,7 +61,7 @@ class SignupStudentModel extends Model
                 $user->device_hash = $this->device_hash;
 
                 if ($user->save()) {
-                    $student['user_id'] = $user->id;
+                    $student->user_id = $user->id;
                     if ($student->save()) {
                         $token = TokenHelper::createUserToken($user->id, TokenHelper::TOKEN_ACTION_ACTIVATE_ACCOUNT);
                         # send activation email

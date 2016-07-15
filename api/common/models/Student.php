@@ -29,4 +29,11 @@ class Student extends ActiveRecord
             ],
         ];
     }
+
+    public function fields()
+    {
+        $fields = parent::fields();
+        unset($fields['updated_at'], $fields['created_at']);
+        return $fields;
+    }
 }
