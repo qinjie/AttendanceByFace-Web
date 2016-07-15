@@ -1645,7 +1645,7 @@ CREATE TABLE `student` (
   `acad` varchar(10) DEFAULT NULL,
   `uuid` varchar(40) DEFAULT NULL,
   `user_id` int(11) DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_at` timestamp NULL DEFAULT '0000-00-00 00:00:00',
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `user_id` (`user_id`),
