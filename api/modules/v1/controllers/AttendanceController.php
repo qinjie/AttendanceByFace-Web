@@ -135,7 +135,7 @@ class AttendanceController extends CustomActiveController {
         }
         return [
             'result' => (object)$result,
-            'summary' => $summary,
+            'summary' => (object)$summary,
         ];
     }
 
