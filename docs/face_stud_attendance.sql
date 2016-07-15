@@ -57,10 +57,10 @@ CREATE TABLE `lecturer` (
 
 /*Data for the table `lecturer` */
 
-insert  into `lecturer` (`id`,`name`) values 
-  ("1", "Zhang Qinjie"),
-  ("2", "Lecturer 2"),
-  ("3", "Lecturer 3");
+insert  into `lecturer` (`id`,`name`, `email`, `acad`) values 
+  ("1", "Zhang Qinjie", "1@mail.com", "11"),
+  ("2", "Lecturer 2", "2@mail.com", "22"),
+  ("3", "Lecturer 3", "3@mail.com", "33");
 
 
 INSERT INTO `lecturer` (`acad`,`id`,`name`,`email`) VALUES

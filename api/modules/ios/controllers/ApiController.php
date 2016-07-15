@@ -46,7 +46,7 @@ class ApiController extends CustomActiveController {
                 [
                     'actions' => ['check-teacher'],
                     'allow' => true,
-                    'roles' => [ User::ROLE_TEACHER ],
+                    'roles' => [ User::ROLE_LECTURER ],
                 ],
                 [
                     'actions' => ['error'],

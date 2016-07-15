@@ -30,7 +30,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     const ROLE_USER = 10;
     const ROLE_STUDENT = 20;
-    const ROLE_TEACHER = 30;
+    const ROLE_LECTURER = 30;
 
     public static function tableName()
     {
@@ -65,7 +65,6 @@ class User extends ActiveRecord implements IdentityInterface
             ['email', 'email', 'message' => 'Invalid email address.'],
             ['email', 'unique', 'targetClass' => self::className(), 'message' => 'This email address has already been taken.'],
             ['email', 'string', 'max' => 255, 'message' => 'Max 255 characters.'],
-            ['email', 'match', 'pattern' => '/^s[0-9]{8}@connect.np.edu.sg$/i'],
             
             ['status', 'integer'],
             ['status', 'default', 'value' => self::STATUS_ACTIVE],

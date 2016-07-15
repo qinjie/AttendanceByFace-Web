@@ -44,9 +44,9 @@ class ApiController extends CustomActiveController {
                     'roles' => [ User::ROLE_STUDENT ],
                 ],
                 [
-                    'actions' => ['check-teacher'],
+                    'actions' => ['check-lecturer'],
                     'allow' => true,
-                    'roles' => [ User::ROLE_TEACHER ],
+                    'roles' => [ User::ROLE_LECTURER ],
                 ],
                 [
                     'actions' => ['error'],
@@ -105,9 +105,9 @@ class ApiController extends CustomActiveController {
         ];
     }
 
-    public function actionCheckTeacher() {
+    public function actionCheckLecturer() {
         return [
-            'result' => 'You are teacher',
+            'result' => 'You are lecturer',
         ];
     }
 

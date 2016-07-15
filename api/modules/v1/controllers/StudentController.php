@@ -60,7 +60,7 @@ class StudentController extends CustomActiveController
                 [   
                     'actions' => ['profile'],
                     'allow' => true,
-                    'roles' => [User::ROLE_STUDENT, User::ROLE_TEACHER],
+                    'roles' => [User::ROLE_STUDENT, User::ROLE_LECTURER],
                 ],
             ],
             'denyCallback' => function ($rule, $action) {

@@ -16,6 +16,7 @@ use api\common\components\AccessRule;
 
 use Yii;
 use api\common\models\SignupStudentModel;
+use api\common\models\SignupLecturerModel;
 use api\common\models\LoginModel;
 use api\common\models\ChangePasswordModel;
 use api\common\models\PasswordResetModel;
@@ -49,7 +50,7 @@ class UserController extends CustomActiveController
         $behaviors['authenticator'] = [
             'class' => HttpBearerAuth::className(),
             'except' => ['login', 'signup', 'confirm-email', 'register-device',
-                'signup-student'],
+                'signup-student', 'signup-lecturer'],
         ];
 
         $behaviors['access'] = [
@@ -60,7 +61,7 @@ class UserController extends CustomActiveController
             'rules' => [
                 [   
                     'actions' => ['login', 'signup', 'confirm-email', 'register-device',
-                        'signup-student'],
+                        'signup-student', 'signup-lecturer'],
                     'allow' => true,
                     'roles' => ['?'],
                 ],
@@ -151,6 +152,24 @@ class UserController extends CustomActiveController
         $model->email = $bodyParams['email'];
         $model->password = $bodyParams['password'];
         $model->role = isset($bodyParams['role']) ? $bodyParams['role'] : User::ROLE_STUDENT;
+        $model->device_hash = $bodyParams['device_hash'];
+        if ($user = $model->signup()) {
+            $token = TokenHelper::createUserToken($user->id);
+            return [
+                'token' => $token->token,
+            ];
+        }
+        throw new BadRequestHttpException('Invalid data');   
+    }
+
+    public function actionSignupLecturer() {
+        $bodyParams = Yii::$app->request->bodyParams;
+
+        $model = new SignupLecturerModel();
+        $model->username = $bodyParams['username'];
+        $model->email = $bodyParams['email'];
+        $model->password = $bodyParams['password'];
+        $model->role = isset($bodyParams['role']) ? $bodyParams['role'] : User::ROLE_LECTURER;
         $model->device_hash = $bodyParams['device_hash'];
         if ($user = $model->signup()) {
             $token = TokenHelper::createUserToken($user->id);
