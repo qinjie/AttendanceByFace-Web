@@ -146,6 +146,54 @@ reset password successfully
 
 ***
 
+###POST ```user/signup-student```
+```
+=> Sign up new user for a student
+```
+####Header: None
+####Request:
+```
+{
+    username: '1234',
+    password: '123456',
+    email: 's12345678@connect.np.edu.sg',
+    role: 20,
+    device_hash: 'ff:ff:ff:ff:ff'
+}
+```
+####Response:
+```
+{
+    token: '3kj2rh3k2rhk2j3hkj42hk43h2kh4j32'
+}
+```
+
+***
+
+###POST ```user/signup-lecturer```
+```
+=> Sign up new user for a lecturer
+```
+####Header: None
+####Request:
+```
+{
+    username: '1234',
+    password: '123456',
+    email: '123@np.edu.sg',
+    role: 30,
+    device_hash: 'ff:ff:ff:ff:ff'
+}
+```
+####Response:
+```
+{
+    token: '3kj2rh3k2rhk2j3hkj42hk43h2kh4j32'
+}
+```
+
+***
+
 ###GET ```user/logout```
 ```
 => Log out app

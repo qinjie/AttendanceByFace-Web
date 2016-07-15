@@ -30,7 +30,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     const ROLE_USER = 10;
     const ROLE_STUDENT = 20;
-    const ROLE_TEACHER = 30;
+    const ROLE_LECTURER = 30;
 
     public static function tableName()
     {

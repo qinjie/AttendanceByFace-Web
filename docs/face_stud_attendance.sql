@@ -57,10 +57,10 @@ CREATE TABLE `lecturer` (
 
 /*Data for the table `lecturer` */
 
-insert  into `lecturer` (`id`,`name`) values 
-  ("1", "Zhang Qinjie"),
-  ("2", "Lecturer 2"),
-  ("3", "Lecturer 3");
+insert  into `lecturer` (`id`,`name`, `email`, `acad`) values 
+  ("1", "Zhang Qinjie", "1@mail.com", "11"),
+  ("2", "Lecturer 2", "2@mail.com", "22"),
+  ("3", "Lecturer 3", "3@mail.com", "33");
 
 
 INSERT INTO `lecturer` (`acad`,`id`,`name`,`email`) VALUES
@@ -1644,21 +1644,21 @@ CREATE TABLE `student` (
   `gender` char(1) DEFAULT NULL,
   `acad` varchar(10) DEFAULT NULL,
   `uuid` varchar(40) DEFAULT NULL,
-  `user_id` int(10) unsigned DEFAULT NULL,
+  `user_id` int(11) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `user_id` (`user_id`),
-  CONSTRAINT `student_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user1` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `student_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
 /*Data for the table `student` */
 
 insert  into `student`(`acad`,`id`,`gender`,`name`,`uuid`,`user_id`,`created_at`,`updated_at`) values 
-  ('AE','10164662B',NULL,'ADRIAN YOO',NULL,53,'0000-00-00 00:00:00','2016-04-26 10:49:37'),
-  ('AE','10157409E',NULL,'AIK YU CHE',NULL,54,'0000-00-00 00:00:00','2016-04-26 10:49:37'),
-  ('AE','10169807F',NULL,'AKAASH SIN',NULL,55,'0000-00-00 00:00:00','2016-04-26 10:49:37'),
-  ('AE','10169807G',NULL,'ANTHONY CHEN',NULL,56,'0000-00-00 00:00:00','2016-04-26 10:49:37');
+  ('AE','11111111A',NULL,'ADRIAN YOO',NULL,53,'0000-00-00 00:00:00','2016-04-26 10:49:37'),
+  ('AE','22222222B',NULL,'AIK YU CHE',NULL,NULL,'0000-00-00 00:00:00','2016-04-26 10:49:37'),
+  ('AE','33333333B',NULL,'AKAASH SIN',NULL,NULL,'0000-00-00 00:00:00','2016-04-26 10:49:37'),
+  ('AE','44444444B',NULL,'ANTHONY CHEN',NULL,NULL,'0000-00-00 00:00:00','2016-04-26 10:49:37');
 
 
 INSERT INTO `student` (`acad`,`id`,`name`) VALUES

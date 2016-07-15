@@ -9,11 +9,11 @@ use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\db\Expression;
 
-class Student extends ActiveRecord
+class Lecturer extends ActiveRecord
 {
     public static function tableName()
     {
-        return 'student';
+        return 'lecturer';
     }
 
     public function behaviors()
