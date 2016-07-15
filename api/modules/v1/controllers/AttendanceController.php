@@ -61,10 +61,16 @@ class AttendanceController extends CustomActiveController {
     }
     
     public function actionListSemester() {
+        $userId = Yii::$app->user->identity->id;
+        $student = Student::findOne(['user_id' => $userId]);
+        if (!$student)
+            throw new BadRequestHttpException('No student with given user id');
         $listSemester = Yii::$app->db->createCommand('
             select distinct semester 
-             from lesson 
+             from timetable join lesson on timetable.lesson_id = lesson.id 
+             where student_id = :studentId 
         ')
+        ->bindValue(':studentId', $student->id)
         ->queryAll();
 
         $func = function($val) {
