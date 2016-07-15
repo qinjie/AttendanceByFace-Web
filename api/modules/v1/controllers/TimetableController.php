@@ -356,6 +356,16 @@ class TimetableController extends CustomActiveController {
         return $result;
     }
 
+    private function getTodayMeetingPattern() {
+        $meeting_pattern = '';
+        $t1 = strtotime(date('Y-m-d'));
+        $t2 = strtotime(self::DEFAULT_START_DATE);
+        $week = intval(($t1 - $t2 + self::SECONDS_IN_WEEK - 1) / self::SECONDS_IN_WEEK);
+        if ($week % 2 == 0) $meeting_pattern = 'EVEN';
+        else $meeting_pattern = 'ODD';        
+        return $meeting_pattern;
+    }
+
     public function actionCheckAttendance() {
         $dw = date('w');
         $weekdays = ['SUN', 'MON', 'TUES', 'WED', 'THUR', 'FRI', 'SAT'];
