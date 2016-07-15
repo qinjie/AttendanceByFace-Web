@@ -15,6 +15,7 @@ use api\common\models\User;
 use api\common\components\AccessRule;
 
 use Yii;
+use api\common\models\SignupModel;
 use api\common\models\SignupStudentModel;
 use api\common\models\SignupLecturerModel;
 use api\common\models\LoginModel;
