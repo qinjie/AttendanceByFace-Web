@@ -1,4 +1,13 @@
 #Attendance System
+```
+'MON' => 0,
+'TUES' => 1,
+'WED' => 2,
+'THUR' => 3,
+'FRI' => 4,
+'SAT' => 5,
+'SUN' => 6,
+```
 ##API
 ###GET ```api/check-student```
 ```
