@@ -219,9 +219,7 @@ class UserController extends CustomActiveController
 
     public function actionConfirmEmail($token = null) {
         if (empty($token) || !is_string($token)) {
-            $viewPath = '/attendance-system/api/views/confirmation-error.html';
-            header('Location: '.$viewPath);
-            exit(0);
+            return $this->redirect('/attendance-system/frontend/web/index.php?r=site%2Fconfirmation-error');
         }
         $userId = TokenHelper::authenticateToken($token, true, TokenHelper::TOKEN_ACTION_ACTIVATE_ACCOUNT);
         $user = User::findOne([
@@ -229,9 +227,7 @@ class UserController extends CustomActiveController
             'status' => [User::STATUS_WAIT_EMAIL_DEVICE, User::STATUS_WAIT_EMAIL],
         ]);
         if (!$userId) {
-            $viewPath = '/attendance-system/api/views/confirmation-error.html';
-            header('Location: '.$viewPath);
-            exit(0);
+            return $this->redirect('/attendance-system/frontend/web/index.php?r=site%2Fconfirmation-error');
         }
 
         if ($user->status == User::STATUS_WAIT_EMAIL_DEVICE)
@@ -241,13 +237,9 @@ class UserController extends CustomActiveController
         
         UserToken::removeEmailConfirmToken($user->id, $token);
         if ($user->save()) {
-            $viewPath = '/attendance-system/api/views/confirmation-success.html';
-            header('Location: '.$viewPath);
-            exit(0);
+            return $this->redirect('/attendance-system/frontend/web/index.php?r=site%2Fconfirmation-success');
         }
-        $viewPath = '/attendance-system/api/views/confirmation-error.html';
-        header('Location: '.$viewPath);
-        exit(0);
+        return $this->redirect('/attendance-system/frontend/web/index.php?r=site%2Fconfirmation-error');
     }
 
     public function actionRegisterDevice() {

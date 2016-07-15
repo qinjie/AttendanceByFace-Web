@@ -1655,7 +1655,7 @@ CREATE TABLE `student` (
 /*Data for the table `student` */
 
 insert  into `student`(`acad`,`id`,`gender`,`name`,`uuid`,`user_id`,`created_at`,`updated_at`) values 
-  ('AE','11111111A',NULL,'ADRIAN YOO',NULL,53,'0000-00-00 00:00:00','2016-04-26 10:49:37'),
+  ('AE','1',NULL,'ADRIAN YOO',NULL,53,'0000-00-00 00:00:00','2016-04-26 10:49:37'),
   ('AE','22222222B',NULL,'AIK YU CHE',NULL,NULL,'0000-00-00 00:00:00','2016-04-26 10:49:37'),
   ('AE','33333333B',NULL,'AKAASH SIN',NULL,NULL,'0000-00-00 00:00:00','2016-04-26 10:49:37'),
   ('AE','44444444B',NULL,'ANTHONY CHEN',NULL,NULL,'0000-00-00 00:00:00','2016-04-26 10:49:37');

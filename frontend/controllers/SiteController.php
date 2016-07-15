@@ -75,6 +75,14 @@ class SiteController extends Controller
         return $this->render('index');
     }
 
+    public function actionConfirmationSuccess() {
+        return $this->render('confirmationSuccess');
+    }
+
+    public function actionConfirmationError() {
+        return $this->render('confirmationError');
+    }
+
     /**
      * Logs in a user.
      *

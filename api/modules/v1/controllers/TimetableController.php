@@ -48,7 +48,7 @@ class TimetableController extends CustomActiveController {
             'rules' => [
                 [   
                     'actions' => ['today', 'week', 'total-week', 'check-attendance', 
-                        'take-attendance', 'next-days'],
+                        'take-attendance', 'next-days', 'one-day'],
                     'allow' => true,
                     'roles' => [User::ROLE_STUDENT],
                 ]
@@ -69,9 +69,9 @@ class TimetableController extends CustomActiveController {
         return $behaviors;
     }
 
-    private function getTodayMeetingPattern() {
+    private function getMeetingPatternInTime($time) {
         $meeting_pattern = '';
-        $t1 = strtotime(date('Y-m-d'));
+        $t1 = $time;
         $t2 = strtotime(self::DEFAULT_START_DATE);
         $week = intval(($t1 - $t2 + self::SECONDS_IN_WEEK - 1) / self::SECONDS_IN_WEEK);
         if ($week % 2 == 0) $meeting_pattern = 'EVEN';
@@ -80,13 +80,18 @@ class TimetableController extends CustomActiveController {
     }
     
     public function actionToday() {
-        $dw = date('w');
-        $currentDay = date('d');
-        $currentMonth = date('m');
-        $currentYear = date('Y');
+        return $this->getTimetableInDate(date('Y-m-d'));
+    }
+
+    private function getTimetableInDate($date) {
+        $time = strtotime($date);
+        $dw = date('w', $time);
+        $currentDay = date('d', $time);
+        $currentMonth = date('m', $time);
+        $currentYear = date('Y', $time);
         $weekdays = ['SUN', 'MON', 'TUES', 'WED', 'THUR', 'FRI', 'SAT'];
         $weekday = $weekdays[$dw];
-        $meeting_pattern = $this->getTodayMeetingPattern();
+        $meeting_pattern = $this->getMeetingPatternInTime($time);
 
         $userId = Yii::$app->user->identity->id;
         $student = Student::findOne(['user_id' => $userId]);
@@ -134,6 +139,10 @@ class TimetableController extends CustomActiveController {
             $result[$iter]['recorded_at'] = $statusInfo['recorded_at'];
         }
         return $result;
+    }
+
+    public function actionOneDay($date) {
+        return $this->getTimetableInDate($date);
     }
 
     private function getStatusInfo($student_id, $lesson, 
