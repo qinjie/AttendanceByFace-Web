@@ -368,6 +368,42 @@ Authorization: 'Bearer <token>'
 
 ***
 
+###GET ```timetable/one-day?date=2016-11-22```
+```
+=> Get all lessons for one day, sorted by start time
+```
+####Header:
+```
+Authorization: 'Bearer <token>'
+```
+####Request: None
+####Response:
+```
+[
+    {
+        lesson_id,
+        subject_area,
+        class_section,
+        component,
+        start_time,
+        end_time,
+        weekday,
+        venue_id,
+        location,
+        name,
+        timetable_id,
+        uuid,
+        major,
+        minor,
+        status: (0: not yet, 1: present, 2: absent, 3: late),
+        recorded_at,
+        lecturer_name
+    }
+]
+```
+
+***
+
 ###GET ```timetable/week?week=1```
 ```
 => Get all lessons for one week. For each week day, sort lessons by start time
