@@ -609,43 +609,67 @@ Authorization: 'Bearer <token>'
 ###Response:
 ```
 {
-  "T1M2": [
-    {
-      "date": "2016-06-13",
-      "lesson_id": "1",
-      "class_section": "L2L",
-      "component": "LEC",
-      "semester": "1",
-      "weekday": "MON",
-      "status": 0,
-      "start_time": "10:00",
-      "end_time": "12:00"
+  "result": {
+    "T1M2": [
+      {
+        "date": "2016-06-13",
+        "lesson_id": "1",
+        "class_section": "L2L",
+        "component": "LEC",
+        "semester": "1",
+        "weekday": "MON",
+        "status": 0,
+        "start_time": "10:00",
+        "end_time": "12:00"
+      },
+      {
+        "date": "2016-06-16",
+        "lesson_id": "12",
+        "class_section": "L2L",
+        "component": "LEC",
+        "semester": "1",
+        "weekday": "THUR",
+        "status": 0,
+        "start_time": "10:00",
+        "end_time": "12:00"
+      }
+    ],
+    "PL23": [
+      {
+        "date": "2016-06-15",
+        "lesson_id": "16",
+        "class_section": "PL23",
+        "component": "PRA",
+        "semester": "1",
+        "weekday": "WED",
+        "status": 0,
+        "start_time": "10:00",
+        "end_time": "12:00"
+      }
+    ]
+  },
+  "summary": {
+    "L2L": {
+      "total_lessons": 10,
+      "absent_lessons": 0
     },
-    {
-      "date": "2016-06-16",
-      "lesson_id": "12",
-      "class_section": "L2L",
-      "component": "LEC",
-      "semester": "1",
-      "weekday": "THUR",
-      "status": 0,
-      "start_time": "10:00",
-      "end_time": "12:00"
+    "P2L1": {
+      "total_lessons": 20,
+      "absent_lessons": 0
+    },
+    "T2L1": {
+      "total_lessons": 20,
+      "absent_lessons": 0
+    },
+    "LL12": {
+      "total_lessons": 20,
+      "absent_lessons": 0
+    },
+    "PL23": {
+      "total_lessons": 5,
+      "absent_lessons": 0
     }
-  ],
-  "PL23": [
-    {
-      "date": "2016-06-15",
-      "lesson_id": "16",
-      "class_section": "PL23",
-      "component": "PRA",
-      "semester": "1",
-      "weekday": "WED",
-      "status": 0,
-      "start_time": "10:00",
-      "end_time": "12:00"
-    }
-  ]
+  }
 }
 ```
 

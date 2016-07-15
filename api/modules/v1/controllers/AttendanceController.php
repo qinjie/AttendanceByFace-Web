@@ -117,12 +117,26 @@ class AttendanceController extends CustomActiveController {
         }
         
         $result = [];
+        $summary = [];
         for ($iter = 0; $iter < count($class_section); ++$iter) {
             $listLesson = $this->getAllLessonsOfClass($semester, $class_section[$iter]);
-            $result[$class_section[$iter]] = $this->getAttendanceHistoryForClass($student->id, 
+            $attendanceForClass = $this->getAttendanceHistoryForClass($student->id, 
                 $semester, $class_section[$iter], $listLesson, $start_time, $end_time);
+            $summaryClass = [];
+            $summaryClass['total_lessons'] = count($attendanceForClass);
+            $summaryClass['absent_lessons'] = 0;
+            foreach ($attendanceForClass as $lesson) {
+                if ($lesson['status'] == self::STATUS_ABSENT) {
+                    $summary['absent_lessons'] += 1;
+                }
+            }
+            $result[$class_section[$iter]] = $attendanceForClass;
+            $summary[$class_section[$iter]] = $summaryClass;
         }
-        return (object)$result;
+        return [
+            'result' => (object)$result,
+            'summary' => $summary,
+        ];
     }
 
     private function getAllLessonsOfClass($semester = '', $class_section) {
