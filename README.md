@@ -37,6 +37,31 @@ Authorization: 'Bearer <token>'
 
 ***
 
+###GET ```student/profile```
+```
+=> Get profile of a student
+```
+####Header:
+```
+Authorization: 'Bearer <token>'
+```
+
+####Request: None
+####Response:
+```
+{
+  "id": "1",
+  "name": "ADRIAN YOO",
+  "gender": null,
+  "acad": "AE",
+  "uuid": null,
+  "user_id": 53,
+  "email": "1234@gmail.com"
+}
+```
+
+***
+
 ###POST ```user/login```
 ```
 => Login to app

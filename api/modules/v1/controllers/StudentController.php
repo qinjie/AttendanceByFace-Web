@@ -83,7 +83,7 @@ class StudentController extends CustomActiveController
         $student = Student::findOne(['user_id' => $userId])->toArray();
         if (!$student)
             throw new BadRequestHttpException('No student with given user id');
-        $student['email'] = 's'.substr($student['id'], 0, 8).'@connect.np.edu.sg';
+        $student['email'] = Yii::$app->user->identity->email;
         return $student;
     }
 
