@@ -180,10 +180,10 @@ class TimetableController extends CustomActiveController {
                 $result['recorded_at'] = null;
             } else if ($status['is_late']) {
                 $result['status'] = self::STATUS_LATE;
-                $result['recorded_at'] = $result['recorded_time'];
+                $result['recorded_at'] = $status['recorded_time'];
             } else {
                 $result['status'] = self::STATUS_PRESENT;
-                $result['recorded_at'] = $result['recorded_time'];
+                $result['recorded_at'] = $status['recorded_time'];
             }
         } else {
             $result['status'] = self::STATUS_NOTYET;
