@@ -35,3 +35,4 @@ phpunit.phar
 # cronjob local config
 db.py
 *.pyc
+log_device_activation.txt
