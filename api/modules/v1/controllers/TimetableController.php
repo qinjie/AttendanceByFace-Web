@@ -100,7 +100,7 @@ class TimetableController extends CustomActiveController {
         $userId = Yii::$app->user->identity->id;
         $student = Student::findOne(['user_id' => $userId]);
         if (!$student)
-            throw new BadRequestHttpException('No student with given user id');\
+            throw new BadRequestHttpException('No student with given user id');
 
         $result = $this->getAllLessonsInOneDay($student->id, $weekday, 
             self::DEFAULT_SEMESTER, $meeting_pattern);

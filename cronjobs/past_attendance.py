@@ -59,7 +59,6 @@ def get_not_recorded_timetable(conn, semester, this_date):
 		meeting_pattern = meeting_pattern,
 		weekday = weekday
 	)
-	print 'check', str(this_date), meeting_pattern
 	cursor.execute(sql)
 	for row in iter_row(cursor, 20):
 		yield row
@@ -102,8 +101,6 @@ def add_absent_attendance(conn, timetable, this_date):
 		lesson_id = timetable[1],
 		recorded_date = this_date.strftime('%Y-%m-%d')
 	)
-	# if (int(timetable[0]) == 3):
-	# 	print str(this_date), sql
 	cursor.execute(sql)
 	conn.commit()
 
