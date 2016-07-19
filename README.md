@@ -236,15 +236,7 @@ reset password successfully
 ```
 Authorization: 'Bearer <token>'
 ```
-####Request:
-```
-{
-    username: '1234',
-    password: '123456',
-    email: '123@mail.com',
-    role: (10 for user, 20 for student, 30 for teacher)
-}
-```
+####Request: None
 ####Response:
 ```
 logout successful
@@ -438,7 +430,7 @@ Authorization: 'Bearer <token>'
 
 ***
 
-###GET ```timetable/week?week=1```
+###~~GET ```timetable/week?week=1```~~
 ```
 => Get all lessons for one week. For each week day, sort lessons by start time
 ```
@@ -492,7 +484,7 @@ Authorization: 'Bearer <token>'
 
 ***
 
-###GET ```timetable/total-week```
+###~~GET ```timetable/total-week```~~
 ```
 => Get all lessons for 5 weeks. For each week day, sort lessons by start time
 ```

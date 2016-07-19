@@ -1633,7 +1633,10 @@ insert  into `user`(`id`,`username`,`auth_key`,`password_hash`,`email`,`status`,
   (54,'5678','ev0ddY438lQUVzIBT4Cz6FfonldlZGwn','$2y$13$pm7wYtxExchdumcLXrb6DOTP0KeQSUda3hylys/JQ6t0aqjYtUbpq','5678@gmail.com',10,1461214049,1461926225,'student',20,'0'),
   (55,'3333','llF-xngHw2GG03B6VBFmRsz0Og962A7H','$2y$13$qY9oJdIfhhOYQAgtmlzK4uTuoEnE4IKMVqxKkSkmjdhwqKXStV.le','nhtc.123@gmail.com',10,1461214049,1461926225,'student',20,'0'),
   (56,'1111','eoUT-i7zLHcBDnl3m4kjvmmIGglADSiW','$2y$13$ctpUi82YuFrJp3.lBJLWG.bX/eXzJyD.cPwD.oF0uizHrFTlmQrNK','1111@mail.com',10,1468284085,1468284085,'student',20,'0'),
-  (57,'0000','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','0000@gmail.com',10,1461214049,1461926225,'student',20,'f8:32:e4:5f:6f:35');
+  (57,'0000','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','0000@gmail.com',10,1461214049,1461926225,'student',20,'f8:32:e4:5f:6f:35'),
+
+  /* ios test */
+  (58,'npnp','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','npnp@gmail.com',10,1461214049,1461926225,'student',20,'0');
 
 /*Table structure for table `student` */
 
@@ -1658,6 +1661,8 @@ CREATE TABLE `student` (
 insert  into `student`(`acad`,`id`,`gender`,`name`,`uuid`,`user_id`,`created_at`,`updated_at`) values 
   ('AE','1',NULL,'ADRIAN YOO',NULL,53,'0000-00-00 00:00:00','2016-04-26 10:49:37'),
   ('AE','2',NULL,'MICHAEL YOO',NULL,57,'0000-00-00 00:00:00','2016-04-26 10:49:37'),
+  ('AE','3',NULL,'YOO YOO',NULL,58,'0000-00-00 00:00:00','2016-04-26 10:49:37'),
+  ('AE','4',NULL,'LEE YOO',NULL,NULL,'0000-00-00 00:00:00','2016-04-26 10:49:37'),
   ('AE','22222222B',NULL,'AIK YU CHE',NULL,NULL,'0000-00-00 00:00:00','2016-04-26 10:49:37'),
   ('AE','33333333B',NULL,'AKAASH SIN',NULL,NULL,'0000-00-00 00:00:00','2016-04-26 10:49:37'),
   ('AE','44444444B',NULL,'ANTHONY CHEN',NULL,NULL,'0000-00-00 00:00:00','2016-04-26 10:49:37');
@@ -14827,8 +14832,8 @@ CREATE TABLE `attendance` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `student_id` varchar(10) NOT NULL,
   `lesson_id` int(10) unsigned NOT NULL,
-  `signed_in` datetime DEFAULT NULL,
-  `signed_out` datetime DEFAULT NULL,
+  `recorded_date` date DEFAULT NULL,
+  `recorded_time` time DEFAULT NULL,
   `is_absent` int(1) unsigned NOT NULL DEFAULT '0',
   `is_late` tinyint(1) NOT NULL DEFAULT '0',
   `late_min` int(10) unsigned NOT NULL DEFAULT '0',

@@ -27,7 +27,7 @@ class AttendanceController extends CustomActiveController {
     const FACE_THRESHOLD = 30;
 
     const DEFAULT_START_DATE = '2016-06-13';    // Monday
-    const DEFAULT_END_DATE = '2016-07-11';  // Sunday, 5 weeks
+    const DEFAULT_END_DATE = '2016-08-21';  // Sunday, 5 weeks
 
     const SECONDS_IN_DAY = 86400;
 
@@ -119,15 +119,16 @@ class AttendanceController extends CustomActiveController {
         $result = [];
         $summary = [];
         for ($iter = 0; $iter < count($class_section); ++$iter) {
-            $listLesson = $this->getAllLessonsOfClass($semester, $class_section[$iter]);
-            $attendanceForClass = $this->getAttendanceHistoryForClass($student->id, 
+            $listLesson = $this->getAllLessonsOfClass($student->id, $semester, $class_section[$iter]);
+            $attendanceHistory = $this->getAttendanceHistoryForClass($student->id, 
                 $semester, $class_section[$iter], $listLesson, $start_time, $end_time);
+            $attendanceForClass = $attendanceHistory['attendanceHistory'];
             $summaryClass = [];
-            $summaryClass['total_lessons'] = count($attendanceForClass);
+            $summaryClass['total_lessons'] = $attendanceHistory['totalLessons'];
             $summaryClass['absent_lessons'] = 0;
             foreach ($attendanceForClass as $lesson) {
                 if ($lesson['status'] == self::STATUS_ABSENT) {
-                    $summary['absent_lessons'] += 1;
+                    $summaryClass['absent_lessons'] += 1;
                 }
             }
             $result[$class_section[$iter]] = $attendanceForClass;
@@ -139,22 +140,24 @@ class AttendanceController extends CustomActiveController {
         ];
     }
 
-    private function getAllLessonsOfClass($semester = '', $class_section) {
+    private function getAllLessonsOfClass($studentId, $semester = '', $class_section) {
         $listLesson = Yii::$app->db->createCommand('
             select class_section, 
-                   lesson.id as lesson_id, 
+                   lesson_id, 
                    weekday, 
                    meeting_pattern, 
                    component, 
                    semester, 
                    start_time, 
                    end_time 
-             from lesson 
+             from timetable join lesson on timetable.lesson_id = lesson.id 
              where class_section = :class_section 
              and semester = :semester 
+             and student_id = :student_id
         ')
         ->bindValue(':class_section', $class_section)
         ->bindValue(':semester', $semester)
+        ->bindValue(':student_id', $studentId)
         ->queryAll();
 
         return $listLesson;
@@ -165,24 +168,29 @@ class AttendanceController extends CustomActiveController {
         $start_date = date('Y-m-d', $start_time);
         $end_date = date('Y-m-d', $end_time);
         $listAttendance = Yii::$app->db->createCommand('
-            select date(attendance.updated_at) as date, 
+            select attendance.recorded_date as date, 
                    class_section, 
                    component, 
                    semester, 
                    is_absent, 
                    is_late, 
                    late_min, 
-                   lesson_id, 
+                   attendance.lesson_id, 
                    weekday, 
                    start_time, 
-                   end_time 
+                   end_time, 
+                   lecturer.name as lecturer_name, 
+                   attendance.student_id 
              from attendance join lesson on attendance.lesson_id = lesson.id 
-             where student_id = :student_id 
+             join timetable on (attendance.student_id = timetable.student_id 
+                                and attendance.lesson_id = timetable.lesson_id) 
+             join lecturer on lecturer.id = timetable.lecturer_id 
+             where attendance.student_id = :student_id 
              and class_section = :class_section 
-             and attendance.updated_at >= :start_date 
-             and attendance.updated_at <= :end_date 
+             and attendance.recorded_date >= :start_date 
+             and attendance.recorded_date <= :end_date 
              and semester = :semester 
-             order by attendance.updated_at
+             order by attendance.recorded_date
         ')
         ->bindValue(':student_id', $student_id)
         ->bindValue(':class_section', $class_section)
@@ -190,25 +198,36 @@ class AttendanceController extends CustomActiveController {
         ->bindValue(':end_date', $end_date)
         ->bindValue(':semester', $semester)
         ->queryAll();
+        // return [
+        //     'attendanceHistory' => $listAttendance,
+        //     'totalLessons' => 0,
+        // ];
         
         $attendanceHistory = [];
+        $today_time = strtotime(date('Y-m-d'));
+        $totalLessons = 0;
         // For each week
         $count = 0;
         for ($iter_week = $start_time; $iter_week <= $end_time; $iter_week += self::SECONDS_IN_DAY * 7) {
             ++$count;
             
             for ($iter = 0; $iter < count($listLesson); ++$iter) {
+                ++$totalLessons;
+
                 $lesson = $listLesson[$iter];
                 $lessonId = $lesson['lesson_id'];
                 $meeting_pattern = $lesson['meeting_pattern'];
                 if ($meeting_pattern == 'ODD' && $count % 2 == 0) continue;
                 if ($meeting_pattern == 'EVEN' && $count % 2 == 1) continue;
                 $numberInWeek = $this->weekDayToNumber($lesson['weekday']);
-                $currentDate = date('Y-m-d', $iter_week + self::SECONDS_IN_DAY * $numberInWeek);
+                $iter_time = $iter_week + self::SECONDS_IN_DAY * $numberInWeek;
+                if ($iter_time > $today_time) continue;
+                $currentDate = date('Y-m-d', $iter_time);
                 
                 $foundAttendance = $this->getAttendanceInDate($listAttendance, $currentDate, $lessonId);
                 $attendance = [];
                 if ($foundAttendance) {
+                    $attendance['student_id'] = $foundAttendance['student_id'];
                     $attendance['date'] = $foundAttendance['date'];
                     $attendance['lesson_id'] = $foundAttendance['lesson_id'];
                     $attendance['class_section'] = $foundAttendance['class_section'];
@@ -217,6 +236,7 @@ class AttendanceController extends CustomActiveController {
                     $attendance['weekday'] = $foundAttendance['weekday'];
                     $attendance['start_time'] = $foundAttendance['start_time'];
                     $attendance['end_time'] = $foundAttendance['end_time'];
+                    $attendance['lecturer_name'] = $foundAttendance['lecturer_name'];
                     $status = self::STATUS_PRESENT;
                     if ($foundAttendance['is_absent'])
                         $status = self::STATUS_ABSENT;
@@ -230,14 +250,42 @@ class AttendanceController extends CustomActiveController {
                     $attendance['component'] = $lesson['component'];
                     $attendance['semester'] = $lesson['semester'];
                     $attendance['weekday'] = $lesson['weekday'];
-                    $attendance['status'] = self::STATUS_NOTYET;
                     $attendance['start_time'] = $lesson['start_time'];
                     $attendance['end_time'] = $lesson['end_time'];
+                    $attendance['status'] = self::STATUS_NOTYET;
                 }
                 $attendanceHistory[] = $attendance;
             }
         }
-        return $attendanceHistory;
+
+        usort($attendanceHistory, 'self::cmpAttendance');
+        return [
+            'attendanceHistory' => $attendanceHistory,
+            'totalLessons' => $totalLessons,
+        ];
+    }
+
+    private static function cmpTime($t1, $t2) {
+        $a1 = explode(':', $t1);
+        $a2 = explode(':', $t2);
+        $h1 = intval($a1[0]);
+        $m1 = intval($a1[1]);
+
+        $h2 = intval($a2[0]);
+        $m2 = intval($a2[1]);
+
+        if ($h1 == $h2) {
+            if ($m1 == $m2) return 0;
+            else return $m1 - $m2;
+        } else {
+            return $h1 - $h2;
+        }
+    } 
+
+    private static function cmpAttendance($a1, $a2) {
+        $cmpDate = strcmp($a1['date'], $a2['date']);
+        if ($cmpDate != 0) return $cmpDate;
+        else return self::cmpTime($a1['start_time'], $a2['start_time']);
     }
 
     private function getAttendanceInDate($listAttendance, $date, $lessonId) {
