@@ -592,6 +592,33 @@ Authorization: 'Bearer <token>'
 
 ***
 
+***
+
+###POST ```timetable/take-attendance-beacon```
+```
+=> Take attendance for IOS app. One student can take attendance only once for 1 subject.
+```
+####Header:
+```
+Authorization: 'Bearer <token>'
+```
+####Request:
+```
+{
+  timetable_id
+}
+```
+####Response:
+```
+{
+  is_late: (true, false),
+  late_min,
+  recorded_at
+}
+```
+
+***
+
 ###GET ```attendance/attendance-history```
 ```
 => Get attendance history of a student, based on following filters:

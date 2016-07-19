@@ -149,8 +149,10 @@ class AttendanceController extends CustomActiveController {
                    component, 
                    semester, 
                    start_time, 
-                   end_time 
+                   end_time, 
+                   lecturer.name as lecturer_name 
              from timetable join lesson on timetable.lesson_id = lesson.id 
+             join lecturer on timetable.lecturer_id = lecturer.id 
              where class_section = :class_section 
              and semester = :semester 
              and student_id = :student_id
@@ -198,10 +200,6 @@ class AttendanceController extends CustomActiveController {
         ->bindValue(':end_date', $end_date)
         ->bindValue(':semester', $semester)
         ->queryAll();
-        // return [
-        //     'attendanceHistory' => $listAttendance,
-        //     'totalLessons' => 0,
-        // ];
         
         $attendanceHistory = [];
         $today_time = strtotime(date('Y-m-d'));
@@ -227,7 +225,6 @@ class AttendanceController extends CustomActiveController {
                 $foundAttendance = $this->getAttendanceInDate($listAttendance, $currentDate, $lessonId);
                 $attendance = [];
                 if ($foundAttendance) {
-                    $attendance['student_id'] = $foundAttendance['student_id'];
                     $attendance['date'] = $foundAttendance['date'];
                     $attendance['lesson_id'] = $foundAttendance['lesson_id'];
                     $attendance['class_section'] = $foundAttendance['class_section'];
@@ -252,6 +249,7 @@ class AttendanceController extends CustomActiveController {
                     $attendance['weekday'] = $lesson['weekday'];
                     $attendance['start_time'] = $lesson['start_time'];
                     $attendance['end_time'] = $lesson['end_time'];
+                    $attendance['lecturer_name'] = $lesson['lecturer_name'];
                     $attendance['status'] = self::STATUS_NOTYET;
                 }
                 $attendanceHistory[] = $attendance;

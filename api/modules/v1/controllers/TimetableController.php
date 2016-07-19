@@ -48,7 +48,7 @@ class TimetableController extends CustomActiveController {
             'rules' => [
                 [   
                     'actions' => ['today', 'week', 'total-week', 'check-attendance', 
-                        'take-attendance', 'next-days', 'one-day'],
+                        'take-attendance', 'next-days', 'one-day', 'take-attendance-beacon'],
                     'allow' => true,
                     'roles' => [User::ROLE_STUDENT],
                 ]
@@ -492,6 +492,44 @@ class TimetableController extends CustomActiveController {
             }
         } else {
             throw new BadRequestHttpException('Face percent must be above '.self::FACE_THRESHOLD);
+        }
+    }
+
+    public function actionTakeAttendanceBeacon() {
+        $userId = Yii::$app->user->identity->id;
+        $student = Student::findOne(['user_id' => $userId]);
+        if (!$student)
+            throw new BadRequestHttpException('No student with given user id');
+        $request = Yii::$app->request;
+        $bodyParams = $request->bodyParams;
+        $timetable_id = $bodyParams['timetable_id'];
+
+        $timetable = $this->checkTimetable($student->id, $timetable_id);
+
+        if ($timetable) {
+            $lateMinutes = $this->getLateMinutes($timetable);
+            $attendance = new Attendance();
+            $attendance->student_id = $student->id;
+            $attendance->lesson_id = $timetable['lesson_id'];
+            $attendance->is_absent = 0;
+            $attendance->is_late = intval($lateMinutes > 0);
+            $attendance->late_min = $lateMinutes;
+            $currentTime = date('H:i');
+            $currentDate = date('Y-m-d');
+            $attendance->recorded_time = $currentTime;
+            $attendance->recorded_date = $currentDate;
+
+            if ($attendance->save()) {
+                return [
+                    'is_late' => $lateMinutes > 0,
+                    'late_min' => $lateMinutes,
+                    'recorded_at' => $currentTime,
+                ];
+            } else {
+                throw new BadRequestHttpException('Cannot insert new attendance');
+            }
+        } else {
+            throw new BadRequestHttpException('Invalid attendance info');
         }
     }
 
