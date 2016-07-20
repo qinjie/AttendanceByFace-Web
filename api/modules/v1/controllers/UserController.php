@@ -201,6 +201,7 @@ class UserController extends CustomActiveController
     }
 
     public function actionResetPassword() {
+        UserToken::removeResetPasswordToken($user->id);
         $bodyParams = Yii::$app->request->bodyParams;
         $email = $bodyParams['email'];
 

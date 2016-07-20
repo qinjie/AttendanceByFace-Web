@@ -31,8 +31,3 @@ phpunit.phar
 
 # vagrant runtime
 /.vagrant
-
-# cronjob local config
-db.py
-*.pyc
-log_device_activation.txt
