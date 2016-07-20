@@ -28,10 +28,13 @@ class PasswordResetModel extends Model
 
     public function sendEmail()
     {
-        $user = User::findOne([
-            'status' => User::STATUS_ACTIVE,
-            'email' => $this->email,
-        ]);
+        $user = User::find()
+            ->where([
+                'and',
+                ['or', ['status' => User::STATUS_ACTIVE], ['status' => User::STATUS_WAIT_DEVICE]],
+                ['email' => $this->email],
+            ])
+            ->one();
 
         if (!$user) {
             return false;
@@ -46,7 +49,7 @@ class PasswordResetModel extends Model
                     ['html' => '@common/mail/passwordResetToken-html'],
                     [
                         'user' => $user,
-                        'token' => $token
+                        'token' => $token->token,
                     ]
                 )
                 ->setFrom([Yii::$app->params['supportEmail'] => Yii::$app->name . ' robot'])

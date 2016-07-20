@@ -214,27 +214,26 @@ class UserController extends CustomActiveController
 
     public function actionConfirmEmail($token = null) {
         if (empty($token) || !is_string($token)) {
-            return $this->redirect('/attendance-system/frontend/web/index.php/site/confirmation-error');
+            return $this->redirect(Yii::$app->params['WEB_BASEURL'].'site/confirmation-error');
         }
         $userId = TokenHelper::authenticateToken($token, true, TokenHelper::TOKEN_ACTION_ACTIVATE_ACCOUNT);
         $user = User::findOne([
             'id' => $userId, 
             'status' => [User::STATUS_WAIT_EMAIL_DEVICE, User::STATUS_WAIT_EMAIL],
         ]);
-        if (!$user) {
-            return $this->redirect('/attendance-system/frontend/web/index.php/site/confirmation-error');
-        }
+        if (!$user)
+            return $this->redirect(Yii::$app->params['WEB_BASEURL'].'site/confirmation-error');
 
         if ($user->status == User::STATUS_WAIT_EMAIL_DEVICE)
             $user->status = User::STATUS_WAIT_DEVICE;
         else if ($user->status == User::STATUS_WAIT_EMAIL)
             $user->status = User::STATUS_ACTIVE;
         
-        UserToken::removeEmailConfirmToken($user->id, $token);
+        UserToken::removeEmailConfirmToken($user->id);
         if ($user->save()) {
-            return $this->redirect('/attendance-system/frontend/web/index.php/site/confirmation-success');
+            return $this->redirect(Yii::$app->params['WEB_BASEURL'].'site/confirmation-success');
         }
-        return $this->redirect('/attendance-system/frontend/web/index.php/site/confirmation-error');
+        return $this->redirect(Yii::$app->params['WEB_BASEURL'].'site/confirmation-error');
     }
 
     public function actionRegisterDevice() {

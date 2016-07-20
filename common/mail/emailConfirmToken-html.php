@@ -1,10 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: zqi2
- * Date: 24/5/2015
- * Time: 6:05 PM
- */
+
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */

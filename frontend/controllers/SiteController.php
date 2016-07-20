@@ -193,10 +193,6 @@ class SiteController extends Controller
         ]);
     }
 
-    public function actionResetPassword($token) {
-        return 'reset'; 
-    }
-
     /**
      * Resets password.
      *
@@ -204,22 +200,20 @@ class SiteController extends Controller
      * @return mixed
      * @throws BadRequestHttpException
      */
-    // public function actionResetPassword($token)
-    // {
-    //     try {
-    //         $model = new ResetPasswordForm($token);
-    //     } catch (InvalidParamException $e) {
-    //         throw new BadRequestHttpException($e->getMessage());
-    //     }
+    public function actionResetPassword($token)
+    {
+        try {
+            $model = new ResetPasswordForm($token);
+        } catch (InvalidParamException $e) {
+            throw new BadRequestHttpException($e->getMessage());
+        }
 
-    //     if ($model->load(Yii::$app->request->post()) && $model->validate() && $model->resetPassword()) {
-    //         Yii::$app->session->setFlash('success', 'New password was saved.');
+        if ($model->load(Yii::$app->request->post()) && $model->validate() && $model->resetPassword()) {
+            return $this->goHome();
+        }
 
-    //         return $this->goHome();
-    //     }
-
-    //     return $this->render('resetPassword', [
-    //         'model' => $model,
-    //     ]);
-    // }
+        return $this->render('resetPassword', [
+            'model' => $model,
+        ]);
+    }
 }

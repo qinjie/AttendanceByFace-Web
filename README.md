@@ -734,7 +734,8 @@ Authorization: 'Bearer <token>'
         "weekday": "MON",
         "status": 0,
         "start_time": "10:00",
-        "end_time": "12:00"
+        "end_time": "12:00",
+        "lecturer_name": "Zhang Qinjie"
       },
       {
         "date": "2016-06-16",
@@ -745,7 +746,8 @@ Authorization: 'Bearer <token>'
         "weekday": "THUR",
         "status": 0,
         "start_time": "10:00",
-        "end_time": "12:00"
+        "end_time": "12:00",
+        "lecturer_name": "Zhang Qinjie"
       }
     ],
     "PL23": [
@@ -758,7 +760,8 @@ Authorization: 'Bearer <token>'
         "weekday": "WED",
         "status": 0,
         "start_time": "10:00",
-        "end_time": "12:00"
+        "end_time": "12:00",
+        "lecturer_name": "Zhang Qinjie"
       }
     ]
   },

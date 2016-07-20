@@ -3,6 +3,7 @@
 namespace api\common\models;
 
 use api\common\models\User;
+use api\common\helpers\TokenHelper;
 
 use Yii;
 use yii\behaviors\TimestampBehavior;
@@ -64,7 +65,11 @@ class UserToken extends ActiveRecord
             return false;
     }
 
-    public static function removeEmailConfirmToken($userId, $token) {
-        return static::deleteAll(['user_id' => $userId, 'token' => $token]);
+    public static function removeEmailConfirmToken($userId) {
+        return static::deleteAll(['user_id' => $userId, 'action' => TokenHelper::TOKEN_ACTION_ACTIVATE_ACCOUNT]);
+    }
+
+    public static function removeResetPasswordToken($userId) {
+        return static::deleteAll(['user_id' => $userId, 'action' => TokenHelper::TOKEN_ACTION_RESET_PASSWORD]);   
     }
 }

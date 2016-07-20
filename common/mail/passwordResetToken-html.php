@@ -5,7 +5,7 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $user common\models\User */
 
-$resetLink = Yii::$app->urlManager->createAbsoluteUrl(['site/reset-password', 'token' => $token]);
+$resetLink = Yii::$app->params['WEB_BASEURL'].'site/reset-password?token='.$token;
 ?>
 
 <!DOCTYPE html>
