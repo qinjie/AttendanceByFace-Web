@@ -3,7 +3,7 @@
 namespace api\common\models;
 
 use api\common\models\User;
-use api\common\models\Student;
+use api\common\models\Lecturer;
 use api\common\helpers\TokenHelper;
 use yii\base\Model;
 use Yii;
@@ -29,7 +29,7 @@ class SignupLecturerModel extends Model
             ['email', 'email'],
             ['email', 'string', 'max' => 255],
             ['email', 'unique', 'targetClass' => 'api\common\models\User', 'message' => 'This email address has already been taken.'],
-            ['email', 'exist', 'targetClass' => 'api\common\models\Lecturer', 'message' => 'This email address is invalid.'],
+            ['email', 'exist', 'targetClass' => 'api\common\models\Lecturer', 'message' => 'No lecturer with given email.'],
 
             ['password', 'required'],
             ['password', 'string', 'min' => 6],

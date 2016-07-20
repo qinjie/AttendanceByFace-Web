@@ -57,10 +57,10 @@ CREATE TABLE `lecturer` (
 
 /*Data for the table `lecturer` */
 
-insert  into `lecturer` (`id`,`name`, `email`, `acad`) values 
-  ("1", "Zhang Qinjie", "1@mail.com", "11"),
-  ("2", "Lecturer 2", "2@mail.com", "22"),
-  ("3", "Lecturer 3", "3@mail.com", "33");
+insert  into `lecturer` (`id`,`name`, `email`, `acad`, `user_id`) values 
+  ("1", "Zhang Qinjie", "npnp@mail.com", "11", 59),
+  ("2", "Lecturer 2", "2@mail.com", "22", NULL),
+  ("3", "Lecturer 3", "3@mail.com", "33", NULL);
 
 
 INSERT INTO `lecturer` (`acad`,`id`,`name`,`email`) VALUES
@@ -1636,7 +1636,8 @@ insert  into `user`(`id`,`username`,`auth_key`,`password_hash`,`email`,`status`,
   (57,'0000','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','0000@gmail.com',10,1461214049,1461926225,'student',20,'f8:32:e4:5f:6f:35'),
 
   /* ios test */
-  (58,'npnp','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','npnp@gmail.com',10,1461214049,1461926225,'student',20,'0');
+  (58,'npnp','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','npnp@mail.com',10,1461214049,1461926225,'student',20,'0'),
+  (59,'abab','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','abab@mail.com',10,1461214049,1461926225,'lecturer',30,'0');
 
 /*Table structure for table `student` */
 

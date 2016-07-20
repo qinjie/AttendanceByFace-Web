@@ -2,6 +2,7 @@
 namespace api\common\models;
 
 use api\common\models\User;
+use api\common\helpers\TokenHelper;
 use Yii;
 use yii\base\Model;
 
@@ -20,7 +21,7 @@ class PasswordResetModel extends Model
             ['email', 'exist',
                 'targetClass' => 'api\common\models\User',
                 'filter' => ['status' => User::STATUS_ACTIVE],
-                'message' => 'There is no user with such email.'
+                'message' => 'No user with given email'
             ],
         ];
     }
@@ -36,8 +37,8 @@ class PasswordResetModel extends Model
             return false;
         }
 
-        $randomPassword = Yii::$app->security->generateRandomString(6);
-        $user->setPassword($randomPassword);
+        $token = TokenHelper::createUserToken($user->id, TokenHelper::TOKEN_ACTION_RESET_PASSWORD);
+
         if ($user->save()) {
             Yii::$app
                 ->mailer
@@ -45,7 +46,7 @@ class PasswordResetModel extends Model
                     ['html' => '@common/mail/passwordResetToken-html'],
                     [
                         'user' => $user,
-                        'newPassword' => $randomPassword
+                        'token' => $token
                     ]
                 )
                 ->setFrom([Yii::$app->params['supportEmail'] => Yii::$app->name . ' robot'])

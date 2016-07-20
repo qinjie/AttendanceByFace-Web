@@ -5,6 +5,7 @@ use api\common\controllers\CustomActiveController;
 use api\common\models\User;
 use api\modules\v1\models\Attendance;
 use api\common\models\Student;
+use api\common\models\Lecturer;
 use api\common\components\AccessRule;
 
 use yii\rest\Controller;
@@ -51,7 +52,12 @@ class TimetableController extends CustomActiveController {
                         'take-attendance', 'next-days', 'one-day', 'take-attendance-beacon'],
                     'allow' => true,
                     'roles' => [User::ROLE_STUDENT],
-                ]
+                ],
+                [   
+                    'actions' => ['today-for-lecturer', 'one-day-for-lecturer'],
+                    'allow' => true,
+                    'roles' => [User::ROLE_LECTURER],
+                ],
             ],
 
             'denyCallback' => function ($rule, $action) {
@@ -88,6 +94,11 @@ class TimetableController extends CustomActiveController {
     }
 
     private function getTimetableInDate($date) {
+        $userId = Yii::$app->user->identity->id;
+        $student = Student::findOne(['user_id' => $userId]);
+        if (!$student)
+            throw new BadRequestHttpException('No student with given user id');
+
         $time = strtotime($date);
         $dw = date('w', $time);
         $currentDay = date('d', $time);
@@ -96,11 +107,6 @@ class TimetableController extends CustomActiveController {
         $weekdays = ['SUN', 'MON', 'TUES', 'WED', 'THUR', 'FRI', 'SAT'];
         $weekday = $weekdays[$dw];
         $meeting_pattern = $this->getMeetingPatternInTime($time);
-
-        $userId = Yii::$app->user->identity->id;
-        $student = Student::findOne(['user_id' => $userId]);
-        if (!$student)
-            throw new BadRequestHttpException('No student with given user id');
 
         $result = $this->getAllLessonsInOneDay($student->id, $weekday, 
             self::DEFAULT_SEMESTER, $meeting_pattern);
@@ -113,6 +119,35 @@ class TimetableController extends CustomActiveController {
             $result[$iter]['recorded_at'] = $statusInfo['recorded_at'];
         }
         return $result;
+    }
+
+    private function getTimetableInDateForLecturer($date) {
+        $userId = Yii::$app->user->identity->id;
+        $lecturer = Lecturer::findOne(['user_id' => $userId]);
+        if (!$lecturer)
+            throw new BadRequestHttpException('No lecturer with given user id');
+
+        $time = strtotime($date);
+        $dw = date('w', $time);
+        $currentDay = date('d', $time);
+        $currentMonth = date('m', $time);
+        $currentYear = date('Y', $time);
+        $weekdays = ['SUN', 'MON', 'TUES', 'WED', 'THUR', 'FRI', 'SAT'];
+        $weekday = $weekdays[$dw];
+        $meeting_pattern = $this->getMeetingPatternInTime($time);
+
+        $result = $this->getAllLessonsInOneDayForLecturer($lecturer->id, $weekday, 
+            self::DEFAULT_SEMESTER, $meeting_pattern);
+        usort($result, 'self::cmpLesson');
+        return $result;
+    }
+
+    public function actionTodayForLecturer() {
+        return $this->getTimetableInDateForLecturer(date('Y-m-d'));
+    }
+
+    public function actionOneDayForLecturer($date) {
+        return $this->getTimetableInDateForLecturer($date);
     }
 
     private function getAllLessonsInOneDay($studentId, $weekday, $semester, $meeting_pattern) {
@@ -144,6 +179,36 @@ class TimetableController extends CustomActiveController {
              and (meeting_pattern = \'\' or meeting_pattern = :meeting_pattern) 
         ')
         ->bindValue(':student_id', $studentId)
+        ->bindValue(':weekday', $weekday)
+        ->bindValue(':semester', $semester)
+        ->bindValue(':meeting_pattern', $meeting_pattern);
+        return $query->queryAll();
+    }
+
+    private function getAllLessonsInOneDayForLecturer($lecturerId, $weekday, $semester, $meeting_pattern) {
+        $query = Yii::$app->db->createCommand('
+            select lesson_id, 
+                   subject_area,
+                   class_section, 
+                   component, 
+                   start_time, 
+                   end_time, 
+                   weekday, 
+                   meeting_pattern, 
+                   venue.location, 
+                   venue.name, 
+                   count(student_id) as number_student 
+             from timetable join lesson on timetable.lesson_id = lesson.id 
+             join venue on lesson.venue_id = venue.id 
+             join lecturer on timetable.lecturer_id = lecturer.id 
+             where lecturer_id = :lecturer_id 
+             and weekday = :weekday 
+             and semester = :semester 
+             and (meeting_pattern = \'\' or meeting_pattern = :meeting_pattern) 
+             group by lesson_id, subject_area, class_section, component, start_time, 
+                      end_time, weekday, meeting_pattern
+        ')
+        ->bindValue(':lecturer_id', $lecturerId)
         ->bindValue(':weekday', $weekday)
         ->bindValue(':semester', $semester)
         ->bindValue(':meeting_pattern', $meeting_pattern);

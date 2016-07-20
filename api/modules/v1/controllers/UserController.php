@@ -45,7 +45,7 @@ class UserController extends CustomActiveController
         $behaviors['authenticator'] = [
             'class' => HttpBearerAuth::className(),
             'except' => ['login', 'signup', 'confirm-email', 'register-device',
-                'signup-student', 'signup-lecturer'],
+                'signup-student', 'signup-lecturer', 'reset-password'],
         ];
 
         $behaviors['access'] = [
@@ -56,13 +56,13 @@ class UserController extends CustomActiveController
             'rules' => [
                 [   
                     'actions' => ['login', 'signup', 'confirm-email', 'register-device',
-                        'signup-student', 'signup-lecturer'],
+                        'signup-student', 'signup-lecturer', 'reset-password'],
                     'allow' => true,
                     'roles' => ['?'],
                 ],
                 [
                     'actions' => ['logout', 'person-id', 'face-id', 'set-person-id', 'set-face-id',
-                        'change-password', 'reset-password'],
+                        'change-password'],
                     'allow' => true,
                     'roles' => ['@'],
                 ]
@@ -178,7 +178,7 @@ class UserController extends CustomActiveController
     public function actionLogout() {
     	$id = Yii::$app->user->identity->id;
     	UserToken::deleteAll(['user_id' => $id, 'action' => TokenHelper::TOKEN_ACTION_ACCESS]);
-		return 'logout successful';
+		return 'logout successfully';
     }
 
     public function actionChangePassword() {
@@ -214,15 +214,15 @@ class UserController extends CustomActiveController
 
     public function actionConfirmEmail($token = null) {
         if (empty($token) || !is_string($token)) {
-            return $this->redirect('/attendance-system/frontend/web/index.php?r=site%2Fconfirmation-error');
+            return $this->redirect('/attendance-system/frontend/web/index.php/site/confirmation-error');
         }
         $userId = TokenHelper::authenticateToken($token, true, TokenHelper::TOKEN_ACTION_ACTIVATE_ACCOUNT);
         $user = User::findOne([
             'id' => $userId, 
             'status' => [User::STATUS_WAIT_EMAIL_DEVICE, User::STATUS_WAIT_EMAIL],
         ]);
-        if (!$userId) {
-            return $this->redirect('/attendance-system/frontend/web/index.php?r=site%2Fconfirmation-error');
+        if (!$user) {
+            return $this->redirect('/attendance-system/frontend/web/index.php/site/confirmation-error');
         }
 
         if ($user->status == User::STATUS_WAIT_EMAIL_DEVICE)
@@ -232,9 +232,9 @@ class UserController extends CustomActiveController
         
         UserToken::removeEmailConfirmToken($user->id, $token);
         if ($user->save()) {
-            return $this->redirect('/attendance-system/frontend/web/index.php?r=site%2Fconfirmation-success');
+            return $this->redirect('/attendance-system/frontend/web/index.php/site/confirmation-success');
         }
-        return $this->redirect('/attendance-system/frontend/web/index.php?r=site%2Fconfirmation-error');
+        return $this->redirect('/attendance-system/frontend/web/index.php/site/confirmation-error');
     }
 
     public function actionRegisterDevice() {

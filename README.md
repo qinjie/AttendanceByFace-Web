@@ -239,7 +239,7 @@ Authorization: 'Bearer <token>'
 ####Request: None
 ####Response:
 ```
-logout successful
+logout successfully
 ```
 
 ***
@@ -394,6 +394,49 @@ Authorization: 'Bearer <token>'
 
 ***
 
+###GET ```timetable/today-for-lecturer```
+```
+=> Get all lessons of a lecturer for today, sorted by start time
+```
+####Header:
+```
+Authorization: 'Bearer <token>'
+```
+####Request: None
+####Response:
+```
+[
+  {
+    "lesson_id": "17",
+    "subject_area": "AE",
+    "class_section": "LM12",
+    "component": "LEC",
+    "start_time": "09:00",
+    "end_time": "10:00",
+    "weekday": "WED",
+    "meeting_pattern": "",
+    "location": "Location 3",
+    "name": "Venue 3",
+    "number_student": "1"
+  },
+  {
+    "lesson_id": "23",
+    "subject_area": "ELECTRO",
+    "class_section": "T1M2",
+    "component": "TUT",
+    "start_time": "13:00",
+    "end_time": "15:00",
+    "weekday": "WED",
+    "meeting_pattern": "EVEN",
+    "location": "Location 3",
+    "name": "Venue 3",
+    "number_student": "3"
+  }
+]
+```
+
+***
+
 ###GET ```timetable/one-day?date=2016-11-22```
 ```
 => Get all lessons for one day, sorted by start time
@@ -425,6 +468,49 @@ Authorization: 'Bearer <token>'
         recorded_at,
         lecturer_name
     }
+]
+```
+
+***
+
+###GET ```timetable/one-day-for-lecturer?date=2016-07-22```
+```
+=> Get all lessons of a lecturer for one day, sorted by start time
+```
+####Header:
+```
+Authorization: 'Bearer <token>'
+```
+####Request: None
+####Response:
+```
+[
+  {
+    "lesson_id": "31",
+    "subject_area": "MECHANIC",
+    "class_section": "T1M2",
+    "component": "TUT",
+    "start_time": "10:00",
+    "end_time": "11:00",
+    "weekday": "FRI",
+    "meeting_pattern": "",
+    "location": "Location 2",
+    "name": "Venue 2",
+    "number_student": "2"
+  },
+  {
+    "lesson_id": "21",
+    "subject_area": "ELECTRIC",
+    "class_section": "T1M2",
+    "component": "TUT",
+    "start_time": "11:00",
+    "end_time": "12:00",
+    "weekday": "FRI",
+    "meeting_pattern": "",
+    "location": "Location 3",
+    "name": "Venue 3",
+    "number_student": "2"
+  }
 ]
 ```
 

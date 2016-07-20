@@ -10,7 +10,7 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $user common\models\User */
 
-$confirmLink = Yii::$app->urlManager->createAbsoluteUrl(['index.php/v1/user/confirm-email', 'token' => $token]);
+$confirmLink = Yii::$app->params['API_BASEURL'].'v1/user/confirm-email?token='.$token;
 ?>
 
 <!DOCTYPE html>
