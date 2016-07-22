@@ -535,7 +535,7 @@ Authorization: 'Bearer <token>'
 
 ***
 
-###~~GET ```timetable/week?week=1```~~
+###GET ```timetable/week?week=1```
 ```
 => Get all lessons for one week. For each week day, sort lessons by start time
 ```
