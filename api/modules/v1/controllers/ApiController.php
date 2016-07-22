@@ -5,6 +5,7 @@ use api\common\controllers\CustomActiveController;
 use api\common\models\User;
 use api\modules\v1\models\UploadForm;
 use api\common\components\AccessRule;
+use api\common\components\Facepp;
 
 use yii\rest\Controller;
 use Yii;

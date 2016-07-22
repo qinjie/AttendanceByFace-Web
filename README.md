@@ -358,6 +358,25 @@ face_id
 
 ***
 
+###POST ```user/train-face```
+```
+=> Train face for a student
+```
+####Header:
+```
+Authorization: 'Bearer <token>'
+```
+####Request:
+```
+face_id
+```
+####Response:
+```
+{}
+```
+
+***
+
 ###GET ```timetable/today```
 ```
 => Get all lessons for today, sorted by start time

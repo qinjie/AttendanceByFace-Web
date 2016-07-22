@@ -7,6 +7,7 @@ use api\common\helpers\TokenHelper;
 use api\common\models\UserToken;
 use api\common\models\User;
 use api\common\components\AccessRule;
+use api\common\components\Facepp;
 
 use Yii;
 use api\common\models\SignupModel;
@@ -62,7 +63,7 @@ class UserController extends CustomActiveController
                 ],
                 [
                     'actions' => ['logout', 'person-id', 'face-id', 'set-person-id', 'set-face-id',
-                        'change-password'],
+                        'change-password', 'train-face'],
                     'allow' => true,
                     'roles' => ['@'],
                 ]
@@ -330,6 +331,38 @@ class UserController extends CustomActiveController
         return [
             'result' => $query->execute(),
         ];
+    }
+
+    public function actionTrainFace() {
+        $bodyParams = $request->bodyParams;
+        $newFaceId = $bodyParams;
+
+        $facepp = new Facepp();
+        $facepp->api_key = Yii::$app->params['FACEPP_API_KEY'];
+        $facepp->api_secret = Yii::$app->params['FACEPP_API_SECRET'];
+
+        $user = Yii::$app->user->identity;
+        $personId = $user->person_id;
+        $listFaceId = $user->face_id;
+        if ($listFaceId) $listFaceId = json_decode($listFaceId);
+        else $listFaceId = [];
+        if (count($listFaceId) == 5) {
+            $params['person_id'] = $personId;
+            $params['face_id'] = $listFaceId[0];
+            $response = $facepp->execute('/person/remove_face', $params);
+            // $result = json_decode($response['body']);
+            array_splice($listFaceId, 0, 1);
+        }
+        $listFaceId[] = $newFaceId;
+        $params['person_id'] = $personId;
+        $params['face_id'] = $newFaceId;
+        $response = $facepp->execute('/person/add_face', $params);
+        // $result = json_decode($response['body']);
+
+        $paramsVerify['person_id'] = $personId;
+        $response = $facepp->execute('/train/verify', $paramsVerify);
+        $result = json_decode($response['body']);
+        return $result;
     }
 
     // public function afterAction($action, $result)
