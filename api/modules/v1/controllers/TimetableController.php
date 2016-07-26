@@ -444,13 +444,24 @@ class TimetableController extends CustomActiveController {
         $bodyParams = $request->bodyParams;
         $timetable_id = $bodyParams['timetable_id'];
 
-        $result = false;
-        if ($this->checkTimetable($student->id, $timetable_id)) $result = true;
+        $response = [];
+        $result = $this->checkTimetable($student->id, $timetable_id);
+        if ($result['ok']) $response['result'] = 0;
+        else {
+            $timetable = $result['timetable'];
+            $currentTime = strtotime(date('H:i'));
+            $startTime = strtotime($timetable['start_time']);
+            if ($currentTime < $startTime) {
+                $response['result'] = -1;
+                $response['waitTime'] = $startTime - $currentTime - self::ATTENDANCE_INTERVAL * 60;
+            } else {
+                $response['result'] = 1;
+                $response['lateTime'] = $currentTime - $startTime - self::ATTENDANCE_INTERVAL * 60;
+            }
+        }
 
-        return [
-            'result' => $result,
-            'currentTime' => date('H:i'),
-        ];
+        $response['currentTime'] = date('H:i');
+        return $response;
     }
 
     private function getTimetableById($studentId, $timetableId) {
@@ -485,7 +496,6 @@ class TimetableController extends CustomActiveController {
             throw new BadRequestHttpException('Invalid timetable id');        
         }
 
-        $currentTime = date('H:i');
         $currentDay = date('d');
         $currentMonth = date('m');
         $currentYear = date('Y');
@@ -506,9 +516,15 @@ class TimetableController extends CustomActiveController {
         ->bindValue(':currentDay', $currentDay)
         ->queryOne();
 
-        $diff = abs(round((strtotime($currentTime) - strtotime($timetable['start_time'])) / 60));
-        if ($diff <= self::ATTENDANCE_INTERVAL && !(bool)$attendance) return $timetable;
-        else return null;
+        $currentTime = strtotime(date('H:i'));
+        $startTime = strtotime($timetable['start_time']);
+        $diff = abs(round($currentTime - $startTime) / 60);
+        $result = [
+            'timetable' => $timetable,
+            'ok' => false,
+        ];
+        if ($diff <= self::ATTENDANCE_INTERVAL && !(bool)$attendance) $result['ok'] = true;
+        return $result;
     }
 
     private function getLateMinutes($timetable) {
@@ -527,10 +543,12 @@ class TimetableController extends CustomActiveController {
         $timetable_id = $bodyParams['timetable_id'];
         $face_percent = doubleval($bodyParams['face_percent']);
 
-        $timetable = $this->checkTimetable($student->id, $timetable_id);
+        $checkResult = $this->checkTimetable($student->id, $timetable_id);
+        $timetable = $checkResult['timetable'];
+        $ok = $checkResult['ok'];
 
         if ($face_percent >= self::FACE_THRESHOLD) {
-            if ($timetable) {
+            if ($ok) {
                 $lateMinutes = $this->getLateMinutes($timetable);
                 $attendance = new Attendance();
                 $attendance->student_id = $student->id;
@@ -569,9 +587,11 @@ class TimetableController extends CustomActiveController {
         $bodyParams = $request->bodyParams;
         $timetable_id = $bodyParams['timetable_id'];
 
-        $timetable = $this->checkTimetable($student->id, $timetable_id);
+        $checkResult = $this->checkTimetable($student->id, $timetable_id);
+        $timetable = $checkResult['timetable'];
+        $ok = $checkResult['ok'];
 
-        if ($timetable) {
+        if ($ok) {
             $lateMinutes = $this->getLateMinutes($timetable);
             $attendance = new Attendance();
             $attendance->student_id = $student->id;
