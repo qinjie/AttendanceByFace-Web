@@ -140,7 +140,7 @@ class AttendanceController extends CustomActiveController {
         ];
     }
 
-    private function getAllLessonsOfClass($studentId, $semester = '', $class_section) {
+    private function getAllLessonsOfClass($studentId, $semester, $class_section) {
         $listLesson = Yii::$app->db->createCommand('
             select class_section, 
                    lesson_id, 
@@ -298,7 +298,7 @@ class AttendanceController extends CustomActiveController {
         return $result;
     }
 
-    private function getAllClassSections($student_id, $semester = '') {
+    private function getAllClassSections($student_id, $semester) {
         $listClassSections = Yii::$app->db->createCommand('
             select distinct class_section 
              from timetable join lesson on timetable.lesson_id = lesson.id 

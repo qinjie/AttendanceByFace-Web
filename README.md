@@ -767,6 +767,10 @@ Authorization: 'Bearer <token>'
 - start_date (Ex: '2016-06-16 00:00:00')
 - end_date (Ex: '2016-06-16 00:00:00')
 ```
+####Header:
+```
+Authorization: 'Bearer <token>'
+```
 ###Request: None
 ###Response:
 ```
@@ -844,6 +848,10 @@ Authorization: 'Bearer <token>'
 ```
 => Get all class sections in a semester for a student
 ```
+####Header:
+```
+Authorization: 'Bearer <token>'
+```
 ###Request: None
 ###Response:
 ```
@@ -862,6 +870,10 @@ Authorization: 'Bearer <token>'
 ```
 => Get all semesters for a student
 ```
+####Header:
+```
+Authorization: 'Bearer <token>'
+```
 ###Request: None
 ###Response:
 ```
@@ -876,6 +888,10 @@ Authorization: 'Bearer <token>'
 ###GET ```timetable/next-days?days=1```
 ```
 => Get timetable for some next days
+```
+####Header:
+```
+Authorization: 'Bearer <token>'
 ```
 ###Request: None
 ###Response:
@@ -909,4 +925,84 @@ Authorization: 'Bearer <token>'
   ],
   "2016-07-01": []
 }
+```
+
+***
+
+###GET ```timetable/current-semester?page=1```
+```
+=> Get list lessons of a lecturer from today backward, returned page by page.
+Each page contains lessons in 5 continuous days.
+```
+####Header:
+```
+Authorization: 'Bearer <token>'
+```
+###Request: None
+###Response:
+```
+{
+  "timetable": [
+    {
+      "class_section": "L1M2",
+      "lesson_id": "27",
+      "subject_area": "IS MATH",
+      "weekday": "TUES",
+      "meeting_pattern": "",
+      "component": "LEC",
+      "semester": "2",
+      "start_time": "10:00",
+      "end_time": "12:00",
+      "lecturer_name": "Zhang Qinjie",
+      "location": "Location 2",
+      "name": "Venue 2",
+      "date": "2016-07-26",
+      "totalStudent": 2,
+      "presentStudent": 0
+    },
+    {
+      "class_section": "P1M2",
+      "lesson_id": "29",
+      "subject_area": "MECHANIC",
+      "weekday": "TUES",
+      "meeting_pattern": "ODD",
+      "component": "PRA",
+      "semester": "2",
+      "start_time": "13:00",
+      "end_time": "15:00",
+      "lecturer_name": "Zhang Qinjie",
+      "location": "Location 2",
+      "name": "Venue 2",
+      "date": "2016-07-26",
+      "totalStudent": 2,
+      "presentStudent": 0
+    }
+  ],
+  "nextPage": 2
+}
+```
+
+***
+
+###GET ```timetable/list-student-for-lesson?lessonId=7&date=2016-07-25```
+```
+=> Get list of students for a lesson in a date.
+```
+####Header:
+```
+Authorization: 'Bearer <token>'
+```
+###Request: None
+###Response:
+```
+[
+  {
+    "student_id": "2",
+    "student_name": "MICHAEL YOO",
+    "status": (0: not yet, 1: present, 2: absent, 3: late),
+    "countAbsent": "6",
+    "countLate": "0",
+    "countPresent": "0"
+  }
+]
 ```
