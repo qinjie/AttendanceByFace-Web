@@ -1629,7 +1629,7 @@ insert  into `user`(`id`,`username`,`auth_key`,`password_hash`,`email`,`status`,
   (55,'3333','llF-xngHw2GG03B6VBFmRsz0Og962A7H','$2y$13$qY9oJdIfhhOYQAgtmlzK4uTuoEnE4IKMVqxKkSkmjdhwqKXStV.le','nhtc.123@gmail.com',10,1461214049,1461926225,'student',20,'0'),
   (56,'1111','eoUT-i7zLHcBDnl3m4kjvmmIGglADSiW','$2y$13$ctpUi82YuFrJp3.lBJLWG.bX/eXzJyD.cPwD.oF0uizHrFTlmQrNK','1111@mail.com',10,1468284085,1468284085,'student',20,'0'),
   (57,'0000','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','0000@gmail.com',10,1461214049,1461926225,'student',20,'f8:32:e4:5f:6f:35'),
-  (60,'pppp','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','pppp@mail.com',10,1461214049,1461926225,'lecturer',30,'0'),
+  (60,'pppp','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$RcbtHfhi/v48CrDS6GebUu/61lquIKrRHb5FX6mByMzoKG2grgYlu','pppp@mail.com',10,1461214049,1461926225,'lecturer',30,'0'),
 
   /* ios test */
   (58,'npnp','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','npnp@mail.com',10,1461214049,1461926225,'student',20,'0'),
