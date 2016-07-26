@@ -1,4 +1,6 @@
 #Attendance System
+##CODES
+###Weekday:
 ```
 'MON' => 0,
 'TUES' => 1,
@@ -8,6 +10,33 @@
 'SAT' => 5,
 'SUN' => 6,
 ```
+###Error code in 400
+```
+CODE_INCORRECT_USERNAME = 0;
+CODE_INCORRECT_PASSWORD = 1;
+CODE_INCORRECT_DEVICE = 2;
+CODE_UNVERIFIED_EMAIL = 3;
+CODE_UNVERIFIED_DEVICE = 4;
+CODE_UNVERIFIED_EMAIL_DEVICE = 5;
+CODE_INVALID_ACCOUNT = 6;
+CODE_DUPLICATE_DEVICE = 7;
+CODE_INVALID_PASSWORD = 8;
+```
+###Attendance status
+```
+STATUS_NOTYET = 0;
+STATUS_PRESENT = 1;
+STATUS_LATE = 2;
+STATUS_ABSENT = 3;
+```
+###Common HTTP status
+```
+200 - Success
+400 - Bad Request HTTP
+401 - Unauthorized
+500 - Server error
+```
+
 ##API
 ###GET ```api/check-student```
 ```
