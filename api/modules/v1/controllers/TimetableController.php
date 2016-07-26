@@ -33,6 +33,7 @@ class TimetableController extends CustomActiveController {
 
     const SECONDS_IN_DAY = 86400;   // 24 * 60 * 60
     const SECONDS_IN_WEEK = 604800; // 7 * 24 * 60 * 60
+    const DAYS_PER_PAGE = 5;
 
     public function behaviors() {
         $behaviors = parent::behaviors();
@@ -54,7 +55,8 @@ class TimetableController extends CustomActiveController {
                     'roles' => [User::ROLE_STUDENT],
                 ],
                 [   
-                    'actions' => ['today-for-lecturer', 'one-day-for-lecturer'],
+                    'actions' => ['today-for-lecturer', 'one-day-for-lecturer', 'current-semester',
+                        'list-student-for-lesson'],
                     'allow' => true,
                     'roles' => [User::ROLE_LECTURER],
                 ],
@@ -651,6 +653,177 @@ class TimetableController extends CustomActiveController {
         ->queryAll();
 
         return $listLesson;
+    }
+
+    public function actionCurrentSemester($page = 1) {
+        $userId = Yii::$app->user->identity->id;
+        $lecturer = Lecturer::findOne(['user_id' => $userId]);
+        if (!$lecturer)
+            throw new BadRequestHttpException('No lecturer with given user id');
+        
+        $start_time = strtotime(date('Y-m-d')) - ($page - 1) * self::DAYS_PER_PAGE * self::SECONDS_IN_DAY;  
+        $end_time = max(strtotime(self::DEFAULT_START_DATE), $start_time - self::DAYS_PER_PAGE * self::SECONDS_IN_DAY);
+        $listLesson = $this->getAllLessonsInSemester($lecturer->id, self::DEFAULT_SEMESTER);
+        
+        $result = [];
+        for ($iter_time = $start_time; $iter_time > $end_time; $iter_time -= self::SECONDS_IN_DAY) {
+            $meeting_pattern = $this->getMeetingPatternInTime($iter_time);
+            $dw = date('w', $iter_time);
+            $weekdays = ['SUN', 'MON', 'TUES', 'WED', 'THUR', 'FRI', 'SAT'];
+            $weekday = $weekdays[$dw];
+            for ($iter = 0; $iter < count($listLesson); ++$iter) {
+                $lesson = $listLesson[$iter];
+                $listStudent = $this->getListStudentOfLesson($lesson['lesson_id'], $iter_time);
+                // return $listStudent;
+                if ($lesson['weekday'] == $weekday 
+                    && ($lesson['meeting_pattern'] == '' || $lesson['meeting_pattern'] == $meeting_pattern)) {
+                    $result[] = $lesson;
+                    $id = count($result) - 1;
+                    $result[$id]['date'] = date('Y-m-d', $iter_time);
+                    $result[$id]['totalStudent'] = count($listStudent);
+                    $result[$id]['presentStudent'] = $this->getNumberPresentStudent($listStudent);
+                }
+            }
+        }
+        usort($result, 'self::cmpLessonInTimetable');
+        return [
+            'timetable' => $result,
+            'nextPage' => $page + 1
+        ];
+    }
+
+    private function getNumberPresentStudent($listStudent) {
+        $result = 0;
+        for ($iter = 0; $iter < count($listStudent); ++$iter) {
+            if ($listStudent[$iter]['attendance_id'] != null
+                && !$listStudent[$iter]['is_absent']) {
+                ++$result;
+            }
+        }
+        return $result;
+    }
+
+    private function getListStudentOfLesson($lessonId, $time) {
+        $currentDay = date('d', $time);
+        $currentMonth = date('m', $time);
+        $currentYear = date('Y', $time);
+
+        $listStudent = Yii::$app->db->createCommand('
+            select timetable.student_id, 
+                   attendance.id as attendance_id, 
+                   timetable.lesson_id, 
+                   is_absent, 
+                   is_late, 
+                   recorded_date 
+             from timetable left join attendance 
+             on timetable.student_id = attendance.student_id and timetable.lesson_id = attendance.lesson_id 
+             and dayofmonth(recorded_date) = :currentDay 
+             and month(recorded_date) = :currentMonth 
+             and year(recorded_date) = :currentYear 
+             where timetable.lesson_id = :lessonId 
+        ')
+        ->bindValue(':lessonId', $lessonId)
+        ->bindValue(':currentDay', $currentDay)
+        ->bindValue(':currentMonth', $currentMonth)
+        ->bindValue(':currentYear', $currentYear)
+        ->queryAll();
+
+        return $listStudent;
+    }
+
+    private static function cmpLessonInTimetable($a1, $a2) {
+        $cmpDate = strcmp($a1['date'], $a2['date']);
+        if ($cmpDate != 0) return -$cmpDate;
+        else return self::cmpTime($a1['start_time'], $a2['start_time']);
+    }
+
+    private function getAllLessonsInSemester($lecturerId, $semester) {
+        $listLesson = Yii::$app->db->createCommand('
+            select class_section, 
+                   lesson_id, 
+                   subject_area, 
+                   weekday, 
+                   meeting_pattern, 
+                   component, 
+                   semester, 
+                   start_time, 
+                   end_time, 
+                   lecturer.name as lecturer_name, 
+                   venue.location, 
+                   venue.name 
+             from timetable join lesson on timetable.lesson_id = lesson.id 
+             join lecturer on timetable.lecturer_id = lecturer.id 
+             join venue on lesson.venue_id = venue.id 
+             where semester = :semester 
+             and lecturer_id = :lecturerId 
+             group by class_section, lesson_id, weekday, meeting_pattern, 
+                component, semester, start_time, end_time
+        ')
+        ->bindValue(':semester', $semester)
+        ->bindValue(':lecturerId', $lecturerId)
+        ->queryAll();
+
+        return $listLesson;
+    }
+
+    public function actionListStudentForLesson($lessonId, $date) {
+        $time = strtotime($date);
+        $currentDay = date('d', $time);
+        $currentMonth = date('m', $time);
+        $currentYear = date('Y', $time);
+
+        $listStudent = Yii::$app->db->createCommand('
+            select s1.name as student_name,
+                   s1.id as student_id,
+                   t1.lesson_id, 
+                   a1.id as attendance_id, 
+                   (select count(attendance.id) 
+                    from attendance 
+                    where attendance.student_id = t1.student_id and attendance.lesson_id = t1.lesson_id
+                    and attendance.is_absent = 1) as countAbsent,
+                   (select count(attendance.id)
+                    from attendance
+                    where attendance.student_id = t1.student_id and attendance.lesson_id = t1.lesson_id
+                    and attendance.is_absent = 0 and attendance.is_late = 0) as countPresent,
+                   (select count(attendance.id)
+                    from attendance
+                    where attendance.student_id = t1.student_id and attendance.lesson_id = t1.lesson_id
+                    and attendance.is_absent = 0 and attendance.is_late = 1) as countLate,
+                   a1.is_absent,
+                   a1.is_late
+             from timetable as t1 join student as s1 on t1.student_id = s1.id
+             left join attendance as a1 on t1.lesson_id = a1.lesson_id and t1.student_id = a1.student_id
+             and dayofmonth(a1.recorded_date) = :currentDay 
+             and month(a1.recorded_date) = :currentMonth 
+             and year(a1.recorded_date) = :currentYear 
+             where t1.lesson_id = :lessonId
+        ')
+        ->bindValue(':lessonId', $lessonId)
+        ->bindValue(':currentDay', $currentDay)
+        ->bindValue(':currentMonth', $currentMonth)
+        ->bindValue(':currentYear', $currentYear)        
+        ->queryAll();
+
+        // return $listStudent;
+
+        $func = function($val) {
+            $newVal = [
+                'student_id' => $val['student_id'],
+                'student_name' => $val['student_name'],
+                'status' => self::STATUS_NOTYET,
+                'countAbsent' => $val['countAbsent'],
+                'countLate' => $val['countLate'],
+                'countPresent' => $val['countPresent'],
+            ];
+            if ($val['attendance_id'] != null) {
+                if ($val['is_absent']) $newVal['status'] = self::STATUS_ABSENT;
+                else if ($val['is_late']) $newVal['status'] = self::STATUS_LATE;
+                else $newVal['status'] = self::STATUS_PRESENT;
+            }
+            return $newVal;
+        };
+        $listStudent = array_map($func, $listStudent);
+        return $listStudent;           
     }
 
     // public function afterAction($action, $result)

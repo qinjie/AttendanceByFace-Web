@@ -58,7 +58,7 @@ CREATE TABLE `lecturer` (
 /*Data for the table `lecturer` */
 
 insert  into `lecturer` (`id`,`name`, `email`, `acad`, `user_id`) values 
-  ("1", "Zhang Qinjie", "npnp@mail.com", "11", 59),
+  ("1", "Zhang Qinjie", "abab@mail.com", "11", 59),
   ("2", "Lecturer 2", "2@mail.com", "22", NULL),
   ("3", "Lecturer 3", "3@mail.com", "33", NULL);
 
@@ -1624,11 +1624,11 @@ CREATE TABLE `user` (
 /*Data for the table `user` */
 
 insert  into `user`(`id`,`username`,`auth_key`,`password_hash`,`email`,`status`,`created_at`,`updated_at`,`name`,`role`, `device_hash`) values 
-  (1,'u1','cPbJFG-iAzqNRTLRZnJ-r_Suqa9vzkgT','$2y$13$2hu6q.PtQF5jplH930GS1OLgW.e1VOjK4UpTtTXxu3TaTXbwkgzDW','mark.qj@gmail.com',10,1445415998,1461941104,'Teacher',20,'0'),
-  (15,'u2','bMlOxgHdwTyLr3Nh3JI6StXz6SL0jOXE','$2y$13$upP/KvUhqRgqFv7AXQa8uuRD.XxqW2deMRU6IYdX9WavLYAI3ZL3a','parent@mail.ru',10,1447691728,1459412913,'Student',10,'0'),
-  (18,'u3','x3','$2y$13$SZVzEK9bqUSf4CDFW3cbK.glXDubG6XzDhVnq3seXvNsxEI8.8s5e','teacher@mail.ru',10,1447745333,1461926244,'Teacher',20,'0'),
-  (23,'u4','x4','$2y$13$/3TLZjGEkzg3VuksfqwUgetN58T/b3Vjp7vmklwryCXmlkPG2oLMa','manager@mail.ru',10,1460811289,1461926211,'Student',10,'0'),
-  (52,'u5','BP4dN0s5LU5OItOd4XnytTFnR5phJ5X_','$2y$13$R31I9.Ah7CKIjclBtyPPk.Bi.st9jZoh8yBbuKszkjgW4/C.WK7Yq','principle@mail.ru',10,1461214049,1461926225,'Student',10,'0'),
+  (1,'u1','cPbJFG-iAzqNRTLRZnJ-r_Suqa9vzkgT','$2y$13$2hu6q.PtQF5jplH930GS1OLgW.e1VOjK4UpTtTXxu3TaTXbwkgzDW','mark.qj@gmail.com',10,1445415998,1461941104,'lecturer',20,'0'),
+  (15,'u2','bMlOxgHdwTyLr3Nh3JI6StXz6SL0jOXE','$2y$13$upP/KvUhqRgqFv7AXQa8uuRD.XxqW2deMRU6IYdX9WavLYAI3ZL3a','parent@mail.ru',10,1447691728,1459412913,'student',10,'0'),
+  (18,'u3','x3','$2y$13$SZVzEK9bqUSf4CDFW3cbK.glXDubG6XzDhVnq3seXvNsxEI8.8s5e','teacher@mail.ru',10,1447745333,1461926244,'lecturer',20,'0'),
+  (23,'u4','x4','$2y$13$/3TLZjGEkzg3VuksfqwUgetN58T/b3Vjp7vmklwryCXmlkPG2oLMa','manager@mail.ru',10,1460811289,1461926211,'student',10,'0'),
+  (52,'u5','BP4dN0s5LU5OItOd4XnytTFnR5phJ5X_','$2y$13$R31I9.Ah7CKIjclBtyPPk.Bi.st9jZoh8yBbuKszkjgW4/C.WK7Yq','principle@mail.ru',10,1461214049,1461926225,'student',10,'0'),
   (53,'1234','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','1234@gmail.com',10,1461214049,1461926225,'student',20,'f8:32:e4:5f:6f:35'),
   (54,'5678','ev0ddY438lQUVzIBT4Cz6FfonldlZGwn','$2y$13$pm7wYtxExchdumcLXrb6DOTP0KeQSUda3hylys/JQ6t0aqjYtUbpq','5678@gmail.com',10,1461214049,1461926225,'student',20,'0'),
   (55,'3333','llF-xngHw2GG03B6VBFmRsz0Og962A7H','$2y$13$qY9oJdIfhhOYQAgtmlzK4uTuoEnE4IKMVqxKkSkmjdhwqKXStV.le','nhtc.123@gmail.com',10,1461214049,1461926225,'student',20,'0'),
