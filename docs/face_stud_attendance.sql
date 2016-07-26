@@ -59,7 +59,7 @@ CREATE TABLE `lecturer` (
 
 insert  into `lecturer` (`id`,`name`, `email`, `acad`, `user_id`) values 
   ("1", "Zhang Qinjie", "abab@mail.com", "11", 59),
-  ("2", "Lecturer 2", "2@mail.com", "22", NULL),
+  ("2", "Lecturer 2", "2@mail.com", "22", 60),
   ("3", "Lecturer 3", "3@mail.com", "33", NULL);
 
 
@@ -1624,16 +1624,12 @@ CREATE TABLE `user` (
 /*Data for the table `user` */
 
 insert  into `user`(`id`,`username`,`auth_key`,`password_hash`,`email`,`status`,`created_at`,`updated_at`,`name`,`role`, `device_hash`) values 
-  (1,'u1','cPbJFG-iAzqNRTLRZnJ-r_Suqa9vzkgT','$2y$13$2hu6q.PtQF5jplH930GS1OLgW.e1VOjK4UpTtTXxu3TaTXbwkgzDW','mark.qj@gmail.com',10,1445415998,1461941104,'lecturer',20,'0'),
-  (15,'u2','bMlOxgHdwTyLr3Nh3JI6StXz6SL0jOXE','$2y$13$upP/KvUhqRgqFv7AXQa8uuRD.XxqW2deMRU6IYdX9WavLYAI3ZL3a','parent@mail.ru',10,1447691728,1459412913,'student',10,'0'),
-  (18,'u3','x3','$2y$13$SZVzEK9bqUSf4CDFW3cbK.glXDubG6XzDhVnq3seXvNsxEI8.8s5e','teacher@mail.ru',10,1447745333,1461926244,'lecturer',20,'0'),
-  (23,'u4','x4','$2y$13$/3TLZjGEkzg3VuksfqwUgetN58T/b3Vjp7vmklwryCXmlkPG2oLMa','manager@mail.ru',10,1460811289,1461926211,'student',10,'0'),
-  (52,'u5','BP4dN0s5LU5OItOd4XnytTFnR5phJ5X_','$2y$13$R31I9.Ah7CKIjclBtyPPk.Bi.st9jZoh8yBbuKszkjgW4/C.WK7Yq','principle@mail.ru',10,1461214049,1461926225,'student',10,'0'),
   (53,'1234','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','1234@gmail.com',10,1461214049,1461926225,'student',20,'f8:32:e4:5f:6f:35'),
   (54,'5678','ev0ddY438lQUVzIBT4Cz6FfonldlZGwn','$2y$13$pm7wYtxExchdumcLXrb6DOTP0KeQSUda3hylys/JQ6t0aqjYtUbpq','5678@gmail.com',10,1461214049,1461926225,'student',20,'0'),
   (55,'3333','llF-xngHw2GG03B6VBFmRsz0Og962A7H','$2y$13$qY9oJdIfhhOYQAgtmlzK4uTuoEnE4IKMVqxKkSkmjdhwqKXStV.le','nhtc.123@gmail.com',10,1461214049,1461926225,'student',20,'0'),
   (56,'1111','eoUT-i7zLHcBDnl3m4kjvmmIGglADSiW','$2y$13$ctpUi82YuFrJp3.lBJLWG.bX/eXzJyD.cPwD.oF0uizHrFTlmQrNK','1111@mail.com',10,1468284085,1468284085,'student',20,'0'),
   (57,'0000','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','0000@gmail.com',10,1461214049,1461926225,'student',20,'f8:32:e4:5f:6f:35'),
+  (60,'pppp','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','pppp@mail.com',10,1461214049,1461926225,'lecturer',30,'0'),
 
   /* ios test */
   (58,'npnp','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','npnp@mail.com',10,1461214049,1461926225,'student',20,'0'),
@@ -3253,6 +3249,53 @@ insert  into `timetable`(`id`,`student_id`,`lesson_id`,`created_at`, `lecturer_i
   (4103,4,51,'2016-04-26 11:10:06',1),
   (583,4,52,'2016-04-26 11:10:06',1),
   (584,4,53,'2016-04-26 11:10:06',1);
+
+
+insert  into `timetable`(`id`,`student_id`,`lesson_id`,`created_at`, `lecturer_id`) values 
+  (39,1,8,'2016-04-26 11:10:06',2),
+  (40,1,9,'2016-04-26 11:10:06',2),
+  (41,1,10,'2016-04-26 11:10:06',2),
+  (43,1,12,'2016-04-26 11:10:06',2),
+  (44,1,13,'2016-04-26 11:10:06',2),
+  (46,1,15,'2016-04-26 11:10:06',2),
+  (47,1,16,'2016-04-26 11:10:06',2),
+  (50,2,19,'2016-04-26 11:10:06',2),
+  (51,2,20,'2016-04-26 11:10:06',2),
+  (52,2,21,'2016-04-26 11:10:06',2),
+  (54,2,23,'2016-04-26 11:10:06',2),
+  (55,2,24,'2016-04-26 11:10:06',2),
+  (57,2,26,'2016-04-26 11:10:06',2),
+  (58,2,27,'2016-04-26 11:10:06',2),
+  (60,2,29,'2016-04-26 11:10:06',2),
+  (61,2,30,'2016-04-26 11:10:06',2),
+  (62,2,31,'2016-04-26 11:10:06',2),
+  (138,3,7,'2016-04-26 11:10:06',2),
+  (139,3,8,'2016-04-26 11:10:06',2),
+  (143,3,12,'2016-04-26 11:10:06',2),
+  (144,3,13,'2016-04-26 11:10:06',2),
+  (145,3,14,'2016-04-26 11:10:06',2),
+  (146,3,15,'2016-04-26 11:10:06',2),
+  (147,3,16,'2016-04-26 11:10:06',2),
+  (149,3,18,'2016-04-26 11:10:06',2),
+  (150,3,19,'2016-04-26 11:10:06',2),
+  (152,3,21,'2016-04-26 11:10:06',2),
+  (153,3,22,'2016-04-26 11:10:06',2),
+  (154,3,23,'2016-04-26 11:10:06',2),
+  (244,4,13,'2016-04-26 11:10:06',2),
+  (247,4,16,'2016-04-26 11:10:06',2),
+  (248,4,17,'2016-04-26 11:10:06',2),
+  (250,4,19,'2016-04-26 11:10:06',2),
+  (251,4,20,'2016-04-26 11:10:06',2),
+  (253,4,22,'2016-04-26 11:10:06',2),
+  (254,4,23,'2016-04-26 11:10:06',2),
+  (256,4,25,'2016-04-26 11:10:06',2),
+  (257,4,26,'2016-04-26 11:10:06',2),
+  (259,4,28,'2016-04-26 11:10:06',2),
+  (260,4,29,'2016-04-26 11:10:06',2),
+  (261,4,30,'2016-04-26 11:10:06',2),
+  (262,4,31,'2016-04-26 11:10:06',2),
+  (337,4,6,'2016-04-26 11:10:06',2),
+  (338,4,7,'2016-04-26 11:10:06',2);
 
 
 INSERT INTO `timetable` (`id`,`student_id`,`lesson_id`,`lecturer_id`) VALUES
@@ -14760,27 +14803,27 @@ CREATE TABLE `user_token` (
 
 /*Data for the table `user_token` */
 
-insert  into `user_token`(`id`,`user_id`,`token`,`title`,`ip_address`,`expire_date`,`created_date`,`updated_date`,`action`) values 
-  (2,15,'uEjx4gdvgBZmJbxEZfqG8E6Qs1H6c6nu','ACTION_CHANGE_EMAIL','127.0.0.1','2015-12-14 13:28:25','2015-12-07 13:28:05','2015-12-07 13:28:25',3),
-  (4,15,'mHQk3giA-4jAl7NHHoeMWjXXyUC6Sf6e','ACTION_CHANGE_EMAIL','127.0.0.1','2015-12-14 18:04:33','2015-12-07 18:04:28','2015-12-07 18:04:33',3),
-  (5,23,'H_4Ismh6tcr0JgLSJNohXN703lXn1WKv','ACTION_ACTIVATE_ACCOUNT','127.0.0.1','2015-12-15 21:51:58','2015-12-08 21:51:58','2015-12-08 21:51:58',1),
-  (6,24,'NvuTHLloI-pOYjwuTHlzmQO5MIQl3T0N','ACTION_ACTIVATE_ACCOUNT','127.0.0.1','2015-12-15 21:53:50','2015-12-08 21:53:50','2015-12-08 21:53:50',1),
-  (7,23,'ZItZpQugkTc6Z9ne5_UN6kFNM6lIjY2o','ACTION_ACTIVATE_ACCOUNT','127.0.0.1','2015-12-18 19:13:30','2015-12-11 19:13:30','2015-12-11 19:13:30',1),
-  (8,18,'K3pnWmgdOMxo4Zx318vMKIeiq6Op9LXr','ACTION_RESET_PASSWORD','127.0.0.1','2016-04-02 19:10:36','2016-03-26 19:10:36','2016-03-26 19:10:36',2),
-  (9,20,'FskuVth7ZFef-du2ZaoNJe6i21flTwSV','ACTION_CHANGE_EMAIL','5.57.8.106','2016-04-23 08:41:00','2016-04-16 08:41:00','2016-04-16 08:41:00',3),
-  (10,20,'s5GCHQXtg_1weudrhbKExxh0erB-RbGs','ACTION_CHANGE_EMAIL','5.57.8.106','2016-04-23 08:43:16','2016-04-16 08:43:16','2016-04-16 08:43:16',3),
-  (11,21,'XgnnkvXAL6-ugI3QA__bB3_e9oSaHDj0','ACTION_CHANGE_EMAIL','5.57.8.106','2016-04-23 08:50:38','2016-04-16 08:50:38','2016-04-16 08:50:38',3),
-  (12,21,'85I2tLb-Xrx0cXER0Q8rdXdiaabe5y3Q','ACTION_CHANGE_EMAIL','5.57.8.106','2016-04-23 09:03:02','2016-04-16 09:03:02','2016-04-16 09:03:02',3),
-  (13,21,'hgNTlkhX8pxLn6dVrVw2ri5o73VgY_C-','ACTION_CHANGE_EMAIL','5.57.8.106','2016-04-23 09:04:46','2016-04-16 09:04:46','2016-04-16 09:04:46',3),
-  (14,21,'DmBc3C6DlXeiW7vu_czS23ndg6sTqgcL','ACTION_CHANGE_EMAIL','5.57.8.106','2016-04-23 09:05:29','2016-04-16 09:05:29','2016-04-16 09:05:29',3),
-  (15,21,'AdgD-Tyx_fedkZ0GT4UlR5lGDQMoCZBz','ACTION_CHANGE_EMAIL','5.57.8.106','2016-04-23 09:08:11','2016-04-16 09:07:59','2016-04-16 09:08:11',3),
-  (16,21,'uhrUFnYn0h4aoEWeilaWBO1rRlKADitz','ACTION_CHANGE_EMAIL','5.57.8.106','2016-04-23 09:09:45','2016-04-16 09:09:45','2016-04-16 09:09:45',3),
-  (17,30,'RG8CRBk38whuzxZi4jDPLnnrI9SbxAN6','ACTION_ACTIVATE_ACCOUNT','77.95.61.49','2016-04-26 04:40:34','2016-04-19 04:40:12','2016-04-19 04:40:34',1),
-  (18,35,'S6WCSc0RGlC6tBFoiAKF3nLZpcS2HKpa','ACTION_ACTIVATE_ACCOUNT','77.95.61.49','2016-04-26 05:07:31','2016-04-19 05:07:02','2016-04-19 05:07:31',1),
-  (21,40,'FYWbNT57SwigP2PtZ_BKBLRz0Z-mcn1N','ACTION_ACTIVATE_ACCOUNT','178.217.174.2','2016-04-27 07:47:43','2016-04-20 07:47:43','2016-04-20 07:47:43',1),
-  (22,42,'J5151vo8a5o4wVADvduHnU9KNcCn3kPy','ACTION_ACTIVATE_ACCOUNT','178.217.174.2','2016-04-27 09:33:27','2016-04-20 09:33:27','2016-04-20 09:33:27',1),
-  (23,51,'PTrvVM--hRCxPDOcQC1Dweqzg5qmUvmB','ACTION_ACTIVATE_ACCOUNT','94.143.199.47','2016-04-28 04:46:11','2016-04-21 04:46:11','2016-04-21 04:46:11',1),
-  (24,52,'fFTZnjgnZaWdulJYZ-un8JRX-yg-Q9_l','ACTION_ACTIVATE_ACCOUNT','94.143.199.47','2016-04-28 04:48:10','2016-04-21 04:47:29','2016-04-21 04:48:10',1);
+-- insert  into `user_token`(`id`,`user_id`,`token`,`title`,`ip_address`,`expire_date`,`created_date`,`updated_date`,`action`) values 
+--   (2,15,'uEjx4gdvgBZmJbxEZfqG8E6Qs1H6c6nu','ACTION_CHANGE_EMAIL','127.0.0.1','2015-12-14 13:28:25','2015-12-07 13:28:05','2015-12-07 13:28:25',3),
+--   (4,15,'mHQk3giA-4jAl7NHHoeMWjXXyUC6Sf6e','ACTION_CHANGE_EMAIL','127.0.0.1','2015-12-14 18:04:33','2015-12-07 18:04:28','2015-12-07 18:04:33',3),
+--   (5,23,'H_4Ismh6tcr0JgLSJNohXN703lXn1WKv','ACTION_ACTIVATE_ACCOUNT','127.0.0.1','2015-12-15 21:51:58','2015-12-08 21:51:58','2015-12-08 21:51:58',1),
+--   (6,24,'NvuTHLloI-pOYjwuTHlzmQO5MIQl3T0N','ACTION_ACTIVATE_ACCOUNT','127.0.0.1','2015-12-15 21:53:50','2015-12-08 21:53:50','2015-12-08 21:53:50',1),
+--   (7,23,'ZItZpQugkTc6Z9ne5_UN6kFNM6lIjY2o','ACTION_ACTIVATE_ACCOUNT','127.0.0.1','2015-12-18 19:13:30','2015-12-11 19:13:30','2015-12-11 19:13:30',1),
+--   (8,18,'K3pnWmgdOMxo4Zx318vMKIeiq6Op9LXr','ACTION_RESET_PASSWORD','127.0.0.1','2016-04-02 19:10:36','2016-03-26 19:10:36','2016-03-26 19:10:36',2),
+--   (9,20,'FskuVth7ZFef-du2ZaoNJe6i21flTwSV','ACTION_CHANGE_EMAIL','5.57.8.106','2016-04-23 08:41:00','2016-04-16 08:41:00','2016-04-16 08:41:00',3),
+--   (10,20,'s5GCHQXtg_1weudrhbKExxh0erB-RbGs','ACTION_CHANGE_EMAIL','5.57.8.106','2016-04-23 08:43:16','2016-04-16 08:43:16','2016-04-16 08:43:16',3),
+--   (11,21,'XgnnkvXAL6-ugI3QA__bB3_e9oSaHDj0','ACTION_CHANGE_EMAIL','5.57.8.106','2016-04-23 08:50:38','2016-04-16 08:50:38','2016-04-16 08:50:38',3),
+--   (12,21,'85I2tLb-Xrx0cXER0Q8rdXdiaabe5y3Q','ACTION_CHANGE_EMAIL','5.57.8.106','2016-04-23 09:03:02','2016-04-16 09:03:02','2016-04-16 09:03:02',3),
+--   (13,21,'hgNTlkhX8pxLn6dVrVw2ri5o73VgY_C-','ACTION_CHANGE_EMAIL','5.57.8.106','2016-04-23 09:04:46','2016-04-16 09:04:46','2016-04-16 09:04:46',3),
+--   (14,21,'DmBc3C6DlXeiW7vu_czS23ndg6sTqgcL','ACTION_CHANGE_EMAIL','5.57.8.106','2016-04-23 09:05:29','2016-04-16 09:05:29','2016-04-16 09:05:29',3),
+--   (15,21,'AdgD-Tyx_fedkZ0GT4UlR5lGDQMoCZBz','ACTION_CHANGE_EMAIL','5.57.8.106','2016-04-23 09:08:11','2016-04-16 09:07:59','2016-04-16 09:08:11',3),
+--   (16,21,'uhrUFnYn0h4aoEWeilaWBO1rRlKADitz','ACTION_CHANGE_EMAIL','5.57.8.106','2016-04-23 09:09:45','2016-04-16 09:09:45','2016-04-16 09:09:45',3),
+--   (17,30,'RG8CRBk38whuzxZi4jDPLnnrI9SbxAN6','ACTION_ACTIVATE_ACCOUNT','77.95.61.49','2016-04-26 04:40:34','2016-04-19 04:40:12','2016-04-19 04:40:34',1),
+--   (18,35,'S6WCSc0RGlC6tBFoiAKF3nLZpcS2HKpa','ACTION_ACTIVATE_ACCOUNT','77.95.61.49','2016-04-26 05:07:31','2016-04-19 05:07:02','2016-04-19 05:07:31',1),
+--   (21,40,'FYWbNT57SwigP2PtZ_BKBLRz0Z-mcn1N','ACTION_ACTIVATE_ACCOUNT','178.217.174.2','2016-04-27 07:47:43','2016-04-20 07:47:43','2016-04-20 07:47:43',1),
+--   (22,42,'J5151vo8a5o4wVADvduHnU9KNcCn3kPy','ACTION_ACTIVATE_ACCOUNT','178.217.174.2','2016-04-27 09:33:27','2016-04-20 09:33:27','2016-04-20 09:33:27',1),
+--   (23,51,'PTrvVM--hRCxPDOcQC1Dweqzg5qmUvmB','ACTION_ACTIVATE_ACCOUNT','94.143.199.47','2016-04-28 04:46:11','2016-04-21 04:46:11','2016-04-21 04:46:11',1),
+--   (24,52,'fFTZnjgnZaWdulJYZ-un8JRX-yg-Q9_l','ACTION_ACTIVATE_ACCOUNT','94.143.199.47','2016-04-28 04:48:10','2016-04-21 04:47:29','2016-04-21 04:48:10',1);
 
 /*Table structure for table `venue` */
 
