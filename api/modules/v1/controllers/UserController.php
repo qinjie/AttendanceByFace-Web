@@ -258,7 +258,7 @@ class UserController extends CustomActiveController
                 else if ($user->status == User::STATUS_ACTIVE)
                     $user->status = User::STATUS_WAIT_DEVICE;
                 if ($user->save()) {
-                    UserToken::deleteAll(['user_id' => $id, 'action' => TokenHelper::TOKEN_ACTION_ACCESS]);
+                    UserToken::deleteAll(['user_id' => $user->id, 'action' => TokenHelper::TOKEN_ACTION_ACCESS]);
                     return [];
                 }
             }
