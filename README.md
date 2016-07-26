@@ -693,7 +693,9 @@ Authorization: 'Bearer <token>'
 ####Response:
 ```
 {
-  result: ('true', 'false'),
+  result: (-1, 0, 1),
+  waitTime: (if result = -1),
+  lateTime: (if result = 1),
   currentTime: '10:00'
 }
 ```
