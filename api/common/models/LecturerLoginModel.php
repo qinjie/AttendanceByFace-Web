@@ -6,11 +6,10 @@ use Yii;
 use yii\base\Model;
 
 
-class LoginModel extends Model
+class LecturerLoginModel extends Model
 {
     public $username;
     public $password;
-    public $device_hash;
     private $_user;
 
     public function rules()
@@ -29,12 +28,6 @@ class LoginModel extends Model
         }
     }
 
-    public function validateDevice($attribute, $params) {
-        $user = $this->getUser();
-        if (!$this->errors && !$user->validateDevice($this->device_hash)) {
-            $this->addError($attribute, 'Incorrect device.');
-        }
-    }
 
     public function login()
     {

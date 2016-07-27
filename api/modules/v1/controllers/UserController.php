@@ -14,6 +14,7 @@ use api\common\models\SignupModel;
 use api\common\models\SignupStudentModel;
 use api\common\models\SignupLecturerModel;
 use api\common\models\LoginModel;
+use api\common\models\LecturerLoginModel;
 use api\common\models\ChangePasswordModel;
 use api\common\models\PasswordResetModel;
 use api\common\models\RegisterDeviceModel;
@@ -46,7 +47,7 @@ class UserController extends CustomActiveController
         $behaviors['authenticator'] = [
             'class' => HttpBearerAuth::className(),
             'except' => ['login', 'signup', 'confirm-email', 'register-device',
-                'signup-student', 'signup-lecturer', 'reset-password'],
+                'signup-student', 'signup-lecturer', 'reset-password', 'lecturer-login'],
         ];
 
         $behaviors['access'] = [
@@ -57,7 +58,7 @@ class UserController extends CustomActiveController
             'rules' => [
                 [   
                     'actions' => ['login', 'signup', 'confirm-email', 'register-device',
-                        'signup-student', 'signup-lecturer', 'reset-password'],
+                        'signup-student', 'signup-lecturer', 'reset-password', 'lecturer-login'],
                     'allow' => true,
                     'roles' => ['?'],
                 ],
@@ -118,6 +119,38 @@ class UserController extends CustomActiveController
                 throw new BadRequestHttpException(null, self::CODE_INCORRECT_PASSWORD);
             if (isset($model->errors['device_hash']))
                 throw new BadRequestHttpException(null, self::CODE_INCORRECT_DEVICE);
+        }
+        throw new BadRequestHttpException('Invalid data');
+    }
+
+    public function actionLecturerLogin() {
+        $request = Yii::$app->request;
+        $bodyParams = $request->bodyParams;
+        $username = $bodyParams['username'];
+        $password = $bodyParams['password'];
+
+        $model = new LecturerLoginModel();
+        $model->username = $username;
+        $model->password = $password;
+        if ($user = $model->login()) {
+            if ($user->status == User::STATUS_WAIT_EMAIL_DEVICE)
+                throw new BadRequestHttpException(null, self::CODE_UNVERIFIED_EMAIL_DEVICE);
+            if ($user->status == User::STATUS_WAIT_EMAIL)
+                throw new BadRequestHttpException(null, self::CODE_UNVERIFIED_EMAIL);
+            if ($user->role != User::ROLE_LECTURER)
+                throw new BadRequestHttpException(null, self::CODE_INCORRECT_USERNAME);
+            if ($user->status == User::STATUS_ACTIVE) {
+                UserToken::deleteAll(['user_id' => $user->id, 'action' => TokenHelper::TOKEN_ACTION_ACCESS]);
+                $token = TokenHelper::createUserToken($user->id);
+                return [
+                    'token' => $token->token,
+                ];
+            } else throw new BadRequestHttpException(null, self::CODE_INVALID_ACCOUNT);
+        } else {
+            if (isset($model->errors['username']))
+                throw new BadRequestHttpException(null, self::CODE_INCORRECT_USERNAME);
+            if (isset($model->errors['password']))
+                throw new BadRequestHttpException(null, self::CODE_INCORRECT_PASSWORD);
         }
         throw new BadRequestHttpException('Invalid data');
     }
