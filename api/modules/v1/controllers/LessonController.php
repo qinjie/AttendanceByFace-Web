@@ -3,10 +3,12 @@ namespace api\modules\v1\controllers;
 
 use api\common\controllers\CustomActiveController;
 use api\common\models\User;
+use api\common\models\Lecturer;
 use api\modules\v1\models\Timetable;
 use api\modules\v1\models\Lesson;
 use api\common\models\Student;
 use api\common\components\AccessRule;
+use api\modules\v1\controllers\TimetableController;
 
 use yii\rest\Controller;
 use Yii;
@@ -38,6 +40,11 @@ class LessonController extends CustomActiveController {
                     'allow' => true,
                     'roles' => [User::ROLE_STUDENT],
                 ],
+                [
+                    'actions' => ['lecturer-class-section-list'],
+                    'allow' => true,
+                    'roles' => [User::ROLE_LECTURER],
+                ]
             ],
 
             'denyCallback' => function ($rule, $action) {
@@ -46,6 +53,27 @@ class LessonController extends CustomActiveController {
         ];
 
         return $behaviors;
+    }
+
+    public function actionLecturerClassSectionList() {
+        $userId = Yii::$app->user->identity->id;
+        $lecturer = Lecturer::findOne(['user_id' => $userId]);
+
+        if(!$lecturer)
+            throw new BadRequestHttpException('No lecturer with given user id');
+
+        $query = Yii::$app->db->createCommand('
+            select DISTINCT class_section
+            from (select *
+                from timetable
+                where lecturer_id = :lecturerId) as a1 join lesson
+            on lesson.id = lesson_id
+            where semester = :currentSemester
+        ')
+            ->bindValue(':lecturerId', $lecturer->id)
+            ->bindValue(':currentSemester', TimetableController::DEFAULT_SEMESTER);
+
+        return $query->queryAll();
     }
 
     public function actionDetail($id) {
