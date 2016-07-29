@@ -866,6 +866,28 @@ Authorization: 'Bearer <token>'
 
 ***
 
+###GET ```lesson/list-class-section-for-lecturer```
+```
+=> Get all class sections of a lecturer in current semester
+```
+####Header:
+```
+Authorization: 'Bearer <token>'
+```
+###Request: None
+###Response:
+```
+[
+  "L2L",
+  "P2L1",
+  "T2L1",
+  "LL12",
+  "PL23"
+]
+```
+
+***
+
 ###GET ```attendance/list-semester```
 ```
 => Get all semesters for a student
@@ -1003,6 +1025,51 @@ Authorization: 'Bearer <token>'
     "countAbsent": "6",
     "countLate": "0",
     "countPresent": "0"
+  }
+]
+```
+
+***
+
+###GET ```timetable/current-week```
+```
+=> Get list of lessons for a lecturer in current semester
+```
+####Header:
+```
+Authorization: 'Bearer <token>'
+```
+###Request: None
+###Response:
+```
+[
+  {
+    "class_section": "T03",
+    "lesson_id": "3128",
+    "subject_area": "IS PDA",
+    "weekday": "MON",
+    "meeting_pattern": "",
+    "component": "TUT",
+    "semester": "2",
+    "start_time": "08:00",
+    "end_time": "12:00",
+    "lecturer_name": "Lecturer 2",
+    "location": "Location 2",
+    "name": "Venue 2"
+  },
+  {
+    "class_section": "L2L",
+    "lesson_id": "61",
+    "subject_area": "ELECTRO",
+    "weekday": "MON",
+    "meeting_pattern": "",
+    "component": "LEC",
+    "semester": "2",
+    "start_time": "10:00",
+    "end_time": "12:00",
+    "lecturer_name": "Lecturer 2",
+    "location": "Location 1",
+    "name": "Venue 1"
   }
 ]
 ```

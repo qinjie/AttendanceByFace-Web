@@ -41,7 +41,7 @@ class LessonController extends CustomActiveController {
                     'roles' => [User::ROLE_STUDENT],
                 ],
                 [
-                    'actions' => ['lecturer-class-section-list'],
+                    'actions' => ['list-class-section-for-lecturer'],
                     'allow' => true,
                     'roles' => [User::ROLE_LECTURER],
                 ]
@@ -55,25 +55,29 @@ class LessonController extends CustomActiveController {
         return $behaviors;
     }
 
-    public function actionLecturerClassSectionList() {
+    public function actionListClassSectionForLecturer() {
         $userId = Yii::$app->user->identity->id;
         $lecturer = Lecturer::findOne(['user_id' => $userId]);
-
         if(!$lecturer)
             throw new BadRequestHttpException('No lecturer with given user id');
 
-        $query = Yii::$app->db->createCommand('
+        $listClassSection = Yii::$app->db->createCommand('
             select DISTINCT class_section
             from (select *
                 from timetable
                 where lecturer_id = :lecturerId) as a1 join lesson
             on lesson.id = lesson_id
-            where semester = :currentSemester
+            where semester = :semester
         ')
-            ->bindValue(':lecturerId', $lecturer->id)
-            ->bindValue(':currentSemester', TimetableController::DEFAULT_SEMESTER);
+        ->bindValue(':lecturerId', $lecturer->id)
+        ->bindValue(':semester', TimetableController::DEFAULT_SEMESTER)
+        ->queryAll();
 
-        return $query->queryAll();
+        $func = function($val) {
+            return $val['class_section'];
+        };
+        $listClassSection = array_map($func, $listClassSection);
+        return $listClassSection;
     }
 
     public function actionDetail($id) {

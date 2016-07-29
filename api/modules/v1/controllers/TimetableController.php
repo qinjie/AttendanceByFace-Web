@@ -33,7 +33,7 @@ class TimetableController extends CustomActiveController {
 
     const SECONDS_IN_DAY = 86400;   // 24 * 60 * 60
     const SECONDS_IN_WEEK = 604800; // 7 * 24 * 60 * 60
-    const DAYS_PER_PAGE = 5;
+    const DAYS_PER_PAGE = 7;
 
     public function behaviors() {
         $behaviors = parent::behaviors();
@@ -56,7 +56,7 @@ class TimetableController extends CustomActiveController {
                 ],
                 [   
                     'actions' => ['today-for-lecturer', 'one-day-for-lecturer', 'current-semester',
-                        'list-student-for-lesson'],
+                        'list-student-for-lesson', 'current-week'],
                     'allow' => true,
                     'roles' => [User::ROLE_LECTURER],
                 ],
@@ -675,18 +675,29 @@ class TimetableController extends CustomActiveController {
         return $listLesson;
     }
 
-    public function actionCurrentSemester($page = 1) {
+    public function actionCurrentSemester($fromDate = null, $classSection = null) {
+        if (!$fromDate) $fromDate = date('Y-m-d');
         $userId = Yii::$app->user->identity->id;
         $lecturer = Lecturer::findOne(['user_id' => $userId]);
         if (!$lecturer)
             throw new BadRequestHttpException('No lecturer with given user id');
         
-        $start_time = strtotime(date('Y-m-d')) - ($page - 1) * self::DAYS_PER_PAGE * self::SECONDS_IN_DAY;  
-        $end_time = max(strtotime(self::DEFAULT_START_DATE), $start_time - self::DAYS_PER_PAGE * self::SECONDS_IN_DAY);
+        $start_time = strtotime($fromDate);
+        $end_time = max(strtotime(self::DEFAULT_START_DATE), $start_time - (self::DAYS_PER_PAGE - 1) * self::SECONDS_IN_DAY);
+
         $listLesson = $this->getAllLessonsInSemester($lecturer->id, self::DEFAULT_SEMESTER);
+        if ($classSection) {
+            $filteredListLesson = [];
+            for ($iter = 0; $iter < count($listLesson); ++$iter) {
+                if ($listLesson[$iter]['class_section'] == $classSection) {
+                    $filteredListLesson[] = $listLesson[$iter];
+                }
+            }
+            $listLesson = $filteredListLesson;
+        }
         
         $result = [];
-        for ($iter_time = $start_time; $iter_time > $end_time; $iter_time -= self::SECONDS_IN_DAY) {
+        for ($iter_time = $start_time; $iter_time >= $end_time; $iter_time -= self::SECONDS_IN_DAY) {
             $meeting_pattern = $this->getMeetingPatternInTime($iter_time);
             $dw = date('w', $iter_time);
             $weekdays = ['SUN', 'MON', 'TUES', 'WED', 'THUR', 'FRI', 'SAT'];
@@ -708,7 +719,7 @@ class TimetableController extends CustomActiveController {
         usort($result, 'self::cmpLessonInTimetable');
         return [
             'timetable' => $result,
-            'nextPage' => $page + 1
+            'nextPage' => date('Y-m-d', $end_time - self::SECONDS_IN_DAY)
         ];
     }
 
@@ -844,6 +855,54 @@ class TimetableController extends CustomActiveController {
         };
         $listStudent = array_map($func, $listStudent);
         return $listStudent;           
+    }
+
+    public function actionCurrentWeek() {
+        $userId = Yii::$app->user->identity->id;
+        $lecturer = Lecturer::findOne(['user_id' => $userId]);
+        if(!$lecturer)
+            throw new BadRequestHttpException('No lecturer with given user id');
+
+        $duration = strtotime(date('Y-m-d')) - strtotime(self::DEFAULT_START_DATE) + self::SECONDS_IN_DAY;
+        $currentWeek = intval(($duration + self::SECONDS_IN_WEEK - 1) / self::SECONDS_IN_WEEK);
+        $meetingPattern = $currentWeek % 2 == 0 ? 'EVEN' : 'ODD';
+        
+        $listLesson = Yii::$app->db->createCommand('
+            select class_section, 
+                   lesson_id, 
+                   subject_area, 
+                   weekday, 
+                   meeting_pattern, 
+                   component, 
+                   semester, 
+                   start_time, 
+                   end_time, 
+                   lecturer.name as lecturer_name, 
+                   venue.location, 
+                   venue.name 
+             from timetable join lesson on timetable.lesson_id = lesson.id 
+             join lecturer on timetable.lecturer_id = lecturer.id 
+             join venue on lesson.venue_id = venue.id 
+             where semester = :semester 
+             and lecturer_id = :lecturerId 
+             and (meeting_pattern = \'\' or meeting_pattern = :meetingPattern) 
+             group by class_section, lesson_id, weekday, meeting_pattern, 
+                component, semester, start_time, end_time
+        ')
+        ->bindValue(':semester', self::DEFAULT_SEMESTER)
+        ->bindValue(':lecturerId', $lecturer->id)
+        ->bindValue(':meetingPattern', $meetingPattern)
+        ->queryAll();
+
+        usort($listLesson, 'self::cmpLessonInWeek');
+        return $listLesson;
+    }
+
+    private static function cmpLessonInWeek($l1, $l2) {
+        if ($l1['weekday'] == $l2['weekday']) 
+            return self::cmpTime($l1['start_time'], $l2['start_time']);
+        else
+            return self::weekDayToNumber($l1['weekday']) - self::weekDayToNumber($l2['weekday']);
     }
 
     // public function afterAction($action, $result)
