@@ -719,7 +719,7 @@ class TimetableController extends CustomActiveController {
         usort($result, 'self::cmpLessonInTimetable');
         return [
             'timetable' => $result,
-            'nextPage' => date('Y-m-d', $end_time - self::SECONDS_IN_DAY)
+            'nextFromDate' => date('Y-m-d', $end_time - self::SECONDS_IN_DAY)
         ];
     }
 

@@ -1026,10 +1026,11 @@ Authorization: 'Bearer <token>'
 
 ***
 
-###GET ```timetable/current-semester?page=1```
+###GET ```timetable/current-semester```
 ```
-=> Get list lessons of a lecturer from today backward, returned page by page.
-Each page contains lessons in 5 continuous days.
+=> Get list lessons of a lecturer from one day backward, returned page by page. Use following filters:
+- fromDate: default is today. Example: 2016-07-07
+- classSection: default is all class sections
 ```
 ####Header:
 ```
@@ -1075,7 +1076,7 @@ Authorization: 'Bearer <token>'
       "presentStudent": 0
     }
   ],
-  "nextPage": 2
+  "nextFromDate": "2016-07-10"
 }
 ```
 
