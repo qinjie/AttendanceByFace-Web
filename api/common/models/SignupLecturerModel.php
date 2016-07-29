@@ -14,7 +14,6 @@ class SignupLecturerModel extends Model
     public $email;
     public $password;
     public $role;
-    public $device_hash;
 
     public function rules()
     {
@@ -32,10 +31,7 @@ class SignupLecturerModel extends Model
             ['email', 'exist', 'targetClass' => 'api\common\models\Lecturer', 'message' => 'No lecturer with given email.'],
 
             ['password', 'required'],
-            ['password', 'string', 'min' => 6],
-            
-            ['device_hash', 'required'],
-            ['device_hash', 'string', 'max' => 255],
+            ['password', 'string', 'min' => 6]
         ];
     }
 
@@ -51,8 +47,7 @@ class SignupLecturerModel extends Model
                 $user->generateAuthKey();
                 $user->status = User::STATUS_WAIT_EMAIL_DEVICE;
                 $user->role = $this->role;
-                $user->name = User::$roles[$this->role];
-                $user->device_hash = $this->device_hash;
+                $user->name = User::$roles[$this->role];                
 
                 if ($user->save()) {
                     $lecturer->user_id = $user->id;

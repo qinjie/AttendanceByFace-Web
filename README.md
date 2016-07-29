@@ -137,6 +137,79 @@ Authorization: 'Bearer <token>'
 
 ***
 
+###POST ```user/lecturer-login```
+```
+=> Login to lecturer app
+```
+####Header: None
+####Request:
+```
+{
+    username: '1234',
+    password: '123456'
+}
+```
+####Response:
+- Success: 200
+```
+{
+    token: '3kj2rh3k2rhk2j3hkj42hk43h2kh4j32'
+}
+```
+- Error: 400
+```
+{
+  code: (
+    0: CODE_INCORRECT_USERNAME,
+    1: CODE_INCORRECT_PASSWORD,
+    2: CODE_INCORRECT_DEVICE,
+    3: CODE_UNVERIFIED_EMAIL,
+    4: CODE_UNVERIFIED_DEVICE,
+    5: CODE_UNVERIFIED_EMAIL_DEVICE,
+    6: CODE_INVALID_ACCOUNT
+  )
+}
+```
+
+***
+
+###POST ```user/student-login```
+```
+=> Login to student app
+```
+####Header: None
+####Request:
+```
+{
+    username: '1234',
+    password: '123456',
+    device_hash
+}
+```
+####Response:
+- Success: 200
+```
+{
+    token: '3kj2rh3k2rhk2j3hkj42hk43h2kh4j32'
+}
+```
+- Error: 400
+```
+{
+  code: (
+    0: CODE_INCORRECT_USERNAME,
+    1: CODE_INCORRECT_PASSWORD,
+    2: CODE_INCORRECT_DEVICE,
+    3: CODE_UNVERIFIED_EMAIL,
+    4: CODE_UNVERIFIED_DEVICE,
+    5: CODE_UNVERIFIED_EMAIL_DEVICE,
+    6: CODE_INVALID_ACCOUNT
+  )
+}
+```
+
+***
+
 ###POST ```user/change-password```
 ```
 => Change password

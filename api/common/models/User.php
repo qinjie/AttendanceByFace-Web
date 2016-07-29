@@ -138,7 +138,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     public function validateDevice($device_hash) {
-        return $this->device_hash == $device_hash;
+        return $this->device_hash === $device_hash;
     }
 
     public function generateAuthKey()
