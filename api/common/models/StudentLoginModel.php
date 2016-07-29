@@ -1,12 +1,18 @@
 <?php
-namespace api\common\models;
+/**
+ * Created by PhpStorm.
+ * User: mothaiba
+ * Date: 28/07/2016
+ * Time: 09:25
+ */
 
+namespace api\common\models;
 use api\common\models\User;
 use Yii;
 use yii\base\Model;
 
 
-class LoginModel extends Model
+class StudentLoginModel extends Model
 {
     public $username;
     public $password;
@@ -16,8 +22,9 @@ class LoginModel extends Model
     public function rules()
     {
         return [
-            [['username', 'password'], 'required'],
+            [['username', 'password', 'device_hash'], 'required'],
             ['password', 'validatePassword'],
+            ['device_hash', 'validateDevice']
         ];
     }
 
