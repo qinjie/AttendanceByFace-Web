@@ -96,7 +96,7 @@ def number_to_weekday(number):
 def add_absent_attendance(conn, timetable, this_date):
 	cursor = conn.cursor()
 	sql = """INSERT INTO attendance (student_id, lesson_id, is_absent, is_late, late_min, recorded_date) VALUES 
-		({student_id}, {lesson_id}, 1, 0, 0, '{recorded_date}')""".format(
+		('{student_id}', {lesson_id}, 1, 0, 0, '{recorded_date}')""".format(
 		student_id = timetable[0],
 		lesson_id = timetable[1],
 		recorded_date = this_date.strftime('%Y-%m-%d')
