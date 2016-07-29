@@ -2,11 +2,13 @@
 namespace api\modules\v1\controllers;
 
 use api\common\controllers\CustomActiveController;
+use api\common\models\Lecturer;
 use api\common\models\User;
 use api\modules\v1\models\Attendance;
 use api\common\models\Student;
 use api\common\components\AccessRule;
 
+use api\modules\v1\models\Lesson;
 use yii\rest\Controller;
 use Yii;
 use yii\filters\AccessControl;
@@ -49,6 +51,11 @@ class AttendanceController extends CustomActiveController {
                         'list-class-section'],
                     'allow' => true,
                     'roles' => [User::ROLE_STUDENT],
+                ],
+                [
+                    'actions' => ['modify-status'],
+                    'allow' => true,
+                    'roles' => [User::ROLE_LECTURER],
                 ]
             ],
 
@@ -58,6 +65,104 @@ class AttendanceController extends CustomActiveController {
         ];
 
         return $behaviors;
+    }
+    
+    public function  actionModifyStatus() {
+        $userId = Yii::$app->user->identity->id;
+
+        $request = Yii::$app->request;
+        $bodyParams = $request->bodyParams;
+        $student_id = $bodyParams['student_id'];
+        $lesson_id = $bodyParams['lesson_id'];
+        $recorded_date = $bodyParams['recorded_date'];
+        $status = $bodyParams['status'];
+        $recorded_time = $bodyParams['recorded_time'];
+
+        $lecturer = Lecturer::findOne(['user_id' => $userId]);
+        $student = Student::findOne(['id' => $student_id]);
+        $lesson = Lesson::findOne(['id' => $lesson_id]);
+
+        if(!$lecturer)
+            throw new BadRequestHttpException('No lecturer with given user id');
+        if(!$student)
+            throw new BadRequestHttpException('No student with given student id');
+        if(!$lesson)
+            throw new BadRequestHttpException('No lesson with given lesson id');
+
+        $lecturer_teaches_lesson = Yii::$app->db->createCommand('
+            select *
+            from timetable
+            where lecturer_id = :lecturer_id
+              and lesson_id = :lesson_id
+        ')
+            ->bindValue(':lecturer_id', $lecturer->id)
+            ->bindValue(':lesson_id', $lesson->id)
+            ->queryOne();
+        if(!$lecturer_teaches_lesson)
+            throw new BadRequestHttpException('The teacher does not teach this lesson');
+
+        $specific_lesson = Yii::$app->db->createCommand('
+            select *
+            from attendance
+            where student_id = :student_id
+            and lesson_id = :lesson_id
+            and recorded_date = :recorded_date
+        ')
+            ->bindValue(':student_id', $student->id)
+            ->bindValue(':lesson_id', $lesson->id)
+            ->bindValue(':recorded_date', $recorded_date)
+            ->queryOne();
+
+        if(!$specific_lesson) {
+            $attendance = new Attendance();
+            $attendance->student_id = $student->id;
+            $attendance->lesson_id = $lesson->id;
+            $currentTime = date('H:i');
+            $attendance->recorded_time = $currentTime;
+            $attendance->recorded_date = $recorded_date;
+            $attendance->save();
+        }
+
+        $query = NULL;
+
+        if($status == self::STATUS_PRESENT)
+            $query = Yii::$app->db->createCommand('
+                update attendance
+                set is_absent = 0, is_late = 0, recorded_time = NULL 
+                where student_id = :student_id
+                and lesson_id = :lesson_id
+                and recorded_date = :recorded_date
+            ')
+                ->bindValue(':student_id', $student->id)
+                ->bindValue(':lesson_id', $lesson->id)
+                ->bindValue(':recorded_date', $recorded_date);
+        if($status == self::STATUS_ABSENT)
+            $query = Yii::$app->db->createCommand('
+                update attendance
+                set is_absent = 1, is_late = 0, recorded_time = NULL 
+                where student_id = :student_id
+                and lesson_id = :lesson_id
+                and recorded_date = :recorded_date
+            ')
+                ->bindValue(':student_id', $student->id)
+                ->bindValue(':lesson_id', $lesson->id)
+                ->bindValue(':recorded_date', $recorded_date);
+        if($status == self::STATUS_LATE)
+            $query = Yii::$app->db->createCommand('
+                update attendance
+                set is_absent = 0, is_late = 1, recorded_time = :recorded_time 
+                where student_id = :student_id
+                and lesson_id = :lesson_id
+                and recorded_date = :recorded_date
+            ')
+                ->bindValue(':student_id', $student->id)
+                ->bindValue(':lesson_id', $lesson->id)
+                ->bindValue(':recorded_date', $recorded_date)
+                ->bindValue(':recorded_time', $recorded_time);
+
+        return [
+            'result' => $query->execute()
+        ];
     }
     
     public function actionListSemester() {
