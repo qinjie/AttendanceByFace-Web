@@ -1026,11 +1026,9 @@ Authorization: 'Bearer <token>'
 
 ***
 
-###GET ```timetable/current-semester```
+###GET ```timetable/current-semester?fromDate=2016-07-15&classSection=all```
 ```
-=> Get list lessons of a lecturer from one day backward, returned page by page. Use following filters:
-- fromDate: default is today. Example: 2016-07-07
-- classSection: default is all class sections
+=> Get list lessons of a lecturer from one day backward, returned page by page, filtered by classSection. If classSection = 'all', then get lessons of all class sections.
 ```
 ####Header:
 ```

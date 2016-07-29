@@ -675,8 +675,8 @@ class TimetableController extends CustomActiveController {
         return $listLesson;
     }
 
-    public function actionCurrentSemester($fromDate = null, $classSection = null) {
-        if (!$fromDate) $fromDate = date('Y-m-d');
+    public function actionCurrentSemester($fromDate, $classSection) {
+        // if (!$fromDate) $fromDate = date('Y-m-d');
         $userId = Yii::$app->user->identity->id;
         $lecturer = Lecturer::findOne(['user_id' => $userId]);
         if (!$lecturer)
@@ -686,7 +686,7 @@ class TimetableController extends CustomActiveController {
         $end_time = max(strtotime(self::DEFAULT_START_DATE), $start_time - (self::DAYS_PER_PAGE - 1) * self::SECONDS_IN_DAY);
 
         $listLesson = $this->getAllLessonsInSemester($lecturer->id, self::DEFAULT_SEMESTER);
-        if ($classSection) {
+        if ($classSection !== 'all') {
             $filteredListLesson = [];
             for ($iter = 0; $iter < count($listLesson); ++$iter) {
                 if ($listLesson[$iter]['class_section'] == $classSection) {
@@ -765,7 +765,7 @@ class TimetableController extends CustomActiveController {
     private static function cmpLessonInTimetable($a1, $a2) {
         $cmpDate = strcmp($a1['date'], $a2['date']);
         if ($cmpDate != 0) return -$cmpDate;
-        else return self::cmpTime($a1['start_time'], $a2['start_time']);
+        else return -self::cmpTime($a1['start_time'], $a2['start_time']);
     }
 
     private function getAllLessonsInSemester($lecturerId, $semester) {
