@@ -1641,7 +1641,7 @@ CREATE TABLE `user` (
   `face_id` varchar(1000) DEFAULT '',
   `username` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `auth_key` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
-  `device_hash` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `device_hash` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `password_hash` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `email` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `profileImg` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -1652,25 +1652,26 @@ CREATE TABLE `user` (
   `updated_at` int(11) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`),
-  UNIQUE KEY `username` (`username`)
+  UNIQUE KEY `username` (`username`),
+  UNIQUE KEY `device_hash` (`device_hash`)
 ) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Data for the table `user` */
 
 insert  into `user`(`id`,`username`,`auth_key`,`password_hash`,`email`,`status`,`created_at`,`updated_at`,`name`,`role`, `device_hash`) values 
-  (53,'1234','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','1234@gmail.com',10,1461214049,1461926225,'student',20,'f8:32:e4:5f:6f:35'),
-  (54,'5678','ev0ddY438lQUVzIBT4Cz6FfonldlZGwn','$2y$13$pm7wYtxExchdumcLXrb6DOTP0KeQSUda3hylys/JQ6t0aqjYtUbpq','5678@gmail.com',10,1461214049,1461926225,'student',20,'0'),
-  (55,'3333','llF-xngHw2GG03B6VBFmRsz0Og962A7H','$2y$13$qY9oJdIfhhOYQAgtmlzK4uTuoEnE4IKMVqxKkSkmjdhwqKXStV.le','nhtc.123@gmail.com',10,1461214049,1461926225,'student',20,'0'),
-  (56,'1111','eoUT-i7zLHcBDnl3m4kjvmmIGglADSiW','$2y$13$ctpUi82YuFrJp3.lBJLWG.bX/eXzJyD.cPwD.oF0uizHrFTlmQrNK','1111@mail.com',10,1468284085,1468284085,'student',20,'0'),
+  (53,'1234','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','1234@gmail.com',10,1461214049,1461926225,'student',20,NULL),
+  (54,'5678','ev0ddY438lQUVzIBT4Cz6FfonldlZGwn','$2y$13$pm7wYtxExchdumcLXrb6DOTP0KeQSUda3hylys/JQ6t0aqjYtUbpq','5678@gmail.com',10,1461214049,1461926225,'student',20,NULL),
+  (55,'3333','llF-xngHw2GG03B6VBFmRsz0Og962A7H','$2y$13$qY9oJdIfhhOYQAgtmlzK4uTuoEnE4IKMVqxKkSkmjdhwqKXStV.le','nhtc.123@gmail.com',10,1461214049,1461926225,'student',20,NULL),
+  (56,'1111','eoUT-i7zLHcBDnl3m4kjvmmIGglADSiW','$2y$13$ctpUi82YuFrJp3.lBJLWG.bX/eXzJyD.cPwD.oF0uizHrFTlmQrNK','1111@mail.com',10,1468284085,1468284085,'student',20,NULL),
   (57,'0000','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','0000@gmail.com',10,1461214049,1461926225,'student',20,'f8:32:e4:5f:6f:35'),
-  (60,'pppp','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$RcbtHfhi/v48CrDS6GebUu/61lquIKrRHb5FX6mByMzoKG2grgYlu','pppp@mail.com',10,1461214049,1461926225,'lecturer',30,'0'),
+  (60,'pppp','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$RcbtHfhi/v48CrDS6GebUu/61lquIKrRHb5FX6mByMzoKG2grgYlu','pppp@mail.com',10,1461214049,1461926225,'lecturer',30,NULL),
 
-  (2,'2222','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','22222222@connect.np.edu.sg',10,1461214049,1461926225,'student',20,'0'),
-  (5,'5555','ev0ddY438lQUVzIBT4Cz6FfonldlZGwn','$2y$13$pm7wYtxExchdumcLXrb6DOTP0KeQSUda3hylys/JQ6t0aqjYtUbpq','33333333@connect.np.edu.sg',10,1461214049,1461926225,'student',20,'0'),
-  (4,'4444','llF-xngHw2GG03B6VBFmRsz0Og962A7H','$2y$13$qY9oJdIfhhOYQAgtmlzK4uTuoEnE4IKMVqxKkSkmjdhwqKXStV.le','44444444@connect.np.edu.sg',10,1461214049,1461926225,'student',20,'0'),
+  (2,'2222','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','22222222@connect.np.edu.sg',10,1461214049,1461926225,'student',20,NULL),
+  (5,'5555','ev0ddY438lQUVzIBT4Cz6FfonldlZGwn','$2y$13$pm7wYtxExchdumcLXrb6DOTP0KeQSUda3hylys/JQ6t0aqjYtUbpq','33333333@connect.np.edu.sg',10,1461214049,1461926225,'student',20,NULL),
+  (4,'4444','llF-xngHw2GG03B6VBFmRsz0Og962A7H','$2y$13$qY9oJdIfhhOYQAgtmlzK4uTuoEnE4IKMVqxKkSkmjdhwqKXStV.le','44444444@connect.np.edu.sg',10,1461214049,1461926225,'student',20,NULL),
   /* ios test */
-  (58,'npnp','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','npnp@mail.com',10,1461214049,1461926225,'student',20,'0'),
-  (59,'abab','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','abab@mail.com',10,1461214049,1461926225,'lecturer',30,'0');
+  (58,'npnp','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','npnp@mail.com',10,1461214049,1461926225,'student',20,NULL),
+  (59,'abab','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','abab@mail.com',10,1461214049,1461926225,'lecturer',30,NULL);
 
 /*Table structure for table `student` */
 

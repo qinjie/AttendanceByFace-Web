@@ -18,6 +18,7 @@ class LoginModel extends Model
         return [
             [['username', 'password'], 'required'],
             ['password', 'validatePassword'],
+            ['device_hash', 'validateDevice']
         ];
     }
 

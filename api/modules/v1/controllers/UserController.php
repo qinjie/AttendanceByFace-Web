@@ -94,6 +94,7 @@ class UserController extends CustomActiveController
         $username = $bodyParams['username'];
         $password = $bodyParams['password'];
         $device_hash = $bodyParams['device_hash'];
+        if (!$device_hash) throw new BadRequestHttpException('Invalid data');
 
     	$model = new LoginModel();
     	$model->username = $username;
@@ -162,6 +163,7 @@ class UserController extends CustomActiveController
         $username = $bodyParams['username'];
         $password = $bodyParams['password'];
         $device_hash = $bodyParams['device_hash'];
+        if (!$device_hash) throw new BadRequestHttpException('Invalid data');
 
         $model = new StudentLoginModel();
         $model->username = $username;
@@ -238,7 +240,7 @@ class UserController extends CustomActiveController
         $model->email = $bodyParams['email'];
         $model->password = $bodyParams['password'];
         $model->role = isset($bodyParams['role']) ? $bodyParams['role'] : User::ROLE_LECTURER;
-        $model->device_hash = $bodyParams['device_hash'];
+        
         if ($user = $model->signup()) {
             $token = TokenHelper::createUserToken($user->id);
             return [

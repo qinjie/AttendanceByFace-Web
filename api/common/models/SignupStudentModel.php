@@ -39,6 +39,7 @@ class SignupStudentModel extends Model
             
             ['device_hash', 'required'],
             ['device_hash', 'string', 'max' => 255],
+            ['device_hash', 'unique', 'targetClass' => 'api\common\models\User', 'message' => 'This device has already been used.']
         ];
     }
 
