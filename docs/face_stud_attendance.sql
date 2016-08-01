@@ -1662,7 +1662,6 @@ insert  into `user`(`id`,`username`,`auth_key`,`password_hash`,`email`,`status`,
   (53,'1234','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','1234@gmail.com',10,1461214049,1461926225,'student',20,NULL),
   (54,'5678','ev0ddY438lQUVzIBT4Cz6FfonldlZGwn','$2y$13$pm7wYtxExchdumcLXrb6DOTP0KeQSUda3hylys/JQ6t0aqjYtUbpq','5678@gmail.com',10,1461214049,1461926225,'student',20,NULL),
   (55,'3333','llF-xngHw2GG03B6VBFmRsz0Og962A7H','$2y$13$qY9oJdIfhhOYQAgtmlzK4uTuoEnE4IKMVqxKkSkmjdhwqKXStV.le','nhtc.123@gmail.com',10,1461214049,1461926225,'student',20,NULL),
-  (56,'1111','eoUT-i7zLHcBDnl3m4kjvmmIGglADSiW','$2y$13$ctpUi82YuFrJp3.lBJLWG.bX/eXzJyD.cPwD.oF0uizHrFTlmQrNK','1111@mail.com',10,1468284085,1468284085,'student',20,NULL),
   (57,'0000','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','0000@gmail.com',10,1461214049,1461926225,'student',20,'f8:32:e4:5f:6f:35'),
   (60,'pppp','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$RcbtHfhi/v48CrDS6GebUu/61lquIKrRHb5FX6mByMzoKG2grgYlu','pppp@mail.com',10,1461214049,1461926225,'lecturer',30,NULL),
 
@@ -1699,7 +1698,7 @@ insert  into `student`(`acad`,`id`,`gender`,`name`,`uuid`,`user_id`,`created_at`
   ('AE','3',NULL,'YOO YOO',NULL,58,'0000-00-00 00:00:00','2016-04-26 10:49:37'),
   ('AE','4',NULL,'LEE YOO',NULL,55,'0000-00-00 00:00:00','2016-04-26 10:49:37'),
   ('AE','22222222B',NULL,'AIK YU CHE',NULL,2,'0000-00-00 00:00:00','2016-04-26 10:49:37'),
-  ('AE','33333333B',NULL,'AKAASH SIN',NULL,3,'0000-00-00 00:00:00','2016-04-26 10:49:37'),
+  ('AE','33333333B',NULL,'AKAASH SIN',NULL,5,'0000-00-00 00:00:00','2016-04-26 10:49:37'),
   ('AE','44444444B',NULL,'ANTHONY CHEN',NULL,4,'0000-00-00 00:00:00','2016-04-26 10:49:37');
 
 
