@@ -651,20 +651,41 @@ Authorization: 'Bearer <token>'
 {
   "MON": [
     {
-      "lesson_id": "1",
-      "subject_area": "ELECTRO",
-      "class_section": "L2L",
-      "component": "LEC",
+      "lesson_id": "24",
+      "subject_area": "IS IE",
+      "class_section": "T05",
+      "component": "TUT",
       "weekday": 0,
-      "start_time": "10:00",
-      "end_time": "12:00",
-      "location": "Location 1",
-      "meeting_pattern": ""
+      "start_time": "13:00",
+      "end_time": "15:00",
+      "location": "Location 2",
+      "meeting_pattern": "",
+      "timetable_id": "55",
+      "uuid": "B9407F30-F5F8-466E-AFF9-25556B57FE6D",
+      "major": "52689",
+      "minor": "51570",
+      "lecturer_name": "Zhang Qinjie"
     }
   ],
   "TUES": [
     {
-      "lesson_id": "6",
+      "lesson_id": "29",
+      "subject_area": "MECHANIC",
+      "class_section": "P1M2",
+      "component": "PRA",
+      "weekday": 1,
+      "start_time": "13:00",
+      "end_time": "15:00",
+      "location": "Location 2",
+      "meeting_pattern": "ODD",
+      "timetable_id": "60",
+      "uuid": "B9407F30-F5F8-466E-AFF9-25556B57FE6D",
+      "major": "52689",
+      "minor": "51570",
+      "lecturer_name": "Zhang Qinjie"
+    },
+    {
+      "lesson_id": "46",
       "subject_area": "ELECTRO",
       "class_section": "P2L1",
       "component": "PRA",
@@ -672,18 +693,12 @@ Authorization: 'Bearer <token>'
       "start_time": "13:00",
       "end_time": "15:00",
       "location": "Location 1",
-      "meeting_pattern": ""
-    },
-    {
-      "lesson_id": "4",
-      "subject_area": "ELECTRO",
-      "class_section": "T2L1",
-      "component": "TUT",
-      "weekday": 1,
-      "start_time": "15:00",
-      "end_time": "16:00",
-      "location": "Location 1",
-      "meeting_pattern": ""
+      "meeting_pattern": "",
+      "timetable_id": "97",
+      "uuid": "B9407F30-F5F8-466E-AFF9-25556B57FE6D",
+      "major": "52689",
+      "minor": "51570",
+      "lecturer_name": "Zhang Qinjie"
     }
   ]
 }

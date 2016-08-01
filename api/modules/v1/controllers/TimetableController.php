@@ -286,10 +286,18 @@ class TimetableController extends CustomActiveController {
                    start_time, 
                    end_time, 
                    location, 
-                   meeting_pattern 
+                   meeting_pattern, 
+                   timetable.id as timetable_id, 
+                   beacon.uuid, 
+                   beacon.major, 
+                   beacon.minor, 
+                   lecturer.name as lecturer_name 
              from timetable join lesson on timetable.lesson_id = lesson.id 
              join venue on lesson.venue_id = venue.id 
-             where (meeting_pattern = :meeting_pattern or meeting_pattern = "") 
+             join venue_beacon on venue.id = venue_beacon.venue_id 
+             join beacon on venue_beacon.beacon_id = beacon.id 
+             join lecturer on timetable.lecturer_id = lecturer.id 
+             where (meeting_pattern = :meeting_pattern or meeting_pattern = \'\') 
              and student_id = :student_id
         ')
         ->bindValue(':meeting_pattern', $meeting_pattern)
