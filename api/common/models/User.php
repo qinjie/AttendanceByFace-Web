@@ -25,7 +25,7 @@ class User extends ActiveRecord implements IdentityInterface
     public static $roles = [
         10 => 'user',
         20 => 'student',
-        30 => 'teacher',
+        30 => 'lecturer',
     ];
 
     const ROLE_USER = 10;
