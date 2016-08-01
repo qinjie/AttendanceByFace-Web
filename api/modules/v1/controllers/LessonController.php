@@ -70,7 +70,7 @@ class LessonController extends CustomActiveController {
             where semester = :semester
         ')
         ->bindValue(':lecturerId', $lecturer->id)
-        ->bindValue(':semester', TimetableController::DEFAULT_SEMESTER)
+        ->bindValue(':semester', TimetableController::TEST_DEFAULT_SEMESTER)
         ->queryAll();
 
         $func = function($val) {

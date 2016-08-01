@@ -30,6 +30,7 @@ class TimetableController extends CustomActiveController {
     const DEFAULT_START_DATE = '2016-06-13';    // Monday
     const DEFAULT_END_DATE = '2016-07-11';  // Sunday, 5 weeks
     const DEFAULT_SEMESTER = 2;
+    const TEST_DEFAULT_SEMESTER = 3;
 
     const SECONDS_IN_DAY = 86400;   // 24 * 60 * 60
     const SECONDS_IN_WEEK = 604800; // 7 * 24 * 60 * 60
@@ -685,7 +686,7 @@ class TimetableController extends CustomActiveController {
         $start_time = strtotime($fromDate);
         $end_time = max(strtotime(self::DEFAULT_START_DATE), $start_time - (self::DAYS_PER_PAGE - 1) * self::SECONDS_IN_DAY);
 
-        $listLesson = $this->getAllLessonsInSemester($lecturer->id, self::DEFAULT_SEMESTER);
+        $listLesson = $this->getAllLessonsInSemester($lecturer->id, self::TEST_DEFAULT_SEMESTER);
         if ($classSection !== 'all') {
             $filteredListLesson = [];
             for ($iter = 0; $iter < count($listLesson); ++$iter) {
@@ -889,7 +890,7 @@ class TimetableController extends CustomActiveController {
              group by class_section, lesson_id, weekday, meeting_pattern, 
                 component, semester, start_time, end_time
         ')
-        ->bindValue(':semester', self::DEFAULT_SEMESTER)
+        ->bindValue(':semester', self::TEST_DEFAULT_SEMESTER)
         ->bindValue(':lecturerId', $lecturer->id)
         ->bindValue(':meetingPattern', $meetingPattern)
         ->queryAll();

@@ -60,11 +60,12 @@ CREATE TABLE `lecturer` (
 insert  into `lecturer` (`id`,`name`, `email`, `acad`, `user_id`) values 
   ("1", "Zhang Qinjie", "abab@mail.com", "11", 59),
   ("2", "Lecturer 2", "2@mail.com", "22", 60),
-  ("3", "Lecturer 3", "3@mail.com", "33", NULL);
+  ("3", "Lecturer 3", "3@mail.com", "33", NULL),
+  ("9580", "FOO JONG YONG ABDIEL", "faj2@np.edu.sg", "ECE", 61);
 
 
 INSERT INTO `lecturer` (`acad`,`id`,`name`,`email`) VALUES
-  ("ECE", "0011672", "YU WEI SHIN", "yws2@np.edu.sg"),
+  -- ("ECE", "0011672", "YU WEI SHIN", "yws2@np.edu.sg"),
   ("ECE", "0011689", "LI YAN", "lya3@np.edu.sg"),
   ("ECE", "0011874", "OH CHIN FONG", "ocf2@np.edu.sg"),
   ("ECE", "0011875", "SOH THIAM HUAT", "sth6@np.edu.sg"),
@@ -1664,6 +1665,7 @@ insert  into `user`(`id`,`username`,`auth_key`,`password_hash`,`email`,`status`,
   (55,'3333','llF-xngHw2GG03B6VBFmRsz0Og962A7H','$2y$13$qY9oJdIfhhOYQAgtmlzK4uTuoEnE4IKMVqxKkSkmjdhwqKXStV.le','nhtc.123@gmail.com',10,1461214049,1461926225,'student',20,NULL),
   (57,'0000','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','0000@gmail.com',10,1461214049,1461926225,'student',20,'f8:32:e4:5f:6f:35'),
   (60,'pppp','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$RcbtHfhi/v48CrDS6GebUu/61lquIKrRHb5FX6mByMzoKG2grgYlu','pppp@mail.com',10,1461214049,1461926225,'lecturer',30,NULL),
+  (61,'kkkk','RAaaN283P34mOk4l-ZOggzjVK54RAwcY','$2y$13$1cD7v3FG31dxTZby/ILPLusyF9THyHD42l2omxoHTabGtDs3mwtWG','faj2@np.edu.sg',10,1461214049,1461926225,'lecturer',30,NULL),
 
   (2,'2222','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','22222222@connect.np.edu.sg',10,1461214049,1461926225,'student',20,NULL),
   (5,'5555','ev0ddY438lQUVzIBT4Cz6FfonldlZGwn','$2y$13$pm7wYtxExchdumcLXrb6DOTP0KeQSUda3hylys/JQ6t0aqjYtUbpq','33333333@connect.np.edu.sg',10,1461214049,1461926225,'student',20,NULL),
