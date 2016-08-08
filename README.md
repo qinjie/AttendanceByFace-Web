@@ -176,7 +176,12 @@ Authorization: 'Bearer <token>'
 - Success: 200
 ```
 {
-    token: '3kj2rh3k2rhk2j3hkj42hk43h2kh4j32'
+  "id": "2",
+  "name": "Lecturer 2",
+  "acad": "22",
+  "email": "2@mail.com",
+  "user_id": 60,
+  "token": "QN5SnZZItf7Bg2GaVXKYcdQ8JOtUXIYk"
 }
 ```
 - Error: 400

@@ -18,6 +18,7 @@ use api\common\models\ChangePasswordModel;
 use api\common\models\PasswordResetModel;
 use api\common\models\RegisterDeviceModel;
 use api\common\models\Student;
+use api\common\models\Lecturer;
 
 use Yii;
 use yii\filters\auth\HttpBearerAuth;
@@ -153,11 +154,11 @@ class UserController extends CustomActiveController
             if ($user->role != User::ROLE_LECTURER)
                 throw new BadRequestHttpException(null, self::CODE_INCORRECT_USERNAME);
             if ($user->status == User::STATUS_ACTIVE) {
+                $lecturer = Lecturer::findOne(['user_id' => $user->id])->toArray();
                 UserToken::deleteAll(['user_id' => $user->id, 'action' => TokenHelper::TOKEN_ACTION_ACCESS]);
                 $token = TokenHelper::createUserToken($user->id);
-                return [
-                    'token' => $token->token,
-                ];
+                $lecturer['token'] = $token->token;
+                return $lecturer;
             } else throw new BadRequestHttpException(null, self::CODE_INVALID_ACCOUNT);
         } else {
             if (isset($model->errors['username']))
