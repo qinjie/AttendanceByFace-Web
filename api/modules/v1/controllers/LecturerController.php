@@ -9,11 +9,9 @@
 namespace api\modules\v1\controllers;
 
 use api\common\controllers\CustomActiveController;
-use api\common\helpers\TokenHelper;
-use api\common\models\UserToken;
-use api\common\models\User;
 use api\common\components\AccessRule;
-use api\common\models\Student;
+use api\common\models\User;
+use api\common\models\Lecturer;
 
 use Yii;
 use api\common\models\SignupStudentModel;
@@ -29,7 +27,7 @@ use yii\web\ForbiddenHttpException;
 use yii\web\BadRequestHttpException;
 use yii\web\UnauthorizedHttpException;
 
-class StudentController extends CustomActiveController
+class LecturerController extends CustomActiveController
 {
     public $modelClass = '';
     
@@ -49,7 +47,7 @@ class StudentController extends CustomActiveController
                 [   
                     'actions' => ['profile'],
                     'allow' => true,
-                    'roles' => [User::ROLE_STUDENT],
+                    'roles' => [User::ROLE_LECTURER],
                 ],
             ],
             'denyCallback' => function ($rule, $action) {
@@ -69,11 +67,10 @@ class StudentController extends CustomActiveController
 
     public function actionProfile() {
         $userId = Yii::$app->user->identity->id;
-        $student = Student::findOne(['user_id' => $userId])->toArray();
-        if (!$student)
-            throw new BadRequestHttpException('No student with given user id');
-        $student['email'] = Yii::$app->user->identity->email;
-        return $student;
+        $lecturer = Lecturer::findOne(['user_id' => $userId]);
+        if (!$lecturer)
+            throw new BadRequestHttpException('No lecturer with given user id');
+        return $lecturer;
     }
 
     // public function afterAction($action, $result)

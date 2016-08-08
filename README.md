@@ -100,6 +100,29 @@ Authorization: 'Bearer <token>'
 
 ***
 
+###GET ```lecturer/profile```
+```
+=> Get profile of a lecturer
+```
+####Header:
+```
+Authorization: 'Bearer <token>'
+```
+
+####Request: None
+####Response:
+```
+{
+  "id": "2",
+  "name": "Lecturer 2",
+  "acad": "22",
+  "email": "2@mail.com",
+  "user_id": 60
+}
+```
+
+***
+
 ###POST ```user/login```
 ```
 => Login to app
