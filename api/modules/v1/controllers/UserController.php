@@ -8,8 +8,6 @@ use api\common\models\UserToken;
 use api\common\models\User;
 use api\common\components\AccessRule;
 use api\common\components\Facepp;
-
-use Yii;
 use api\common\models\SignupModel;
 use api\common\models\SignupStudentModel;
 use api\common\models\SignupLecturerModel;
@@ -19,6 +17,9 @@ use api\common\models\StudentLoginModel;
 use api\common\models\ChangePasswordModel;
 use api\common\models\PasswordResetModel;
 use api\common\models\RegisterDeviceModel;
+use api\common\models\Student;
+
+use Yii;
 use yii\filters\auth\HttpBearerAuth;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
@@ -65,9 +66,19 @@ class UserController extends CustomActiveController
                 ],
                 [
                     'actions' => ['logout', 'person-id', 'face-id', 'set-person-id', 'set-face-id',
-                        'change-password', 'train-face'],
+                        'change-password'],
                     'allow' => true,
                     'roles' => ['@'],
+                ],
+                [
+                    'actions' => ['allow-train-face', 'disallow-train-face'],
+                    'allow' => true,
+                    'roles' => [User::ROLE_LECTURER]
+                ],
+                [
+                    'actions' => ['check-train-face', 'train-face', 'clear-face-id'],
+                    'allow' => true,
+                    'roles' => [User::ROLE_STUDENT]
                 ]
             ],
             'denyCallback' => function ($rule, $action) {
@@ -407,9 +418,40 @@ class UserController extends CustomActiveController
         ];
     }
 
+    public function actionClearFaceId() {
+        $user = Yii::$app->user->identity;
+        $facepp = new Facepp();
+        $facepp->api_key = Yii::$app->params['FACEPP_API_KEY'];
+        $facepp->api_secret = Yii::$app->params['FACEPP_API_SECRET'];
+
+        $personId = $user->person_id;
+        $params['person_id'] = $personId;
+        $params['face_id'] = 'all';        
+        $response = $facepp->execute('/person/remove_face', $params);
+
+        $paramsVerify['person_id'] = $personId;
+        $response = $facepp->execute('/train/verify', $paramsVerify);
+        $result = json_decode($response['body']);
+
+        $query = Yii::$app->db->createCommand('
+            update user 
+             set face_id = :face_id 
+             where id = :user_id
+        ')
+        ->bindValue(':face_id', '')
+        ->bindValue(':user_id', $user->id);
+
+        return [
+            'result' => $query->execute(),
+        ];
+    }
+
     public function actionTrainFace() {
+        if (!$this->checkTrainFaceToken(Yii::$app->user->identity->id))
+            throw new BadRequestHttpException('Invalid train face token');
+        $request = Yii::$app->request;
         $bodyParams = $request->bodyParams;
-        $newFaceId = $bodyParams;
+        $newFaceId = $bodyParams['faceId'];
 
         $facepp = new Facepp();
         $facepp->api_key = Yii::$app->params['FACEPP_API_KEY'];
@@ -436,7 +478,60 @@ class UserController extends CustomActiveController
         $paramsVerify['person_id'] = $personId;
         $response = $facepp->execute('/train/verify', $paramsVerify);
         $result = json_decode($response['body']);
-        return $result;
+
+        $user->face_id = json_encode($listFaceId);
+        if ($user->save()) {
+            $userId = $user->id;
+            UserToken::deleteAll(['user_id' => $userId, 'action' => TokenHelper::TOKEN_ACTION_TRAIN_FACE]);
+            return $result;
+        } else throw new BadRequestHttpException('Error save list face id');
+    }
+
+    public function actionAllowTrainFace() {
+        $request = Yii::$app->request;
+        $bodyParams = $request->bodyParams;
+        $studentId = $bodyParams['studentId'];
+        $student = Student::findOne(['id' => $studentId]);
+        if (!$student)
+            throw new BadRequestHttpException('No student with given user id');
+        $userId = $student->user_id;
+        UserToken::deleteAll(['user_id' => $userId, 'action' => TokenHelper::TOKEN_ACTION_TRAIN_FACE]);
+        $userToken = TokenHelper::createUserToken($userId, TokenHelper::TOKEN_ACTION_TRAIN_FACE);
+        return $userToken->token;
+    }
+
+    public function actionDisallowTrainFace() {
+        $request = Yii::$app->request;
+        $bodyParams = $request->bodyParams;
+        $studentId = $bodyParams['studentId'];
+        $student = Student::findOne(['id' => $studentId]);
+        if (!$student)
+            throw new BadRequestHttpException('No student with given user id');
+        $userId = $student->user_id;
+        UserToken::deleteAll(['user_id' => $userId, 'action' => TokenHelper::TOKEN_ACTION_TRAIN_FACE]);
+        return 'disable training face';
+    }
+
+    private function checkTrainFaceToken($userId) {
+        $userToken = UserToken::findOne([
+            'action' => TokenHelper::TOKEN_ACTION_TRAIN_FACE,
+            'user_id' => $userId,
+        ]);
+        if (!$userToken) return false;
+        $current = time();
+        $expire_date = strtotime($userToken->expire_date);
+        if ($expire_date < $current) {
+            UserToken::model()->deleteByPk($record->id);
+            return false;
+        }
+        return true;
+    }
+
+    public function actionCheckTrainFace() {
+        $userId = Yii::$app->user->identity->id;
+        return [
+            'result' => $this->checkTrainFaceToken($userId),
+        ];
     }
 
     // public function afterAction($action, $result)

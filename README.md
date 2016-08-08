@@ -1162,3 +1162,104 @@ Authorization: 'Bearer <token>'
   }
 ]
 ```
+
+###POST ```user/clear-face-id```
+```
+=> Clear all face id of a student
+```
+####Header:
+```
+Authorization: 'Bearer <token>'
+```
+####Request: None
+####Response:
+```
+{
+  "result": 1
+}
+```
+
+***
+
+###POST ```user/train-face```
+```
+=> Train one face id for person id of a student
+```
+####Header:
+```
+Authorization: 'Bearer <token>'
+```
+####Request:
+```
+{
+  faceId
+}
+```
+####Response:
+```
+{
+  "session_id": "b1c556f333b1407aa0835918964a800f"
+}
+```
+
+***
+
+###POST ```user/allow-train-face```
+```
+=> When a lecturer allows one student to train face
+```
+####Header:
+```
+Authorization: 'Bearer <token>'
+```
+####Request:
+```
+{
+  studentId
+}
+```
+####Response:
+```
+<token for training face>
+```
+
+***
+
+###POST ```user/disallow-train-face```
+```
+=> When a lecturer disallows one student to train face
+```
+####Header:
+```
+Authorization: 'Bearer <token>'
+```
+####Request:
+```
+{
+  studentId
+}
+```
+####Response:
+```
+'disable training face'
+```
+
+***
+
+###GET ```user/check-train-face```
+```
+=> Check if a student can train face
+```
+####Header:
+```
+Authorization: 'Bearer <token>'
+```
+####Request: None
+####Response:
+```
+{
+  "result": (true, false)
+}
+```
+
+***

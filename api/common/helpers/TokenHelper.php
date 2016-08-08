@@ -11,12 +11,14 @@ class TokenHelper
     const TOKEN_ACTION_RESET_PASSWORD = 2;
     const TOKEN_ACTION_CHANGE_EMAIL = 3;
     const TOKEN_ACTION_ACCESS = 4;
+    const TOKEN_ACTION_TRAIN_FACE = 5;
 
     public static $actions = [
         1 => 'ACTION_ACTIVATE_ACCOUNT',
         2 => 'ACTION_RESET_PASSWORD',
         3 => 'ACTION_CHANGE_EMAIL',
         4 => 'ACTION_ACCESS',
+        5 => 'ACTION_TRAIN_FACE',
     ];
 
     const CACHE_DURATION = 3600; // one hour
@@ -31,6 +33,7 @@ class TokenHelper
         $model->user_id = $userId;
         $model->token = self::generateToken();
         $interval = 30 * 24 * 60 * 60;
+        if ($action == self::TOKEN_ACTION_TRAIN_FACE) $interval = 10 * 60;
         $model->expire_date = date('Y-m-d H:i:s', time() + $interval);
         $model->action = is_null($action) ? self::TOKEN_ACTION_ACCESS : $action;
         $model->title = self::$actions[$model->action];
@@ -82,7 +85,6 @@ class TokenHelper
             UserToken::model()->deleteByPk($record->id);
             return self::TOKEN_EXPIRED;
         }
-
         self::updateExpire($record);
         self::cacheToken($token, $record);
 

@@ -65,7 +65,7 @@ insert  into `lecturer` (`id`,`name`, `email`, `acad`, `user_id`) values
 
 
 INSERT INTO `lecturer` (`acad`,`id`,`name`,`email`) VALUES
-  -- ("ECE", "0011672", "YU WEI SHIN", "yws2@np.edu.sg"),
+  ("ECE", "0011672", "YU WEI SHIN", "yws2@np.edu.sg"),
   ("ECE", "0011689", "LI YAN", "lya3@np.edu.sg"),
   ("ECE", "0011874", "OH CHIN FONG", "ocf2@np.edu.sg"),
   ("ECE", "0011875", "SOH THIAM HUAT", "sth6@np.edu.sg"),
@@ -214,7 +214,7 @@ INSERT INTO `lecturer` (`acad`,`id`,`name`,`email`) VALUES
   ("ECE", "933", "CHEW BOON CHOON", "cbc@np.edu.sg"),
   ("ECE", "9376", "CHENG CHEE YUEN", "ccy6@np.edu.sg"),
   ("ECE", "938", "KOH SIEW KHENG", "ksk@np.edu.sg"),
-  ("ECE", "9580", "FOO JONG YONG ABDIEL", "faj2@np.edu.sg"),
+  -- ("ECE", "9580", "FOO JONG YONG ABDIEL", "faj2@np.edu.sg"),
   ("ECE", "9599", "CHEN JIAJIA", ""),
   ("ECE", "9604", "GOH BOON HUI RONEY", "grb2@np.edu.sg"),
   ("ECE", "9963", "LIM JIA YING SHEILA", "");
@@ -1674,6 +1674,10 @@ insert  into `user`(`id`,`username`,`auth_key`,`password_hash`,`email`,`status`,
   (58,'npnp','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','npnp@mail.com',10,1461214049,1461926225,'student',20,NULL),
   (59,'abab','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','abab@mail.com',10,1461214049,1461926225,'lecturer',30,NULL);
 
+update `user` set
+  `person_id` = '2bab14e81845032bd184f2f08e181300',
+  `face_id` = '["0d3df55d5f5bbfab9d80b7457ecc461d"]'
+  where `id` = 57;
 /*Table structure for table `student` */
 
 DROP TABLE IF EXISTS `student`;
