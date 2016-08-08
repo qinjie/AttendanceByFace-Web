@@ -452,6 +452,7 @@ class UserController extends CustomActiveController
         $request = Yii::$app->request;
         $bodyParams = $request->bodyParams;
         $newFaceId = $bodyParams['faceId'];
+        $clearFace = $bodyParams['clearFace'];
 
         $facepp = new Facepp();
         $facepp->api_key = Yii::$app->params['FACEPP_API_KEY'];
@@ -459,15 +460,23 @@ class UserController extends CustomActiveController
 
         $user = Yii::$app->user->identity;
         $personId = $user->person_id;
+
         $listFaceId = $user->face_id;
         if ($listFaceId) $listFaceId = json_decode($listFaceId);
         else $listFaceId = [];
-        if (count($listFaceId) == 5) {
+        if ($clearFace == 'true') {
+            $listFaceId = [];
             $params['person_id'] = $personId;
-            $params['face_id'] = $listFaceId[0];
+            $params['face_id'] = 'all';        
             $response = $facepp->execute('/person/remove_face', $params);
-            // $result = json_decode($response['body']);
-            array_splice($listFaceId, 0, 1);
+        } else {
+            if (count($listFaceId) == 5) {
+                $params['person_id'] = $personId;
+                $params['face_id'] = $listFaceId[0];
+                $response = $facepp->execute('/person/remove_face', $params);
+                // $result = json_decode($response['body']);
+                array_splice($listFaceId, 0, 1);
+            }
         }
         $listFaceId[] = $newFaceId;
         $params['person_id'] = $personId;

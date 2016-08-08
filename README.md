@@ -460,25 +460,6 @@ face_id
 
 ***
 
-###POST ```user/train-face```
-```
-=> Train face for a student
-```
-####Header:
-```
-Authorization: 'Bearer <token>'
-```
-####Request:
-```
-face_id
-```
-####Response:
-```
-{}
-```
-
-***
-
 ###GET ```timetable/today```
 ```
 => Get all lessons for today, sorted by start time
@@ -1183,7 +1164,7 @@ Authorization: 'Bearer <token>'
 
 ###POST ```user/train-face```
 ```
-=> Train one face id for person id of a student
+=> Train one face id for person id of a student. Clear all face id (optional).
 ```
 ####Header:
 ```
@@ -1192,7 +1173,8 @@ Authorization: 'Bearer <token>'
 ####Request:
 ```
 {
-  faceId
+  faceId,
+  clearFace: (true, false)
 }
 ```
 ####Response:
