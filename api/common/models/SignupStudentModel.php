@@ -12,6 +12,7 @@ class SignupStudentModel extends Model
 {
     public $username;
     public $email;
+    public $student_id;
     public $password;
     public $role;
     public $device_hash;
@@ -30,9 +31,13 @@ class SignupStudentModel extends Model
             ['email', 'filter', 'filter' => 'trim'],
             ['email', 'required'],
             ['email', 'email'],
-            ['email', 'match', 'pattern' => '/^s[0-9]{8}@connect.np.edu.sg$/'],
+            // ['email', 'match', 'pattern' => '/^s[0-9]{8}@connect.np.edu.sg$/'],
             ['email', 'string', 'max' => 255],
             ['email', 'unique', 'targetClass' => 'api\common\models\User', 'message' => 'This email address has already been taken.'],
+
+            ['student_id', 'filter', 'filter' => 'trim'],
+            ['student_id', 'required'],
+            ['student_id', 'validateStudentId'],
 
             ['password', 'required'],
             ['password', 'string', 'min' => 6],
@@ -43,14 +48,18 @@ class SignupStudentModel extends Model
         ];
     }
 
+    public function validateStudentId($attribute, $params) {
+        $student = Student::findOne(['id' => $this->student_id]);
+        if (!$this->errors && !$student) {
+            $this->addError($attribute, 'No student with given student id');
+        }
+    }
+
     public function signup()
     {
         if ($this->validate()) {
-            $studentId = substr($this->email, 1, 8);
-            $student = Student::find()
-                ->where(['like', 'id', $studentId.'_', false])
-                ->one();
-            if ($student) {
+            $student = Student::findOne(['id' => $this->student_id]);
+            if ($student && !$student->user_id) {
                 $user = new User();
                 $user->username = $this->username;
                 $user->email = $this->email;
@@ -76,7 +85,7 @@ class SignupStudentModel extends Model
                     }
                 }
             } else {
-                $this->addError('student', 'No student with given email');
+                $this->addError('student', 'Student already registered');
             }
         }
 

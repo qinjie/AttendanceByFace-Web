@@ -321,6 +321,7 @@ reset password successfully
     username: '1234',
     password: '123456',
     email: 's12345678@connect.np.edu.sg',
+    student_id,
     role: 20,
     device_hash: 'ff:ff:ff:ff:ff'
 }

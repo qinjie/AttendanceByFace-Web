@@ -232,6 +232,7 @@ class UserController extends CustomActiveController
         $model = new SignupStudentModel();
         $model->username = $bodyParams['username'];
         $model->email = $bodyParams['email'];
+        $model->student_id = $bodyParams['student_id'];
         $model->password = $bodyParams['password'];
         $model->role = isset($bodyParams['role']) ? $bodyParams['role'] : User::ROLE_STUDENT;
         $model->device_hash = $bodyParams['device_hash'];
