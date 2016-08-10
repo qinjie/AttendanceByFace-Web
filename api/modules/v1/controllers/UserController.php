@@ -532,7 +532,7 @@ class UserController extends CustomActiveController
         $current = time();
         $expire_date = strtotime($userToken->expire_date);
         if ($expire_date < $current) {
-            UserToken::model()->deleteByPk($userToken->id);
+            UserToken::deleteAll(['id' => $userToken->id]);
             return false;
         }
         return true;
