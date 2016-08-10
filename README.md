@@ -827,6 +827,31 @@ Authorization: 'Bearer <token>'
 
 ***
 
+###POST ```attendance/modify-status```
+```
+=> When a lecturer changes attendance status of a student.
+```
+####Header:
+```
+Authorization: 'Bearer <token>'
+```
+####Request:
+```
+{
+  student_id,
+  lesson_id,
+  recorded_date,
+  recorded_time,
+  status
+}
+```
+####Response:
+```
+{
+  result: (0, 1)
+}
+```
+
 ***
 
 ###POST ```timetable/take-attendance-beacon```
