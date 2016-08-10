@@ -802,6 +802,7 @@ Authorization: 'Bearer <token>'
 ###POST ```timetable/take-attendance```
 ```
 => Take attendance. One student can take attendance only once for 1 subject.
+Train face if taking attendance successfully.
 ```
 ####Header:
 ```
@@ -811,7 +812,8 @@ Authorization: 'Bearer <token>'
 ```
 {
   timetable_id,
-  face_percent: (0 => 100)
+  face_percent: (0 => 100),
+  face_id
 }
 ```
 ####Response:

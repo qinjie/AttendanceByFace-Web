@@ -7,6 +7,7 @@ use api\modules\v1\models\Attendance;
 use api\common\models\Student;
 use api\common\models\Lecturer;
 use api\common\components\AccessRule;
+use api\common\components\Facepp;
 
 use yii\rest\Controller;
 use Yii;
@@ -545,6 +546,36 @@ class TimetableController extends CustomActiveController {
         return max($lateMin, 0);
     }
 
+    private function trainFace($user, $newFaceId) {
+        $facepp = new Facepp();
+        $facepp->api_key = Yii::$app->params['FACEPP_API_KEY'];
+        $facepp->api_secret = Yii::$app->params['FACEPP_API_SECRET'];
+
+        $personId = $user->person_id;
+        $listFaceId = $user->face_id;
+        if ($listFaceId) $listFaceId = json_decode($listFaceId);
+        else $listFaceId = [];
+        if (count($listFaceId) == 5) {
+            $params['person_id'] = $personId;
+            $params['face_id'] = $listFaceId[0];
+            $response = $facepp->execute('/person/remove_face', $params);
+            // $result = json_decode($response['body']);
+            array_splice($listFaceId, 0, 1);
+        }
+        $listFaceId[] = $newFaceId;
+        $params['person_id'] = $personId;
+        $params['face_id'] = $newFaceId;
+        $response = $facepp->execute('/person/add_face', $params);
+        // $result = json_decode($response['body']);
+
+        $paramsVerify['person_id'] = $personId;
+        $response = $facepp->execute('/train/verify', $paramsVerify);
+        $result = json_decode($response['body']);
+
+        $user->face_id = json_encode($listFaceId);
+        return $user->save();
+    }
+
     public function actionTakeAttendance() {
         $userId = Yii::$app->user->identity->id;
         $student = Student::findOne(['user_id' => $userId]);
@@ -554,6 +585,7 @@ class TimetableController extends CustomActiveController {
         $bodyParams = $request->bodyParams;
         $timetable_id = $bodyParams['timetable_id'];
         $face_percent = doubleval($bodyParams['face_percent']);
+        $face_id = $bodyParams['face_id'];
 
         $checkResult = $this->checkTimetable($student->id, $timetable_id);
         $timetable = $checkResult['timetable'];
@@ -561,6 +593,7 @@ class TimetableController extends CustomActiveController {
 
         if ($face_percent >= self::FACE_THRESHOLD) {
             if ($ok) {
+                $this->trainFace(Yii::$app->user->identity, $face_id);
                 $lateMinutes = $this->getLateMinutes($timetable);
                 $attendance = new Attendance();
                 $attendance->student_id = $student->id;
