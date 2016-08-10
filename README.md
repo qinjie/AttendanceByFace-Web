@@ -469,7 +469,7 @@ person_id
 
 ###POST ```user/set-face-id```
 ```
-=> Set face Id for face++
+=> Set face Id for face++. 
 ```
 ####Header:
 ```

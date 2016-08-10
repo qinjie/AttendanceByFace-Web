@@ -404,6 +404,7 @@ class UserController extends CustomActiveController
 
     public function actionSetFaceId() {
         $userId = Yii::$app->user->identity->id;
+        UserToken::deleteAll(['user_id' => $userId, 'action' => TokenHelper::TOKEN_ACTION_TRAIN_FACE]);
         $request = Yii::$app->request;
         $bodyParams = $request->bodyParams;
         $face_id = json_encode($bodyParams);
