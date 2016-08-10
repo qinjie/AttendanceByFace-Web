@@ -60,8 +60,9 @@ def get_not_recorded_timetable(conn, semester, this_date):
 		weekday = weekday
 	)
 	cursor.execute(sql)
-	for row in iter_row(cursor, 20):
-		yield row
+	return cursor.fetchall()
+	# for row in iter_row(cursor, 20):
+	# 	yield row
 
 
 """ Convert weekday to number """
@@ -111,17 +112,20 @@ def run():
 	try:
 		conn = connect_db()
 
-		start_time = int(time.mktime(datetime.datetime.strptime(DEFAULT_START_DATE, "%Y-%m-%d").timetuple()))
+		start_time = int(time.mktime(datetime.datetime.strptime(DEFAULT_START_DATE, '%Y-%m-%d').timetuple()))
 		now = datetime.datetime.now()
 		currentYMD = now.strftime('%Y-%m-%d')
-		end_time = int(time.mktime(datetime.datetime.strptime(currentYMD, "%Y-%m-%d").timetuple()))
+		end_time = int(time.mktime(datetime.datetime.strptime(currentYMD, '%Y-%m-%d').timetuple()))
 
 		iter_time = start_time
+		print 'start_time', start_time
+		print 'end_time', end_time
 		while (iter_time < end_time):
 			date = datetime.datetime.fromtimestamp(iter_time)
 			for row in get_not_recorded_timetable(conn, DEFAULT_SEMESTER, date):
 				add_absent_attendance(conn, row, date)
 			iter_time += SECONDS_IN_DAY
+		# conn.commit()
 
 	except Error as e:
 		print(e)
