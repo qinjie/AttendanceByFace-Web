@@ -963,6 +963,7 @@ class TimetableController extends CustomActiveController {
             select class_section, 
                    lesson_id, 
                    subject_area, 
+                   catalog_number, 
                    weekday, 
                    meeting_pattern, 
                    component, 
