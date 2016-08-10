@@ -539,6 +539,7 @@ Authorization: 'Bearer <token>'
 [
   {
     "lesson_id": "17",
+    "date": "2016-08-10",
     "subject_area": "AE",
     "class_section": "LM12",
     "component": "LEC",
@@ -552,6 +553,7 @@ Authorization: 'Bearer <token>'
   },
   {
     "lesson_id": "23",
+    "date": "2016-08-10",
     "subject_area": "ELECTRO",
     "class_section": "T1M2",
     "component": "TUT",
