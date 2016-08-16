@@ -1661,9 +1661,9 @@ CREATE TABLE `user` (
 /*Data for the table `user` */
 
 insert  into `user`(`id`,`username`,`auth_key`,`password_hash`,`email`,`status`,`created_at`,`updated_at`,`name`,`role`, `device_hash`) values 
-  (53,'tungpm','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','tung.m.phung@gmail.com',10,1461214049,1461926225,'student',20,NULL),
-  (55,'namth','llF-xngHw2GG03B6VBFmRsz0Og962A7H','$2y$13$qY9oJdIfhhOYQAgtmlzK4uTuoEnE4IKMVqxKkSkmjdhwqKXStV.le','namthse03439@fpt.edu.vn',10,1461214049,1461926225,'student',20,'f8:32:e4:5f:6f:35'),
-  (57,'canhnht','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','canhnhtse03860@fpt.edu.vn',10,1461214049,1461926225,'student',20,'f8:32:e4:5f:6f:33'),
+  (53,'tungpm','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','phung@mail.com',10,1461214049,1461926225,'student',20,NULL),
+  (55,'namth','llF-xngHw2GG03B6VBFmRsz0Og962A7H','$2y$13$qY9oJdIfhhOYQAgtmlzK4uTuoEnE4IKMVqxKkSkmjdhwqKXStV.le','name@mail.com',10,1461214049,1461926225,'student',20,'f8:32:e4:5f:6f:35'),
+  (57,'canhnht','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','canh@mail.com',10,1461214049,1461926225,'student',20,'f8:32:e4:5f:6f:33'),
 
   (60,'zhang_mark','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','zhang_mark@mail.com',10,1461214049,1461926225,'lecturer',30,NULL),
   (61,'mark_qinjie','RAaaN283P34mOk4l-ZOggzjVK54RAwcY','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','mark_qinjie@mail.com',10,1461214049,1461926225,'lecturer',30,NULL),
