@@ -238,6 +238,7 @@ class UserController extends CustomActiveController
         $model->device_hash = $bodyParams['device_hash'];
         if ($user = $model->signup()) {
             $token = TokenHelper::createUserToken($user->id);
+            TokenHelper::createUserToken($user->id, TokenHelper::TOKEN_ACTION_TRAIN_FACE);
             return [
                 'token' => $token->token,
             ];
