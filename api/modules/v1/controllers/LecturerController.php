@@ -67,9 +67,10 @@ class LecturerController extends CustomActiveController
 
     public function actionProfile() {
         $userId = Yii::$app->user->identity->id;
-        $lecturer = Lecturer::findOne(['user_id' => $userId]);
+        $lecturer = Lecturer::findOne(['user_id' => $userId])->toArray();
         if (!$lecturer)
             throw new BadRequestHttpException('No lecturer with given user id');
+        $lecturer['email'] = Yii::$app->user->identity->email;
         return $lecturer;
     }
 
