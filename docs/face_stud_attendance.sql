@@ -58,10 +58,12 @@ CREATE TABLE `lecturer` (
 /*Data for the table `lecturer` */
 
 insert  into `lecturer` (`id`,`name`, `email`, `acad`, `user_id`) values 
-  ("1", "Zhang Qinjie", "zhang_mark@mail.com", "ECE", 60),
+  ("1", "Zhang Qinjie", "zhangqinjie@mail.com", "ECE", 60),
   ("2", "Zhang Qinjie 2", "abab@mail.com", "ECE", 59),
-  ("3", "Lecturer 3", "lecturer3@mail.com", "ECE", NULL),
-  ("9580", "FOO JONG YONG ABDIEL", "mark_qinjie@mail.com", "ECE", 61);
+  ("9580", "FOO JONG YONG ABDIEL", "faj2@np.edu.sg", "ECE", 61),
+  ("938", "KOH SIEW KHENG", "ksk@np.edu.sg", "ECE", 62),
+  ("0012946", "KOH KAR SENG", "kks6@np.edu.sg", "ECE", 63),
+  ("4980", "TANG KIM SENG", "tks5@np.edu.sg", "ECE", 64);
 
 
 INSERT INTO `lecturer` (`acad`,`id`,`name`,`email`) VALUES
@@ -74,7 +76,7 @@ INSERT INTO `lecturer` (`acad`,`id`,`name`,`email`) VALUES
   ("ECE", "0012366", "TAY JIN WEI", "tjw7@np.edu.sg"),
   ("ECE", "0012397", "NG HONG CHIANG", "nhc23@np.edu.sg"),
   ("ECE", "0012804", "TAN CHAO CHING", "tcc25@np.edu.sg"),
-  ("ECE", "0012946", "KOH KAR SENG", "kks6@np.edu.sg"),
+  -- ("ECE", "0012946", "KOH KAR SENG", "kks6@np.edu.sg"),
   ("ECE", "0013188", "SAERAH BINTE ABDUL LATIFF", "als6@np.edu.sg"),
   ("ECE", "0013463", "TAN YEOW CHONG", "tyc22@np.edu.sg"),
   ("ECE", "0013683", "TAN YU GIN", "tyg2@np.edu.sg"),
@@ -174,7 +176,7 @@ INSERT INTO `lecturer` (`acad`,`id`,`name`,`email`) VALUES
   ("ECE", "4908", "LONG BOO TECK", "lbt@np.edu.sg"),
   ("ECE", "495", "TAN CHIN CHYE", "tcc@np.edu.sg"),
   ("ECE", "4951", "CHENG KONG CHIT", "ckc5@np.edu.sg"),
-  ("ECE", "4980", "TANG KIM SENG", "tks5@np.edu.sg"),
+  -- ("ECE", "4980", "TANG KIM SENG", "tks5@np.edu.sg"),
   ("ECE", "5006", "KANNATHAL NATARAJAN", "kna2@np.edu.sg"),
   ("ECE", "5108", "ACHARYA RAJENDRA UDYAVARA", "aru@np.edu.sg"),
   ("ECE", "5217", "LIM SIOK LENG, JANICE", "lsl7@np.edu.sg"),
@@ -213,7 +215,7 @@ INSERT INTO `lecturer` (`acad`,`id`,`name`,`email`) VALUES
   ("ECE", "926", "LIEW CHONG POW", ""),
   ("ECE", "933", "CHEW BOON CHOON", "cbc@np.edu.sg"),
   ("ECE", "9376", "CHENG CHEE YUEN", "ccy6@np.edu.sg"),
-  ("ECE", "938", "KOH SIEW KHENG", "ksk@np.edu.sg"),
+  -- ("ECE", "938", "KOH SIEW KHENG", "ksk@np.edu.sg"),
   -- ("ECE", "9580", "FOO JONG YONG ABDIEL", "faj2@np.edu.sg"),
   ("ECE", "9599", "CHEN JIAJIA", ""),
   ("ECE", "9604", "GOH BOON HUI RONEY", "grb2@np.edu.sg"),
@@ -1664,9 +1666,14 @@ insert  into `user`(`id`,`username`,`auth_key`,`password_hash`,`email`,`status`,
   (53,'tungpm','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','phung@mail.com',10,1461214049,1461926225,'student',20,NULL),
   (55,'namth','llF-xngHw2GG03B6VBFmRsz0Og962A7H','$2y$13$qY9oJdIfhhOYQAgtmlzK4uTuoEnE4IKMVqxKkSkmjdhwqKXStV.le','name@mail.com',10,1461214049,1461926225,'student',20,'f8:32:e4:5f:6f:35'),
   (57,'canhnht','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','canh@mail.com',10,1461214049,1461926225,'student',20,'f8:32:e4:5f:6f:33'),
+  (50,'tanseng','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','johnny@mail.com',10,1461214049,1461926225,'student',20,NULL),
+  (51,'penghui','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','anthony@mail.com',10,1461214049,1461926225,'student',20,NULL),
 
-  (60,'zhang_mark','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','zhang_mark@mail.com',10,1461214049,1461926225,'lecturer',30,NULL),
-  (61,'mark_qinjie','RAaaN283P34mOk4l-ZOggzjVK54RAwcY','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','mark_qinjie@mail.com',10,1461214049,1461926225,'lecturer',30,NULL),
+  (60,'zhangqinjie','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','zhangqinjie@mail.com',10,1461214049,1461926225,'lecturer',30,NULL),
+  (61,'foojong','RAaaN283P34mOk4l-ZOggzjVK54RAwcY','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','faj2@np.edu.sg',10,1461214049,1461926225,'lecturer',30,NULL),
+  (62,'kohkheng','RAaaN283P34mOk4l-ZOggzjVK54RAwcY','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','ksk@np.edu.sg',10,1461214049,1461926225,'lecturer',30,NULL),
+  (63,'kohseng','RAaaN283P34mOk4l-ZOggzjVK54RAwcY','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','kks6@np.edu.sg',10,1461214049,1461926225,'lecturer',30,NULL),
+  (64,'tangseng','RAaaN283P34mOk4l-ZOggzjVK54RAwcY','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','tks5@np.edu.sg',10,1461214049,1461926225,'lecturer',30,NULL),
 
   (2,'2222','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','22222222@connect.np.edu.sg',10,1461214049,1461926225,'student',20,NULL),
   (5,'5555','ev0ddY438lQUVzIBT4Cz6FfonldlZGwn','$2y$13$pm7wYtxExchdumcLXrb6DOTP0KeQSUda3hylys/JQ6t0aqjYtUbpq','33333333@connect.np.edu.sg',10,1461214049,1461926225,'student',20,NULL),
@@ -1704,7 +1711,9 @@ insert  into `student`(`acad`,`id`,`gender`,`name`,`uuid`,`user_id`,`created_at`
   ('AE','2',NULL,'MICHAEL YOO',NULL,57,'0000-00-00 00:00:00','2016-04-26 10:49:37'),
   ('AE','3',NULL,'YOO YOO',NULL,58,'0000-00-00 00:00:00','2016-04-26 10:49:37'),
   ('AE','4',NULL,'LEE YOO',NULL,55,'0000-00-00 00:00:00','2016-04-26 10:49:37'),
-  
+  ("AE", "10156135E",NULL, "TAN GUAN SENG",NULL,50,'0000-00-00 00:00:00','2016-04-26 10:49:37'),
+  ("ECE", "10159710G",NULL, "PENG YONG HUI",NULL,51,'0000-00-00 00:00:00','2016-04-26 10:49:37'),
+
   ('AE','22222222B',NULL,'AIK YU CHE',NULL,2,'0000-00-00 00:00:00','2016-04-26 10:49:37'),
   ('AE','33333333B',NULL,'AKAASH SIN',NULL,5,'0000-00-00 00:00:00','2016-04-26 10:49:37'),
   ('AE','44444444B',NULL,'ANTHONY CHEN',NULL,4,'0000-00-00 00:00:00','2016-04-26 10:49:37'),
@@ -1920,7 +1929,7 @@ INSERT INTO `student` (`acad`,`id`,`name`) VALUES
   ("BME", "10156109B", "MALCOLM PANG QING HAN"),
   ("ECE", "10156110D", "CEPHAS AU YI LE"),
   ("AE", "10156121F", "NEO YONG XIANG"),
-  ("AE", "10156135E", "TAN GUAN SENG"),
+  -- ("AE", "10156135E", "TAN GUAN SENG"),
   ("ECE", "10156177E", "TAN CHIN KIAT"),
   ("BME", "10156184A", "AIN ALISYA BTE ASNI"),
   ("AE", "10156185K", "NADIAH BTE SAZALI"),
@@ -2200,7 +2209,7 @@ INSERT INTO `student` (`acad`,`id`,`name`) VALUES
   ("BME", "10159667D", "MARISSA LYNN AMIRA BTE M Y"),
   ("ECE", "10159669B", "ALISON TAN XUE QI"),
   ("NSS", "10159704K", "GWEE SOON CHAI, CHRISTOPHER"),
-  ("ECE", "10159710G", "PENG YONG HUI"),
+  -- ("ECE", "10159710G", "PENG YONG HUI"),
   ("BME", "10159830D", "JACQUELINE BONG LIN-HUI"),
   ("AE", "10159928D", "CHUA SHI YAO BENSON"),
   ("ECE", "10159929C", "KENNETH CHOY GUANG WEI"),
