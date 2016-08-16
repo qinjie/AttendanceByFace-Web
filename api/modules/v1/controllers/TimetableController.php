@@ -589,7 +589,7 @@ class TimetableController extends CustomActiveController {
         $bodyParams = $request->bodyParams;
         $timetable_id = $bodyParams['timetable_id'];
         $face_percent = doubleval($bodyParams['face_percent']);
-        $face_id = $bodyParams['face_id'];
+        // $face_id = $bodyParams['face_id'];
 
         $checkResult = $this->checkTimetable($student->id, $timetable_id);
         $timetable = $checkResult['timetable'];
@@ -597,7 +597,7 @@ class TimetableController extends CustomActiveController {
 
         if ($face_percent >= self::FACE_THRESHOLD) {
             if ($ok) {
-                $this->trainFace(Yii::$app->user->identity, $face_id);
+                // $this->trainFace(Yii::$app->user->identity, $face_id);
                 $lateMinutes = $this->getLateMinutes($timetable);
                 $attendance = new Attendance();
                 $attendance->student_id = $student->id;
