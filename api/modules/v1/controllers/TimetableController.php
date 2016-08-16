@@ -29,7 +29,7 @@ class TimetableController extends CustomActiveController {
     const FACE_THRESHOLD = 30;
 
     const DEFAULT_START_DATE = '2016-06-13';    // Monday
-    const DEFAULT_END_DATE = '2016-07-11';  // Sunday, 5 weeks
+    const DEFAULT_END_DATE = '2016-08-21';  // Sunday, 5 weeks
     const DEFAULT_SEMESTER = 2;
     const TEST_DEFAULT_SEMESTER = 3;
 
