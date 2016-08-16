@@ -45,7 +45,7 @@ class SignupLecturerModel extends Model
                 $user->email = $this->email;
                 $user->setPassword($this->password);
                 $user->generateAuthKey();
-                $user->status = User::STATUS_WAIT_EMAIL_DEVICE;
+                $user->status = User::STATUS_WAIT_EMAIL;
                 $user->role = $this->role;
                 $user->name = User::$roles[$this->role];                
 
