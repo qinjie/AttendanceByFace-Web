@@ -1664,7 +1664,7 @@ CREATE TABLE `user` (
 
 insert  into `user`(`id`,`username`,`auth_key`,`password_hash`,`email`,`status`,`created_at`,`updated_at`,`name`,`role`, `device_hash`) values 
   (53,'tungpm','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','tung@mail.com',10,1461214049,1461926225,'student',20,'f8:32:e4:5f:77:4f'),
-  (55,'namth','llF-xngHw2GG03B6VBFmRsz0Og962A7H','$2y$13$qY9oJdIfhhOYQAgtmlzK4uTuoEnE4IKMVqxKkSkmjdhwqKXStV.le','nam@mail.com',10,1461214049,1461926225,'student',20,'74:51:ba:3f:8b:22'),
+  (55,'namth','llF-xngHw2GG03B6VBFmRsz0Og962A7H','$2y$13$qY9oJdIfhhOYQAgtmlzK4uTuoEnE4IKMVqxKkSkmjdhwqKXStV.le','namthse03439@fpt.edu.vn',10,1461214049,1461926225,'student',20,'74:51:ba:3f:8b:22'),
   (57,'canhnht','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','canh@mail.com',10,1461214049,1461926225,'student',20,'f8:32:e4:5f:6f:35'),
   (50,'charity','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','charity@mail.com',10,1461214049,1461926225,'student',20,'f8:32:e4:5f:73:f5'),
   (51,'penghui','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','penghui@mail.com',10,1461214049,1461926225,'student',20,'38:2c:4a:3d:5f:ae'),
