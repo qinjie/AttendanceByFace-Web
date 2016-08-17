@@ -358,6 +358,7 @@ class UserController extends CustomActiveController
             if (isset($model->errors['device_hash']))
                 throw new BadRequestHttpException(null, self::CODE_DUPLICATE_DEVICE);
         }
+        throw new BadRequestHttpException('Invalid data');
     }
 
     public function actionPersonId() {
