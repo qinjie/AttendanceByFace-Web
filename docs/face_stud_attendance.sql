@@ -14912,9 +14912,9 @@ CREATE TABLE `venue` (
 /*Data for the table `venue` */
 
 insert into `venue` (`id`, `location`, `name`) values
-  (1, 'Location 1', 'Venue 1'),
-  (2, 'Location 2', 'Venue 2'),
-  (3, 'Location 3', 'Venue 3');
+  (1, 'Room 06 - 01, Block 7', 'R&D Room'),
+  (2, 'Room 06 - 02, Block 7', 'IoT Room'),
+  (3, 'Room 06 - 03, Block 7', 'Research Room');
 
 /*Table structure for table `venue_beacon` */
 
