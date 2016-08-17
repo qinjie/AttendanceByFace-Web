@@ -25,7 +25,7 @@ class TimetableController extends CustomActiveController {
     const STATUS_LATE = 2;
     const STATUS_ABSENT = 3;
 
-    const ATTENDANCE_INTERVAL = 1500; // 15 minutes
+    const ATTENDANCE_INTERVAL = 15; // 15 minutes
     const FACE_THRESHOLD = 30;
 
     const DEFAULT_START_DATE = '2016-06-13';    // Monday

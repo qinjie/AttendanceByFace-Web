@@ -14902,8 +14902,8 @@ DROP TABLE IF EXISTS `venue`;
 
 CREATE TABLE `venue` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `location` varchar(20) NOT NULL,
-  `name` varchar(30) DEFAULT NULL,
+  `location` varchar(100) NOT NULL,
+  `name` varchar(100) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
