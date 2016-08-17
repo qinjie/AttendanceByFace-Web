@@ -1663,11 +1663,11 @@ CREATE TABLE `user` (
 /*Data for the table `user` */
 
 insert  into `user`(`id`,`username`,`auth_key`,`password_hash`,`email`,`status`,`created_at`,`updated_at`,`name`,`role`, `device_hash`) values 
-  (53,'tungpm','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','phung@mail.com',10,1461214049,1461926225,'student',20,NULL),
-  (55,'namth','llF-xngHw2GG03B6VBFmRsz0Og962A7H','$2y$13$qY9oJdIfhhOYQAgtmlzK4uTuoEnE4IKMVqxKkSkmjdhwqKXStV.le','name@mail.com',10,1461214049,1461926225,'student',20,'f8:32:e4:5f:6f:35'),
-  (57,'canhnht','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','canh@mail.com',10,1461214049,1461926225,'student',20,'f8:32:e4:5f:6f:33'),
-  (50,'tanseng','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','johnny@mail.com',10,1461214049,1461926225,'student',20,NULL),
-  (51,'penghui','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','anthony@mail.com',10,1461214049,1461926225,'student',20,NULL),
+  (53,'tungpm','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','tung@mail.com',10,1461214049,1461926225,'student',20,'f8:32:e4:5f:77:4f'),
+  (55,'namth','llF-xngHw2GG03B6VBFmRsz0Og962A7H','$2y$13$qY9oJdIfhhOYQAgtmlzK4uTuoEnE4IKMVqxKkSkmjdhwqKXStV.le','nam@mail.com',10,1461214049,1461926225,'student',20,'74:51:ba:3f:8b:22'),
+  (57,'canhnht','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','canh@mail.com',10,1461214049,1461926225,'student',20,'f8:32:e4:5f:6f:35'),
+  (50,'charity','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','charity@mail.com',10,1461214049,1461926225,'student',20,'f8:32:e4:5f:73:f5'),
+  (51,'penghui','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','penghui@mail.com',10,1461214049,1461926225,'student',20,'38:2c:4a:3d:5f:ae'),
 
   (60,'zhangqinjie','ZdHvM_ryoZgGJiNsQhh2y95vllLXVseA','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','zhangqinjie@mail.com',10,1461214049,1461926225,'lecturer',30,NULL),
   (61,'foojong','RAaaN283P34mOk4l-ZOggzjVK54RAwcY','$2y$13$3p4KSrmepU5A8mduqEtz3eicSvfEskzLnnUsIukJayp3e7jDStnaa','faj2@np.edu.sg',10,1461214049,1461926225,'lecturer',30,NULL),
