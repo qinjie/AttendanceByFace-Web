@@ -86,7 +86,7 @@ INSERT INTO `lecturer` (`acad`,`id`,`name`,`email`) VALUES
   ("ECE", "0012366", "TAY JIN WEI", "tjw7@np.edu.sg"),
   ("ECE", "0012397", "NG HONG CHIANG", "nhc23@np.edu.sg"),
   ("ECE", "0012804", "TAN CHAO CHING", "tcc25@np.edu.sg"),
-  ("ECE", "0012946", "KOH KAR SENG", "kks6@np.edu.sg"),
+  -- ("ECE", "0012946", "KOH KAR SENG", "kks6@np.edu.sg"),
   ("ECE", "0013188", "SAERAH BINTE ABDUL LATIFF", "als6@np.edu.sg"),
   ("ECE", "0013463", "TAN YEOW CHONG", "tyc22@np.edu.sg"),
   ("ECE", "0013683", "TAN YU GIN", "tyg2@np.edu.sg"),
@@ -186,7 +186,7 @@ INSERT INTO `lecturer` (`acad`,`id`,`name`,`email`) VALUES
   ("ECE", "4908", "LONG BOO TECK", "lbt@np.edu.sg"),
   ("ECE", "495", "TAN CHIN CHYE", "tcc@np.edu.sg"),
   ("ECE", "4951", "CHENG KONG CHIT", "ckc5@np.edu.sg"),
-  ("ECE", "4980", "TANG KIM SENG", "tks5@np.edu.sg"),
+  -- ("ECE", "4980", "TANG KIM SENG", "tks5@np.edu.sg"),
   ("ECE", "5006", "KANNATHAL NATARAJAN", "kna2@np.edu.sg"),
   ("ECE", "5108", "ACHARYA RAJENDRA UDYAVARA", "aru@np.edu.sg"),
   ("ECE", "5217", "LIM SIOK LENG, JANICE", "lsl7@np.edu.sg"),
@@ -225,8 +225,8 @@ INSERT INTO `lecturer` (`acad`,`id`,`name`,`email`) VALUES
   ("ECE", "926", "LIEW CHONG POW", ""),
   ("ECE", "933", "CHEW BOON CHOON", "cbc@np.edu.sg"),
   ("ECE", "9376", "CHENG CHEE YUEN", "ccy6@np.edu.sg"),
-  ("ECE", "938", "KOH SIEW KHENG", "ksk@np.edu.sg"),
-  ("ECE", "9580", "FOO JONG YONG ABDIEL", "faj2@np.edu.sg"),
+  -- ("ECE", "938", "KOH SIEW KHENG", "ksk@np.edu.sg"),
+  -- ("ECE", "9580", "FOO JONG YONG ABDIEL", "faj2@np.edu.sg"),
   ("ECE", "9599", "CHEN JIAJIA", ""),
   ("ECE", "9604", "GOH BOON HUI RONEY", "grb2@np.edu.sg"),
   ("ECE", "9963", "LIM JIA YING SHEILA", "");
@@ -1941,7 +1941,7 @@ INSERT INTO `student` (`acad`,`id`,`name`) VALUES
   ("BME", "10156109B", "MALCOLM PANG QING HAN"),
   ("ECE", "10156110D", "CEPHAS AU YI LE"),
   ("AE", "10156121F", "NEO YONG XIANG"),
-  ("AE", "10156135E", "TAN GUAN SENG"),
+  -- ("AE", "10156135E", "TAN GUAN SENG"),
   ("ECE", "10156177E", "TAN CHIN KIAT"),
   ("BME", "10156184A", "AIN ALISYA BTE ASNI"),
   ("AE", "10156185K", "NADIAH BTE SAZALI"),
@@ -2221,7 +2221,7 @@ INSERT INTO `student` (`acad`,`id`,`name`) VALUES
   ("BME", "10159667D", "MARISSA LYNN AMIRA BTE M Y"),
   ("ECE", "10159669B", "ALISON TAN XUE QI"),
   ("NSS", "10159704K", "GWEE SOON CHAI, CHRISTOPHER"),
-  ("ECE", "10159710G", "PENG YONG HUI"),
+  -- ("ECE", "10159710G", "PENG YONG HUI"),
   ("BME", "10159830D", "JACQUELINE BONG LIN-HUI"),
   ("AE", "10159928D", "CHUA SHI YAO BENSON"),
   ("ECE", "10159929C", "KENNETH CHOY GUANG WEI"),
@@ -14968,7 +14968,7 @@ insert into `venue_beacon` (`id`, `venue_id`, `beacon_id`) values
   (15, 15, 15),
   (16, 16, 16),
   (17, 17, 17),
-  (18, 18, 18),
+  (18, 18, 18);
 
 /*Data for the table `venue_beacon` */
 
