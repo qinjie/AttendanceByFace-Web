@@ -535,12 +535,14 @@ class TimetableController extends CustomActiveController {
 
         $currentTime = strtotime(date('H:i'));
         $startTime = strtotime($timetable['start_time']);
+        $endTime = strtotime($timetable['end_time']);
         $diff = abs(round($currentTime - $startTime) / 60);
         $result = [
             'timetable' => $timetable,
             'ok' => false,
         ];
-        if ($diff <= self::ATTENDANCE_INTERVAL && !(bool)$attendance) $result['ok'] = true;
+        if ($currentTime >= $startTime - 15 * 60 && $currentTime <= $endTime && !(bool)$attendance) 
+            $result['ok'] = true;
         return $result;
     }
 
