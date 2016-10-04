@@ -1,0 +1,5 @@
+- [ ] Add console command to generate apache virtual hosts for frontend, backend and api
+- [ ] Add migration for database
+- [ ] Add RBAC
+- [ ] Add testing with codeception
+- [ ] Add ActiveRecord and ActiveController
