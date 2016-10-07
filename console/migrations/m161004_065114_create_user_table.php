@@ -30,7 +30,7 @@ class m161004_065114_create_user_table extends Migration
             'email' => $this->string()->notNull()->unique(),
             'status' => $this->smallInteger()->notNull()->defaultValue(User::STATUS_ACTIVE),
             'role' => $this->smallInteger()->notNull()->defaultValue(User::ROLE_USER),
-            'created_at' => $this->timestamp()->notNull(),
+            'created_at' => $this->timestamp()->notNull()->defaultExpression('CURRENT_TIMESTAMP'),
             'updated_at' => $this->timestamp()->notNull()->defaultExpression('CURRENT_TIMESTAMP'),
         ], $tableOptions);
 
