@@ -4,6 +4,7 @@ namespace api\modules\v1\controllers;
 
 use common\models\User;
 use common\models\Lecturer;
+use common\models\Student;
 use common\models\UserToken;
 use common\models\search\UserSearch;
 use common\components\TokenHelper;
@@ -43,7 +44,7 @@ class UserController extends CustomActiveController
         return [
             'authenticator' => [
                 'class' => HttpBearerAuth::className(),
-                'except' => ['login-lecturer', 'signup', 'reset-password',
+                'except' => ['login-lecturer', 'login-student', 'signup', 'reset-password',
                     'resend-email', 'activate', 'activate-email'],
             ],
             'access' => [
@@ -53,7 +54,7 @@ class UserController extends CustomActiveController
                 ],
                 'rules' => [
                     [
-                        'actions' => ['login-lecturer', 'signup', 'reset-password',
+                        'actions' => ['login-lecturer', 'login-student', 'signup', 'reset-password',
                             'resend-email', 'activate', 'activate-email'],
                         'allow' => true,
                         'roles' => ['?'],
@@ -95,6 +96,31 @@ class UserController extends CustomActiveController
                 throw new BadRequestHttpException(null, self::CODE_INCORRECT_USERNAME);
             if ($model->hasErrors('password'))
                 throw new BadRequestHttpException(null, self::CODE_INCORRECT_PASSWORD);
+            if ($model->hasErrors('status'))
+                throw new BadRequestHttpException(null, $model->getErrors('status')[0]);
+        }
+        throw new BadRequestHttpException('Invalid data');
+    }
+
+    public function actionLoginStudent() {
+        $model = new LoginForm([
+            'scenario' => LoginForm::SCENARIO_STUDENT
+        ]);
+        if ($model->load(Yii::$app->request->post(), '') && $user = $model->login()) {
+            $student = Student::findOne(['user_id' => $user->id])->toArray([
+                'id', 'name', 'acad'
+            ]);
+            UserToken::deleteAll(['user_id' => $user->id, 'action' => TokenHelper::TOKEN_ACTION_ACCESS]);
+            $userToken = TokenHelper::createUserToken($user->id);
+            $student['token'] = $userToken->token;
+            return $student;
+        } else {
+            if ($model->hasErrors('username'))
+                throw new BadRequestHttpException(null, self::CODE_INCORRECT_USERNAME);
+            if ($model->hasErrors('password'))
+                throw new BadRequestHttpException(null, self::CODE_INCORRECT_PASSWORD);
+            if ($model->hasErrors('device_hash'))
+                throw new BadRequestHttpException(null, self::CODE_INCORRECT_DEVICE);
             if ($model->hasErrors('status'))
                 throw new BadRequestHttpException(null, $model->getErrors('status')[0]);
         }

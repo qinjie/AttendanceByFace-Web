@@ -71,6 +71,7 @@ return [
             'rules' => [
                 # User API
                 'POST <version:\w+>/lecturer/login' => '<version>/user/login-lecturer',
+                'POST <version:\w+>/student/login' => '<version>/user/login-student',
             ],
         ],
     ],

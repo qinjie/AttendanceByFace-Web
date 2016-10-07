@@ -38,7 +38,7 @@ class LoginForm extends Model
     public function rules()
     {
         return [
-            [['username', 'password'], 'required'],
+            [['username', 'password', 'device_hash'], 'required'],
             ['password', 'validatePassword'],
             ['device_hash', 'validateDevice']
         ];
@@ -55,7 +55,7 @@ class LoginForm extends Model
     {
         if (!$this->hasErrors()) {
             $user = $this->getUser();
-            if (!$user || !$user->validatePassword($this->password))
+            if ($user && !$user->validatePassword($this->password))
                 $this->addError($attribute, 'Incorrect username or password.');
         }
     }
@@ -63,7 +63,7 @@ class LoginForm extends Model
     public function validateDevice($attribute, $params) {
         if (!$this->hasErrors()) {
             $user = $this->getUser();
-            if (!$user && !$user->validateDevice($this->device_hash)) {
+            if ($user && !$user->validateDevice($this->device_hash)) {
                 $this->addError($attribute, 'Incorrect device.');
             }
         }
