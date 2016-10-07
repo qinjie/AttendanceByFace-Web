@@ -9,9 +9,23 @@
 class_name: FunctionalTester
 modules:
     enabled:
-      - Filesystem
-      - Yii2
-      - tests\codeception\common\_support\FixtureHelper
+        - Filesystem
+        - REST:
+            url: http://localhost/atk-ble/api/web/index-test.php/v1/
+            depends: Yii2
+            part: Json
+        - Db
+        - Asserts
+        - Yii2
     config:
         Yii2:
             configFile: '../config/api/functional.php'
+            part: ORM
+        Db:
+            dsn: 'mysql:host=localhost;dbname=atk_ble_test'
+            user: 'root'
+            password: ''
+            dump: '_data/dump.sql'
+            populate: true
+            cleanup: false
+            reconnect: true

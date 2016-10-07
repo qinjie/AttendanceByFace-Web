@@ -35,20 +35,28 @@ class User extends CustomActiveRecord implements IdentityInterface
     const STATUS_WAIT_EMAIL_DEVICE = 0;
     const STATUS_WAIT_DEVICE = 1;
     const STATUS_WAIT_EMAIL = 2;
-
     const STATUS_ACTIVE = 10;
     const STATUS_BLOCKED = 11;
     const STATUS_DELETED = 12;
 
-    public static $roles = [
-        10 => 'user',
-        20 => 'student',
-        30 => 'lecturer',
+    public static $statusValues = [
+        self::STATUS_DELETED => 'Deleted',
+        self::STATUS_BLOCKED => 'Blocked',
+        self::STATUS_ACTIVE => 'Active',
+        self::STATUS_WAIT_EMAIL => 'Pending Email Verification',
+        self::STATUS_WAIT_DEVICE => 'Pending Device Verification',
+        self::STATUS_WAIT_EMAIL_DEVICE => 'Pending Email and Device Verification',
     ];
 
-    const ROLE_USER = 10;
-    const ROLE_STUDENT = 20;
-    const ROLE_LECTURER = 30;
+    const ROLE_STUDENT = 2;
+    const ROLE_LECTURER = 3;
+    const ROLE_ADMINISTRATOR = 5;
+
+    public static $roleValues = [
+        self::ROLE_STUDENT => 'Student',
+        self::ROLE_LECTURER => 'Lecturer',
+        self::ROLE_ADMINISTRATOR => 'Administrator',
+    ];
 
     /**
      * @inheritdoc
@@ -91,16 +99,16 @@ class User extends CustomActiveRecord implements IdentityInterface
             ['email', 'filter', 'filter' => 'trim'],
             ['email', 'required', 'message' => 'Please enter an email.'],
             ['email', 'email', 'message' => 'Invalid email address.'],
-            ['email', 'unique', 'targetClass' => self::className(), 'message' => 'This email address has already been taken.'],
+            ['email', 'unique', 'message' => 'This email address has already been taken.'],
             ['email', 'string', 'max' => 255, 'message' => 'Max 255 characters.'],
 
             ['status', 'integer'],
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
-            ['status', 'in', 'range' => array_keys(self::getStatusesArray())],
+            ['status', 'in', 'range' => array_keys(self::$statusValues)],
 
             ['username', 'required', 'message' => 'Please enter an username.'],
             ['username', 'match', 'pattern' => '#^[\w_-]+$#i', 'message' => 'Invalid username. Only alphanumeric characters are allowed.'],
-            ['username', 'unique', 'targetClass' => self::className(), 'message' => 'This username has already been taken.'],
+            ['username', 'unique', 'message' => 'This username has already been taken.'],
             ['username', 'string', 'min' => 4, 'max' => 255, 'message' => 'Min 4 characters; Max 255 characters.'],
 
             [['device_hash'], 'unique'],
@@ -139,23 +147,6 @@ class User extends CustomActiveRecord implements IdentityInterface
         unset($fields['auth_key'], $fields['password_hash'],
             $fields['updated_at'], $fields['created_at']);
         return $fields;
-    }
-
-    public function getStatusName()
-    {
-        return ArrayHelper:: getValue(self:: getStatusesArray(), $this->status);
-    }
-
-    public static function getStatusesArray()
-    {
-        return [
-            self::STATUS_DELETED => 'Deleted',
-            self::STATUS_BLOCKED => 'Blocked',
-            self::STATUS_ACTIVE => 'Active',
-            self::STATUS_WAIT_EMAIL => 'Pending Email Verification',
-            self::STATUS_WAIT_DEVICE => 'Pending Device Verification',
-            self::STATUS_WAIT_EMAIL_DEVICE => 'Pending Email and Device Verification',
-        ];
     }
 
     /**
@@ -268,6 +259,10 @@ class User extends CustomActiveRecord implements IdentityInterface
     public function setPassword($password)
     {
         $this->password_hash = Yii::$app->security->generatePasswordHash($password);
+    }
+
+    public function validateDevice($device_hash) {
+        return $this->device_hash === $device_hash;
     }
 
     /**

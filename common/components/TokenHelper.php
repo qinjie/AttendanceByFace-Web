@@ -1,6 +1,6 @@
 <?php
 
-namespace common\helpers;
+namespace common\components;
 
 use common\models\UserToken;
 use Yii;

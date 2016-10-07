@@ -10,7 +10,7 @@ defined('YII_TEST_API_ENTRY_FILE') or define('YII_TEST_API_ENTRY_FILE', YII_APP_
 require_once(YII_APP_BASE_PATH . '/vendor/autoload.php');
 require_once(YII_APP_BASE_PATH . '/vendor/yiisoft/yii2/Yii.php');
 require_once(YII_APP_BASE_PATH . '/common/config/bootstrap.php');
-require_once(YII_APP_BASE_PATH . '/backend/config/bootstrap.php');
+require_once(YII_APP_BASE_PATH . '/api/config/bootstrap.php');
 
 // set correct script paths
 

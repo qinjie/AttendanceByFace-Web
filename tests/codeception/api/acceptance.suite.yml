@@ -11,18 +11,15 @@
 class_name: AcceptanceTester
 modules:
     enabled:
-        - PhpBrowser
-        - tests\codeception\common\_support\FixtureHelper
+        - REST:
+            url: http://localhost/hopon-web/api/web/index-test.php/v1/
+            depends: Yii2
+            part: Json
 # you can use WebDriver instead of PhpBrowser to test javascript and ajax.
 # This will require you to install selenium. See http://codeception.com/docs/04-AcceptanceTests#Selenium
 # "restart" option is used by the WebDriver to start each time per test-file new session and cookies,
 # it is useful if you want to login in your app in each test.
 #        - WebDriver
     config:
-        PhpBrowser:
-# PLEASE ADJUST IT TO THE ACTUAL ENTRY POINT WITHOUT PATH INFO
-            url: http://localhost
-#        WebDriver:
-#            url: http://localhost:8080
-#            browser: firefox
-#            restart: true
+        Yii2:
+            configFile: '../config/api/acceptance.php'

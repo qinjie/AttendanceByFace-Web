@@ -2,6 +2,7 @@
 namespace api\components;
 
 use yii\base\Exception;
+use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
 use yii\filters\auth\HttpBearerAuth;
 use yii\filters\auth\QueryParamAuth;
@@ -30,25 +31,6 @@ class CustomActiveController extends ActiveController
             ],
         ], parent::behaviors());
 
-        $behaviors['authenticator'] = [
-            'class' => HttpBearerAuth::className(),
-        ];
-
-        $behaviors['access'] = [
-            'class' => AccessControl::className(),
-            'rules' => [
-                [
-                    'allow' => true,
-                    'roles' => ['@'],
-                ],
-            ],
-
-            'denyCallback' => function ($rule, $action) {
-                throw new UnauthorizedHttpException('You are not authorized');
-            },
-        ];
-
         return $behaviors;
     }
-
 }
