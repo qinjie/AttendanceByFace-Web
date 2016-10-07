@@ -18,10 +18,12 @@ class LoginForm extends Model
     public $username;
     public $password;
     public $device_hash;
-    public $password;
 
     private $_user;
 
+    /**
+     * @inheritdoc
+     */
     public function scenarios()
     {
         return [
@@ -75,6 +77,7 @@ class LoginForm extends Model
     public function login()
     {
         if ($this->validate()) {
+            $user = $this->getUser();
             if ($user->status == User::STATUS_WAIT_EMAIL_DEVICE)
                 $this->addError('status', User::CODE_UNVERIFIED_EMAIL_DEVICE);
             else if ($user->status == User::STATUS_WAIT_EMAIL)
@@ -97,6 +100,8 @@ class LoginForm extends Model
     {
         if ($this->_user === null) {
             $this->_user = User::findByUsername($this->username);
+            if (!$this->_user)
+                $this->addError('username', 'No user with given username');
         }
 
         return $this->_user;

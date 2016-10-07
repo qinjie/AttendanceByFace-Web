@@ -14,11 +14,11 @@ class TokenHelper
     const TOKEN_ACTION_TRAIN_FACE = 5;
 
     public static $actions = [
-        1 => 'ACTION_ACTIVATE_ACCOUNT',
-        2 => 'ACTION_RESET_PASSWORD',
-        3 => 'ACTION_CHANGE_EMAIL',
-        4 => 'ACTION_ACCESS',
-        5 => 'ACTION_TRAIN_FACE',
+        self::TOKEN_ACTION_ACTIVATE_ACCOUNT => 'ACTION_ACTIVATE_ACCOUNT',
+        self::TOKEN_ACTION_RESET_PASSWORD => 'ACTION_RESET_PASSWORD',
+        self::TOKEN_ACTION_CHANGE_EMAIL => 'ACTION_CHANGE_EMAIL',
+        self::TOKEN_ACTION_ACCESS => 'ACTION_ACCESS',
+        self::TOKEN_ACTION_TRAIN_FACE => 'ACTION_TRAIN_FACE',
     ];
 
     const CACHE_DURATION = 3600; // one hour
@@ -37,7 +37,8 @@ class TokenHelper
         $model->expire_date = date('Y-m-d H:i:s', time() + $interval);
         $model->action = is_null($action) ? self::TOKEN_ACTION_ACCESS : $action;
         $model->title = self::$actions[$model->action];
-        $model->ip_address = \Yii::$app->getRequest()->getUserIP();
+        $model->ip_address = Yii::$app->getRequest()->getUserIP();
+        if (!$model->ip_address) $model->ip_address = '127.0.0.1';
         if ($model->validate() && $model->save())
             return $model;
         else

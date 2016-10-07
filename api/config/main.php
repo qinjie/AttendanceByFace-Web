@@ -67,7 +67,10 @@ return [
             'class' => UrlManager::className(),
             'enablePrettyUrl' => true,
             'showScriptName' => false,
+            'enableStrictParsing' => true,
             'rules' => [
+                # User API
+                'POST <version:\w+>/lecturer/login' => '<version>/user/login-lecturer',
             ],
         ],
     ],

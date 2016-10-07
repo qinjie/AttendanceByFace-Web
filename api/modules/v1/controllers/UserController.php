@@ -3,20 +3,27 @@
 namespace api\modules\v1\controllers;
 
 use common\models\User;
+use common\models\Lecturer;
+use common\models\UserToken;
 use common\models\search\UserSearch;
+use common\components\TokenHelper;
 use api\components\CustomActiveController;
+use api\components\AccessRule;
 use api\models\LoginForm;
 
 use Yii;
 use yii\web\NotFoundHttpException;
+use yii\web\BadRequestHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\auth\HttpBearerAuth;
+use yii\filters\AccessControl;
 
 /**
  * UserController implements the CRUD actions for User model.
  */
 class UserController extends CustomActiveController
 {
-    public $modelClass = User::className();
+    public $modelClass = 'common\models\User';
 
     const CODE_INCORRECT_USERNAME = 10;
     const CODE_INCORRECT_PASSWORD = 11;
@@ -34,6 +41,34 @@ class UserController extends CustomActiveController
     public function behaviors()
     {
         return [
+            'authenticator' => [
+                'class' => HttpBearerAuth::className(),
+                'except' => ['login-lecturer', 'signup', 'reset-password',
+                    'resend-email', 'activate', 'activate-email'],
+            ],
+            'access' => [
+                'class' => AccessControl::className(),
+                'ruleConfig' => [
+                    'class' => AccessRule::className(),
+                ],
+                'rules' => [
+                    [
+                        'actions' => ['login-lecturer', 'signup', 'reset-password',
+                            'resend-email', 'activate', 'activate-email'],
+                        'allow' => true,
+                        'roles' => ['?'],
+                    ],
+                    [
+                        'actions' => ['logout', 'change-password', 'profile',
+                            'change-email', 'change-mobile'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ]
+                ],
+                'denyCallback' => function ($rule, $action) {
+                    throw new UnauthorizedHttpException('You are not authorized');
+                },
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -43,43 +78,17 @@ class UserController extends CustomActiveController
         ];
     }
 
-    // public function actionLoginLecturer() {
-    //     $model = new LoginForm([
-    //         'scenario' => LoginForm::SCENARIO_LECTURER
-    //     ]);
-    //     if ($model->load(Yii::$app->request->post()) && $token = $model->login())
-    //     if ($user = $model->login()) {
-    //         if ($user->status == User::STATUS_WAIT_EMAIL_DEVICE)
-    //             throw new BadRequestHttpException(null, self::CODE_UNVERIFIED_EMAIL_DEVICE);
-    //         if ($user->status == User::STATUS_WAIT_EMAIL)
-    //             throw new BadRequestHttpException(null, self::CODE_UNVERIFIED_EMAIL);
-    //         if ($user->role != User::ROLE_LECTURER)
-    //             throw new BadRequestHttpException(null, self::CODE_INCORRECT_USERNAME);
-    //         if ($user->status == User::STATUS_ACTIVE) {
-    //             $lecturer = Lecturer::findOne(['user_id' => $user->id])->toArray();
-    //             UserToken::deleteAll(['user_id' => $user->id, 'action' => TokenHelper::TOKEN_ACTION_ACCESS]);
-    //             $token = TokenHelper::createUserToken($user->id);
-    //             $lecturer['token'] = $token->token;
-    //             return $lecturer;
-    //         } else throw new BadRequestHttpException(null, self::CODE_INVALID_ACCOUNT);
-    //     } else {
-    //         if (isset($model->errors['username']))
-    //             throw new BadRequestHttpException(null, self::CODE_INCORRECT_USERNAME);
-    //         if (isset($model->errors['password']))
-    //             throw new BadRequestHttpException(null, self::CODE_INCORRECT_PASSWORD);
-    //     }
-    //     throw new BadRequestHttpException('Invalid data');
-    // }
-
     public function actionLoginLecturer() {
         $model = new LoginForm([
             'scenario' => LoginForm::SCENARIO_LECTURER
         ]);
-        if ($model->load(Yii::$app->request->post()) && $user = $model->login()) {
-            $lecturer = Lecturer::findOne(['user_id' => $user->id])->toArray();
+        if ($model->load(Yii::$app->request->post(), '') && $user = $model->login()) {
+            $lecturer = Lecturer::findOne(['user_id' => $user->id])->toArray([
+                'name', 'acad', 'email'
+            ]);
             UserToken::deleteAll(['user_id' => $user->id, 'action' => TokenHelper::TOKEN_ACTION_ACCESS]);
-            $token = TokenHelper::createUserToken($user->id);
-            $lecturer['token'] = $token->token;
+            $userToken = TokenHelper::createUserToken($user->id);
+            $lecturer['token'] = $userToken->token;
             return $lecturer;
         } else {
             if ($model->hasErrors('username'))

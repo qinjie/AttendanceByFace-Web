@@ -3,6 +3,9 @@
 namespace common\models;
 
 use Yii;
+use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
+use yii\db\Expression;
 
 /**
  * This is the model class for table "user_token".
@@ -19,7 +22,7 @@ use Yii;
  *
  * @property User $user
  */
-class UserToken extends \yii\db\ActiveRecord
+class UserToken extends ActiveRecord
 {
     /**
      * @inheritdoc
@@ -35,7 +38,7 @@ class UserToken extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'token', 'title', 'ip_address', 'expire_date', 'created_date', 'updated_date', 'action'], 'required'],
+            [['user_id', 'token', 'ip_address', 'title', 'expire_date', 'action'], 'required'],
             [['user_id', 'action'], 'integer'],
             [['expire_date', 'created_date', 'updated_date'], 'safe'],
             [['token', 'title', 'ip_address'], 'string', 'max' => 255],
