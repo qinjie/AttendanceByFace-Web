@@ -6,34 +6,56 @@ use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
+use common\components\CustomActiveRecord;
+use common\components\TokenHelper;
 
 /**
- * User model
+ * This is the model class for table "user".
  *
  * @property integer $id
+ * @property string $person_id
+ * @property string $face_id
  * @property string $username
- * @property string $password_hash
- * @property string $password_reset_token
- * @property string $email
  * @property string $auth_key
+ * @property string $device_hash
+ * @property string $password_hash
+ * @property string $email
+ * @property string $profileImg
  * @property integer $status
+ * @property integer $role
+ * @property string $name
  * @property integer $created_at
  * @property integer $updated_at
- * @property string $password write-only password
+ *
+ * @property Student $student
+ * @property UserToken[] $userTokens
  */
-class User extends ActiveRecord implements IdentityInterface
+class User extends CustomActiveRecord implements IdentityInterface
 {
-    const STATUS_DELETED = 0;
+    const STATUS_WAIT_EMAIL_DEVICE = 0;
+    const STATUS_WAIT_DEVICE = 1;
+    const STATUS_WAIT_EMAIL = 2;
+
     const STATUS_ACTIVE = 10;
+    const STATUS_BLOCKED = 11;
+    const STATUS_DELETED = 12;
+
+    public static $roles = [
+        10 => 'user',
+        20 => 'student',
+        30 => 'lecturer',
+    ];
 
     const ROLE_USER = 10;
+    const ROLE_STUDENT = 20;
+    const ROLE_LECTURER = 30;
 
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return '{{%user}}';
+        return 'user';
     }
 
     /**
@@ -42,7 +64,15 @@ class User extends ActiveRecord implements IdentityInterface
     public function behaviors()
     {
         return [
-            TimestampBehavior::className(),
+            'timestamp' => [
+                'class' => TimestampBehavior::className(),
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+                    ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at']
+                ],
+                // 'value' => new Expression('NOW()'),
+                'value' => time(),
+            ],
         ];
     }
 
@@ -52,8 +82,79 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
+            [['username', 'auth_key', 'password_hash', 'email'], 'required'],
+            [['status', 'role', 'created_at', 'updated_at'], 'integer'],
+            [['person_id', 'username', 'device_hash', 'password_hash', 'email', 'profileImg', 'name'], 'string', 'max' => 255],
+            [['face_id'], 'string', 'max' => 1000],
+            [['auth_key'], 'string', 'max' => 32],
+
+            ['email', 'filter', 'filter' => 'trim'],
+            ['email', 'required', 'message' => 'Please enter an email.'],
+            ['email', 'email', 'message' => 'Invalid email address.'],
+            ['email', 'unique', 'targetClass' => self::className(), 'message' => 'This email address has already been taken.'],
+            ['email', 'string', 'max' => 255, 'message' => 'Max 255 characters.'],
+
+            ['status', 'integer'],
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
-            ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
+            ['status', 'in', 'range' => array_keys(self::getStatusesArray())],
+
+            ['username', 'required', 'message' => 'Please enter an username.'],
+            ['username', 'match', 'pattern' => '#^[\w_-]+$#i', 'message' => 'Invalid username. Only alphanumeric characters are allowed.'],
+            ['username', 'unique', 'targetClass' => self::className(), 'message' => 'This username has already been taken.'],
+            ['username', 'string', 'min' => 4, 'max' => 255, 'message' => 'Min 4 characters; Max 255 characters.'],
+
+            [['device_hash'], 'unique'],
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => 'ID',
+            'person_id' => 'Person ID',
+            'face_id' => 'Face ID',
+            'username' => 'Username',
+            'auth_key' => 'Auth Key',
+            'device_hash' => 'Device Hash',
+            'password_hash' => 'Password Hash',
+            'email' => 'Email',
+            'profileImg' => 'Profile Img',
+            'status' => 'Status',
+            'role' => 'Role',
+            'name' => 'Name',
+            'created_at' => 'Created At',
+            'updated_at' => 'Updated At',
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function fields()
+    {
+        $fields = parent::fields();
+        unset($fields['auth_key'], $fields['password_hash'],
+            $fields['updated_at'], $fields['created_at']);
+        return $fields;
+    }
+
+    public function getStatusName()
+    {
+        return ArrayHelper:: getValue(self:: getStatusesArray(), $this->status);
+    }
+
+    public static function getStatusesArray()
+    {
+        return [
+            self::STATUS_DELETED => 'Deleted',
+            self::STATUS_BLOCKED => 'Blocked',
+            self::STATUS_ACTIVE => 'Active',
+            self::STATUS_WAIT_EMAIL => 'Pending Email Verification',
+            self::STATUS_WAIT_DEVICE => 'Pending Device Verification',
+            self::STATUS_WAIT_EMAIL_DEVICE => 'Pending Email and Device Verification',
         ];
     }
 
@@ -70,7 +171,12 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function findIdentityByAccessToken($token, $type = null)
     {
-        throw new NotSupportedException('"findIdentityByAccessToken" is not implemented.');
+        $id = TokenHelper::authenticateToken($token, true);
+        if ($id >= 0) {
+            return static::findIdentity($id);
+        } else {
+            return null;
+        }
     }
 
     /**

@@ -26,7 +26,7 @@ CREATE TABLE `beacon` (
   `uuid` varchar(100) NOT NULL,
   `major` varchar(10) DEFAULT NULL,
   `minor` varchar(10) DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT '0000-00-00 00:00:00',
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -1950,7 +1950,7 @@ CREATE TABLE `attendance` (
   `is_absent` int(1) unsigned NOT NULL DEFAULT '0',
   `is_late` tinyint(1) NOT NULL DEFAULT '0',
   `late_min` int(10) unsigned NOT NULL DEFAULT '0',
-  `created_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT '0000-00-00 00:00:00',
   `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 /* For test: UNIQUE KEY `studentId` (`student_id`,`lesson_id`), */
