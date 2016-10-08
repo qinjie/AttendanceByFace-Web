@@ -11,7 +11,7 @@ modules:
     enabled:
         - Filesystem
         - REST:
-            url: http://localhost/atk-ble/api/web/index-test.php/v1/
+            url: http://localhost/atk-ble/api/web/index-test.php/
             depends: Yii2
             part: Json
         - Db

@@ -72,6 +72,8 @@ return [
                 # User API
                 'POST <version:\w+>/lecturer/login' => '<version>/user/login-lecturer',
                 'POST <version:\w+>/student/login' => '<version>/user/login-student',
+                'POST <version:\w+>/student/signup' => '<version>/user/signup-student',
+                'POST <version:\w+>/lecturer/signup' => '<version>/user/signup-lecturer',
             ],
         ],
     ],

@@ -7,7 +7,7 @@ use api\modules\v1\controllers\UserController;
 
 class LoginStudentCest
 {
-    const LOGIN_STUDENT_ROUTE = 'student/login';
+    const LOGIN_STUDENT_ROUTE = 'v1/student/login';
 
     public function _before(FunctionalTester $I)
     {

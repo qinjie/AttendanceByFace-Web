@@ -15,6 +15,7 @@ use Yii;
  * @property string $created_at
  * @property string $updated_at
  *
+ * @property User $user
  * @property Timetable[] $timetables
  */
 class Lecturer extends \yii\db\ActiveRecord
@@ -38,6 +39,8 @@ class Lecturer extends \yii\db\ActiveRecord
             [['created_at', 'updated_at'], 'safe'],
             [['id', 'acad'], 'string', 'max' => 10],
             [['name', 'email'], 'string', 'max' => 255],
+            [['user_id'], 'unique'],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
 
@@ -55,6 +58,14 @@ class Lecturer extends \yii\db\ActiveRecord
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUser()
+    {
+        return $this->hasOne(User::className(), ['id' => 'user_id']);
     }
 
     /**

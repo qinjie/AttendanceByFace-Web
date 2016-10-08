@@ -5,13 +5,13 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $user common\models\User */
 
-$resetLink = Yii::$app->params['WEB_BASEURL'].'site/reset-password?token='.$token;
+$confirmLink = Yii::$app->params['API_BASEURL'].'v1/user/confirm-email?token='.$token;
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>Reset Password</title>
+<title>Confirmation Email</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width">
 <style type="text/css">
@@ -85,11 +85,15 @@ $resetLink = Yii::$app->params['WEB_BASEURL'].'site/reset-password?token='.$toke
         <tr>
           <td>
           	<p>
-            	Follow the link below to reset your password:
+            	Follow the link below to confirm your email address:
             </p>
 						
 						<p>
-						<?= Html::a(Html::encode('Reset Password'), $resetLink) ?>
+						<?= Html::a(Html::encode('Confirm Your Email'), $confirmLink) ?>
+						</p>
+
+						<p>
+							If you have not registered on our app, then simply delete this email.
 						</p>
           </td>
         </tr>

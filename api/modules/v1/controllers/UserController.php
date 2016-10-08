@@ -11,6 +11,7 @@ use common\components\TokenHelper;
 use api\components\CustomActiveController;
 use api\components\AccessRule;
 use api\models\LoginForm;
+use api\models\SignupForm;
 
 use Yii;
 use yii\web\NotFoundHttpException;
@@ -44,8 +45,8 @@ class UserController extends CustomActiveController
         return [
             'authenticator' => [
                 'class' => HttpBearerAuth::className(),
-                'except' => ['login-lecturer', 'login-student', 'signup', 'reset-password',
-                    'resend-email', 'activate', 'activate-email'],
+                'except' => ['login-lecturer', 'login-student', 'signup-student', 'signup-lecturer',
+                    'reset-password', 'resend-email', 'activate', 'activate-email'],
             ],
             'access' => [
                 'class' => AccessControl::className(),
@@ -54,7 +55,7 @@ class UserController extends CustomActiveController
                 ],
                 'rules' => [
                     [
-                        'actions' => ['login-lecturer', 'login-student', 'signup', 'reset-password',
+                        'actions' => ['login-lecturer', 'login-student', 'signup-student', 'signup-lecturer', 'reset-password',
                             'resend-email', 'activate', 'activate-email'],
                         'allow' => true,
                         'roles' => ['?'],
@@ -79,7 +80,8 @@ class UserController extends CustomActiveController
         ];
     }
 
-    public function actionLoginLecturer() {
+    public function actionLoginLecturer()
+    {
         $model = new LoginForm([
             'scenario' => LoginForm::SCENARIO_LECTURER
         ]);
@@ -102,7 +104,8 @@ class UserController extends CustomActiveController
         throw new BadRequestHttpException('Invalid data');
     }
 
-    public function actionLoginStudent() {
+    public function actionLoginStudent()
+    {
         $model = new LoginForm([
             'scenario' => LoginForm::SCENARIO_STUDENT
         ]);
@@ -125,6 +128,49 @@ class UserController extends CustomActiveController
                 throw new BadRequestHttpException(null, $model->getErrors('status')[0]);
         }
         throw new BadRequestHttpException('Invalid data');
+    }
+
+    public function actionSignupStudent()
+    {
+        $model = new SignupForm([
+            'scenario' => SignupForm::SCENARIO_STUDENT
+        ]);
+        if ($model->load(Yii::$app->request->post(), '') && $user = $model->signup()) {
+            $student = $model->getStudent();
+            $student->link('user', $user);
+            $userToken = TokenHelper::createUserToken($user->id, TokenHelper::TOKEN_ACTION_ACTIVATE_ACCOUNT);
+            $this->sendActivationEmail($user, $userToken->token);
+            return [
+                'token' => $userToken->token
+            ];
+        }
+        throw new BadRequestHttpException('Invalid data');
+    }
+
+    public function actionSignupLecturer()
+    {
+        $model = new SignupForm([
+            'scenario' => SignupForm::SCENARIO_LECTURER
+        ]);
+        if ($model->load(Yii::$app->request->post(), '') && $user = $model->signup()) {
+            $lecturer = $model->getLecturer();
+            $lecturer->link('user', $user);
+            $userToken = TokenHelper::createUserToken($user->id, TokenHelper::TOKEN_ACTION_ACTIVATE_ACCOUNT);
+            $this->sendActivationEmail($user, $userToken->token);
+            return [
+                'token' => $userToken->token
+            ];
+        }
+        throw new BadRequestHttpException('Invalid data');
+    }
+
+    private function sendActivationEmail($user, $token)
+    {
+        Yii::$app->mailer->compose(['html' => '@common/mail/emailConfirmToken-html'], ['user' => $user, 'token' => $token])
+            ->setFrom([Yii::$app->params['supportEmail'] => Yii::$app->name])
+            ->setTo($user->email)
+            ->setSubject('Email confirmation for ' . Yii::$app->name)
+            ->send();
     }
 
     /**

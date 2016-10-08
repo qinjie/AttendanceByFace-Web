@@ -70,6 +70,7 @@ CREATE TABLE `lecturer` (
 insert  into `lecturer` (`id`,`name`, `email`, `acad`, `user_id`) values 
   ("1", "Zhang Qinjie", "zhangqinjie@mail.com", "ECE", 60),
   ("2", "Zhang Qinjie 2", "abab@mail.com", "ECE", 59),
+  ("3", "Test Lecturer", "lecturer@mail.com", "ECE", NULL),
   ("9580", "FOO JONG YONG ABDIEL", "faj2@np.edu.sg", "ECE", 61),
   ("938", "KOH SIEW KHENG", "ksk@np.edu.sg", "ECE", 62),
   ("0012946", "KOH KAR SENG", "kks6@np.edu.sg", "ECE", 63),

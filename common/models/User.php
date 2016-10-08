@@ -32,6 +32,9 @@ use common\components\TokenHelper;
  */
 class User extends CustomActiveRecord implements IdentityInterface
 {
+    const SCENARIO_STUDENT = 'student';
+    const SCENARIO_LECTURER = 'lecturer';
+
     const STATUS_WAIT_EMAIL_DEVICE = 0;
     const STATUS_WAIT_DEVICE = 1;
     const STATUS_WAIT_EMAIL = 2;
@@ -87,6 +90,32 @@ class User extends CustomActiveRecord implements IdentityInterface
     /**
      * @inheritdoc
      */
+    public function scenarios()
+    {
+        return [
+            self::SCENARIO_STUDENT => [
+                'username',
+                'auth_key',
+                'device_hash',
+                'password_hash',
+                'email',
+                'status',
+                'role'
+            ],
+            self::SCENARIO_LECTURER => [
+                'username',
+                'auth_key',
+                'password_hash',
+                'email',
+                'status',
+                'role'
+            ],
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function rules()
     {
         return [
@@ -103,7 +132,10 @@ class User extends CustomActiveRecord implements IdentityInterface
             ['email', 'string', 'max' => 255, 'message' => 'Max 255 characters.'],
 
             ['status', 'integer'],
-            ['status', 'default', 'value' => self::STATUS_ACTIVE],
+            ['status', 'default', 'value' => self::STATUS_WAIT_EMAIL_DEVICE,
+                'on' => self::SCENARIO_STUDENT],
+            ['status', 'default', 'value' => self::STATUS_WAIT_EMAIL,
+                'on' => self::SCENARIO_LECTURER],
             ['status', 'in', 'range' => array_keys(self::$statusValues)],
 
             ['username', 'required', 'message' => 'Please enter an username.'],
