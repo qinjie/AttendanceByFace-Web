@@ -92,25 +92,25 @@ class User extends CustomActiveRecord implements IdentityInterface
      */
     public function scenarios()
     {
-        return [
-            self::SCENARIO_STUDENT => [
-                'username',
-                'auth_key',
-                'device_hash',
-                'password_hash',
-                'email',
-                'status',
-                'role'
-            ],
-            self::SCENARIO_LECTURER => [
-                'username',
-                'auth_key',
-                'password_hash',
-                'email',
-                'status',
-                'role'
-            ],
+        $scenarios = parent::scenarios();
+        $scenarios[self::SCENARIO_STUDENT] = [
+            'username',
+            'auth_key',
+            'device_hash',
+            'password_hash',
+            'email',
+            'status',
+            'role'
         ];
+        $scenarios[self::SCENARIO_LECTURER] = [
+            'username',
+            'auth_key',
+            'password_hash',
+            'email',
+            'status',
+            'role'
+        ];
+        return $scenarios;
     }
 
     /**
@@ -210,7 +210,7 @@ class User extends CustomActiveRecord implements IdentityInterface
      */
     public static function findByUsername($username)
     {
-        return static::findOne(['username' => $username, 'status' => self::STATUS_ACTIVE]);
+        return static::findOne(['username' => $username]);
     }
 
     /**

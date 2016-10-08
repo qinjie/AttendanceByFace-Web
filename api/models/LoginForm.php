@@ -3,6 +3,7 @@ namespace api\models;
 
 
 use common\models\User;
+use api\modules\v1\controllers\UserController;
 
 use Yii;
 use yii\base\Model;
@@ -79,14 +80,14 @@ class LoginForm extends Model
         if ($this->validate()) {
             $user = $this->getUser();
             if ($user->status == User::STATUS_WAIT_EMAIL_DEVICE)
-                $this->addError('status', User::CODE_UNVERIFIED_EMAIL_DEVICE);
+                $this->addError('status', UserController::CODE_UNVERIFIED_EMAIL_DEVICE);
             else if ($user->status == User::STATUS_WAIT_EMAIL)
-                $this->addError('status', User::CODE_UNVERIFIED_EMAIL);
+                $this->addError('status', UserController::CODE_UNVERIFIED_EMAIL);
             else if ($user->status == User::STATUS_WAIT_DEVICE)
-                $this->addError('status', User::CODE_UNVERIFIED_DEVICE);
+                $this->addError('status', UserController::CODE_UNVERIFIED_DEVICE);
             else if ($user->status == User::STATUS_ACTIVE) {
                 return $user;
-            } else $this->addError('status', User::CODE_INVALID_ACCOUNT);
+            } else $this->addError('status', UserController::CODE_INVALID_ACCOUNT);
         }
         if ($this->hasErrors()) return false;
     }

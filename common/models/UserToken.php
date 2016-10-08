@@ -2,6 +2,8 @@
 
 namespace common\models;
 
+use common\components\TokenHelper;
+
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;

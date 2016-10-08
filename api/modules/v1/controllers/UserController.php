@@ -46,7 +46,7 @@ class UserController extends CustomActiveController
             'authenticator' => [
                 'class' => HttpBearerAuth::className(),
                 'except' => ['login-lecturer', 'login-student', 'signup-student', 'signup-lecturer',
-                    'reset-password', 'resend-email', 'activate', 'activate-email'],
+                    'reset-password', 'resend-email', 'confirm-email'],
             ],
             'access' => [
                 'class' => AccessControl::className(),
@@ -56,7 +56,7 @@ class UserController extends CustomActiveController
                 'rules' => [
                     [
                         'actions' => ['login-lecturer', 'login-student', 'signup-student', 'signup-lecturer', 'reset-password',
-                            'resend-email', 'activate', 'activate-email'],
+                            'resend-email', 'confirm-email'],
                         'allow' => true,
                         'roles' => ['?'],
                     ],
@@ -171,6 +171,32 @@ class UserController extends CustomActiveController
             ->setTo($user->email)
             ->setSubject('Email confirmation for ' . Yii::$app->name)
             ->send();
+    }
+
+    public function actionConfirmEmail($token = null)
+    {
+        if (empty($token) || !is_string($token)) {
+            return $this->redirect(Yii::$app->params['WEB_BASEURL'].'site/confirmation-error');
+        }
+        $userId = TokenHelper::authenticateToken($token, true, TokenHelper::TOKEN_ACTION_ACTIVATE_ACCOUNT);
+        $user = User::findOne([
+            'id' => $userId,
+            'status' => [User::STATUS_WAIT_EMAIL_DEVICE, User::STATUS_WAIT_EMAIL],
+        ]);
+        if (!$user)
+            return $this->redirect(Yii::$app->params['WEB_BASEURL'].'site/confirmation-error');
+
+        if ($user->status == User::STATUS_WAIT_EMAIL_DEVICE)
+            $user->status = User::STATUS_WAIT_DEVICE;
+        else if ($user->status == User::STATUS_WAIT_EMAIL)
+            $user->status = User::STATUS_ACTIVE;
+
+        UserToken::removeEmailConfirmToken($user->id);
+        if ($user->save()) {
+            if (YII_ENV === 'test') return 'confirm email successfully';
+            return $this->redirect(Yii::$app->params['WEB_BASEURL'].'site/confirmation-success');
+        }
+        return $this->redirect(Yii::$app->params['WEB_BASEURL'].'site/confirmation-error');
     }
 
     /**

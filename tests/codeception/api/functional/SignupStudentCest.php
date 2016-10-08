@@ -5,10 +5,12 @@ namespace tests\codeception\api;
 use tests\codeception\api\FunctionalTester;
 use api\modules\v1\controllers\UserController;
 use common\models\User;
+use common\components\TokenHelper;
 
 class SignupStudentCest
 {
     const SIGNUP_STUDENT_ROUTE = 'v1/student/signup';
+    const LOGIN_STUDENT_ROUTE = 'v1/student/login';
 
     public function _before(FunctionalTester $I)
     {
@@ -152,6 +154,78 @@ class SignupStudentCest
         $I->seeInDatabase('student', [
             'id' => '55555555B',
             'user_id' => $userId
+        ]);
+    }
+
+    public function loginStudent_ThrowsException_IfEmailAndDeviceNotActivated(FunctionalTester $I)
+    {
+        $I->wantTo('login as student when email and device are not activated');
+        $I->sendPOST(self::LOGIN_STUDENT_ROUTE, [
+            'username' => 'student',
+            'password' => '123456',
+            'device_hash' => '11:11:11:11:11:11'
+        ]);
+        $I->seeResponseCodeIs(400);
+        $I->seeResponseContainsJson([
+            'code' => UserController::CODE_UNVERIFIED_EMAIL_DEVICE
+        ]);
+    }
+
+    public function activateEmail_Success(FunctionalTester $I)
+    {
+        $I->wantTo('activate email address successfully');
+        $userId = $I->grabFromDatabase('user', 'id', [
+            'username' => 'student'
+        ]);
+        $token = $I->grabFromDatabase('user_token', 'token', [
+            'user_id' => $userId,
+            'action' => TokenHelper::TOKEN_ACTION_ACTIVATE_ACCOUNT
+        ]);
+        $I->sendGET('v1/user/confirm-email', [
+            'token' => $token
+        ]);
+        $I->dontSeeInDatabase('user_token', [
+            'user_id' => $userId,
+            'action' => TokenHelper::TOKEN_ACTION_ACTIVATE_ACCOUNT
+        ]);
+        $I->seeInDatabase('user', [
+            'username' => 'student',
+            'role' => User::ROLE_STUDENT,
+            'status' => User::STATUS_WAIT_DEVICE
+        ]);
+    }
+
+    public function loginStudent_ThrowsException_IfDeviceNotActivated(FunctionalTester $I)
+    {
+        $I->wantTo('login as student when device is not activated');
+
+        $I->sendPOST(self::LOGIN_STUDENT_ROUTE, [
+            'username' => 'student',
+            'password' => '123456',
+            'device_hash' => '11:11:11:11:11:11'
+        ]);
+        $I->seeResponseCodeIs(400);
+        $I->seeResponseContainsJson([
+            'code' => UserController::CODE_UNVERIFIED_DEVICE
+        ]);
+    }
+
+    public function loginStudent_ReturnsToken_IfEmailAndDeviceActivated(FunctionalTester $I)
+    {
+        $I->wantTo('login as student successfully when email and device are activated');
+        User::updateAll(['status' => User::STATUS_ACTIVE],
+            ['username' => 'student']);
+        $I->sendPOST(self::LOGIN_STUDENT_ROUTE, [
+            'username' => 'student',
+            'password' => '123456',
+            'device_hash' => '11:11:11:11:11:11'
+        ]);
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseMatchesJsonType([
+            'id' => 'string',
+            'name' => 'string',
+            'acad' => 'string',
+            'token' => 'string'
         ]);
     }
 }

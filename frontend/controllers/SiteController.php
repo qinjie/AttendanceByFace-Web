@@ -65,6 +65,14 @@ class SiteController extends Controller
         ];
     }
 
+    public function actionConfirmationSuccess() {
+        return $this->render('confirmationSuccess');
+    }
+
+    public function actionConfirmationError() {
+        return $this->render('confirmationError');
+    }
+
     /**
      * Displays homepage.
      *

@@ -5,10 +5,12 @@ namespace tests\codeception\api;
 use tests\codeception\api\FunctionalTester;
 use api\modules\v1\controllers\UserController;
 use common\models\User;
+use common\components\TokenHelper;
 
 class SignupLecturerCest
 {
     const SIGNUP_LECTURER_ROUTE = 'v1/lecturer/signup';
+    const LOGIN_LECTURER_ROUTE = 'v1/lecturer/login';
 
     public function _before(FunctionalTester $I)
     {
@@ -101,6 +103,60 @@ class SignupLecturerCest
         $I->seeInDatabase('lecturer', [
             'email' => 'lecturer@mail.com',
             'user_id' => $userId
+        ]);
+    }
+
+    public function loginLecturer_ThrowsException_IfEmailNotActivated(FunctionalTester $I)
+    {
+        $I->wantTo('login as student when email is not activated');
+
+        $I->sendPOST(self::LOGIN_LECTURER_ROUTE, [
+            'username' => 'lecturer',
+            'password' => '123456'
+        ]);
+        $I->seeResponseCodeIs(400);
+        $I->seeResponseContainsJson([
+            'code' => UserController::CODE_UNVERIFIED_EMAIL
+        ]);
+    }
+
+    public function activateEmail_Success(FunctionalTester $I)
+    {
+        $I->wantTo('activate email address successfully');
+        $userId = $I->grabFromDatabase('user', 'id', [
+            'username' => 'lecturer'
+        ]);
+        $token = $I->grabFromDatabase('user_token', 'token', [
+            'user_id' => $userId,
+            'action' => TokenHelper::TOKEN_ACTION_ACTIVATE_ACCOUNT
+        ]);
+        $I->sendGET('v1/user/confirm-email', [
+            'token' => $token
+        ]);
+        $I->dontSeeInDatabase('user_token', [
+            'user_id' => $userId,
+            'action' => TokenHelper::TOKEN_ACTION_ACTIVATE_ACCOUNT
+        ]);
+        $I->seeInDatabase('user', [
+            'username' => 'lecturer',
+            'role' => User::ROLE_LECTURER,
+            'status' => User::STATUS_ACTIVE
+        ]);
+    }
+
+    public function loginLecturer_ReturnsToken_IfEmailIsActivated(FunctionalTester $I)
+    {
+        $I->wantTo('login as student successfully when email is activated');
+        $I->sendPOST(self::LOGIN_LECTURER_ROUTE, [
+            'username' => 'lecturer',
+            'password' => '123456'
+        ]);
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseMatchesJsonType([
+            'name' => 'string',
+            'email' => 'string:email',
+            'acad' => 'string',
+            'token' => 'string'
         ]);
     }
 }
