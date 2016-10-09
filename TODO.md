@@ -6,3 +6,4 @@
 - [ ] Remove column ```name``` in table ```user```
 - [ ] Add return code for specific error in API sign up
 - [ ] Add email validation for student sign up
+- [ ] Implement train face in server. Reuse train face in User API

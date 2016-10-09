@@ -83,7 +83,9 @@ return [
                     'controller' => 'v1/user',
                     'extraPatterns' => [
                         'GET,POST mine' => 'mine',
-                        'POST logout' => 'logout'
+                        'POST logout' => 'logout',
+                        'POST change-password' => 'change-password',
+                        'POST reset-password' => 'reset-password'
                     ]
                 ]
             ],

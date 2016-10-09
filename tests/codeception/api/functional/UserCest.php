@@ -1,6 +1,9 @@
 <?php
 namespace tests\codeception\api;
+
+
 use tests\codeception\api\FunctionalTester;
+use common\components\TokenHelper;
 
 class UserCest
 {
@@ -87,5 +90,38 @@ class UserCest
         $I->amBearerAuthenticated($this->accessToken);
         $I->sendPOST('v1/user/logout');
         $I->seeResponseCodeIs(200);
+    }
+
+    public function changePassword(FunctionalTester $I)
+    {
+        $I->wantTo('change password');
+        $I->amBearerAuthenticated($this->accessToken);
+        $I->sendPOST('v1/user/change-password', [
+            'oldPassword' => '123456',
+            'newPassword' => '654321'
+        ]);
+        $I->seeResponseCodeIs(200);
+
+        // Revert to original password
+        $I->sendPOST('v1/user/change-password', [
+            'oldPassword' => '654321',
+            'newPassword' => '123456'
+        ]);
+    }
+
+    public function resetPassword(FunctionalTester $I)
+    {
+        $I->wantTo('reset password');
+        $I->sendPOST('v1/user/reset-password', [
+            'email' => 'canh@mail.com'
+        ]);
+        $I->seeResponseCodeIs(200);
+        $userId = $I->grabFromDatabase('user', 'id', [
+            'email' => 'canh@mail.com'
+        ]);
+        $I->seeInDatabase('user_token', [
+            'user_id' => $userId,
+            'action' => TokenHelper::TOKEN_ACTION_RESET_PASSWORD
+        ]);
     }
 }
