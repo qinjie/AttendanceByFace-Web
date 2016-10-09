@@ -1,6 +1,7 @@
 <?php
 namespace tests\codeception\api;
 
+use common\models\User;
 /**
  * Inherited Methods
  * @method void wantToTest($text)
@@ -23,4 +24,19 @@ class FunctionalTester extends \Codeception\Actor
    /**
     * Define custom actions here
     */
+
+    public function loginStudent($user = null) {
+        $I = $this;
+        $deviceHash = $I->grabFromDatabase('user', 'device_hash', [
+            'username' => 'canhnht',
+            'role' => User::ROLE_STUDENT
+        ]);
+        if (!$user) $user = [
+            'username' => 'canhnht',
+            'password' => '123456',
+            'device_hash' => $deviceHash
+        ];
+        $I->sendPOST('v1/student/login', $user);
+        return json_decode($I->grabResponse());
+    }
 }

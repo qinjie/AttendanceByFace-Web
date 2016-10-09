@@ -28,6 +28,12 @@ class UserController extends CustomActiveController
 {
     public $modelClass = 'common\models\User';
 
+    # Include envelope
+    public $serializer = [
+        'class' => 'yii\rest\Serializer',
+        'collectionEnvelope' => 'items',
+    ];
+
     const CODE_INCORRECT_USERNAME = 10;
     const CODE_INCORRECT_PASSWORD = 11;
     const CODE_INCORRECT_DEVICE = 12;
@@ -63,7 +69,7 @@ class UserController extends CustomActiveController
                     ],
                     [
                         'actions' => ['logout', 'change-password', 'profile',
-                            'change-email', 'change-mobile'],
+                            'change-email', 'change-mobile', 'mine'],
                         'allow' => true,
                         'roles' => ['@'],
                     ]
@@ -79,6 +85,19 @@ class UserController extends CustomActiveController
                 ],
             ],
         ];
+    }
+
+    public function actions() {
+        $actions = parent::actions();
+        unset($actions['index'], $actions['view'], $actions['create'],
+            $actions['update'], $actions['delete']);
+        return $actions;
+    }
+
+    public function actionMine() {
+        $params = Yii::$app->request->queryParams;
+        $fields = explode(',', $params['fields']);
+        return Yii::$app->user->identity->toArray($fields);
     }
 
     public function actionLoginLecturer()

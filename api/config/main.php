@@ -6,6 +6,7 @@ use yii\web\JsonResponseFormatter;
 use common\models\User;
 use yii\log\FileTarget;
 use yii\web\UrlManager;
+use yii\rest\UrlRule as RestUrlRule;
 
 $params = array_merge(
     require(__DIR__ . '/../../common/config/params.php'),
@@ -76,6 +77,14 @@ return [
                 'POST <version:\w+>/lecturer/signup' => '<version>/user/signup-lecturer',
                 'GET <version:\w+>/user/confirm-email' => '<version>/user/confirm-email',
                 'POST <version:\w+>/student/register-device' => '<version>/user/register-device',
+                [
+                    'class' => RestUrlRule::className(),
+                    'pluralize' => false,
+                    'controller' => 'v1/user',
+                    'extraPatterns' => [
+                        'GET mine' => 'mine'
+                    ]
+                ]
             ],
         ],
     ],
