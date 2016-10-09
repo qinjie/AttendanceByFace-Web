@@ -1948,12 +1948,13 @@ CREATE TABLE `attendance` (
   `lesson_id` int(10) unsigned NOT NULL,
   `recorded_date` date DEFAULT NULL,
   `recorded_time` time DEFAULT NULL,
-  `is_absent` int(1) unsigned NOT NULL DEFAULT '0',
-  `is_late` tinyint(1) NOT NULL DEFAULT '0',
+  `is_absent` tinyint(1) unsigned DEFAULT NULL,
+  `is_late` tinyint(1) DEFAULT NULL,
   `late_min` int(10) unsigned NOT NULL DEFAULT '0',
   `created_at` timestamp NULL DEFAULT '0000-00-00 00:00:00',
   `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY (`student_id`,`lesson_id`, `recorded_date`)
 /* For test: UNIQUE KEY `studentId` (`student_id`,`lesson_id`), */
   -- KEY `lessonId` (`lesson_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=42 ;

@@ -41,6 +41,7 @@ class Attendance extends \yii\db\ActiveRecord
             [['lesson_id', 'is_absent', 'is_late', 'late_min'], 'integer'],
             [['recorded_date', 'recorded_time', 'created_at', 'updated_at'], 'safe'],
             [['student_id'], 'string', 'max' => 10],
+            [['student_id', 'lesson_id', 'recorded_date'], 'unique', 'targetAttribute' => ['student_id', 'lesson_id', 'recorded_date'], 'message' => 'The combination of Student ID, Lesson ID and Recorded Date has already been taken.'],
             [['student_id'], 'exist', 'skipOnError' => true, 'targetClass' => Student::className(), 'targetAttribute' => ['student_id' => 'id']],
             [['lesson_id'], 'exist', 'skipOnError' => true, 'targetClass' => Lesson::className(), 'targetAttribute' => ['lesson_id' => 'id']],
         ];
