@@ -39,4 +39,14 @@ class FunctionalTester extends \Codeception\Actor
         $I->sendPOST('v1/student/login', $user);
         return json_decode($I->grabResponse());
     }
+
+    public function loginLecturer($user = null) {
+        $I = $this;
+        if (!$user) $user = [
+            'username' => 'zhangqinjie',
+            'password' => '123456'
+        ];
+        $I->sendPOST('v1/lecturer/login', $user);
+        return json_decode($I->grabResponse());
+    }
 }

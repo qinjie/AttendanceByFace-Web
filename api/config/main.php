@@ -91,7 +91,7 @@ return [
                 [
                     'class' => RestUrlRule::className(),
                     'pluralize' => false,
-                    'controller' => 'v1/student',
+                    'controller' => ['v1/student', 'v1/lecturer'],
                     'extraPatterns' => [
                         'GET profile' => 'profile'
                     ]

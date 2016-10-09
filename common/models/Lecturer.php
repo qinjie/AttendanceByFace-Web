@@ -47,6 +47,16 @@ class Lecturer extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
+    public function fields()
+    {
+        $fields = parent::fields();
+        unset($fields['updated_at'], $fields['created_at']);
+        return $fields;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function attributeLabels()
     {
         return [

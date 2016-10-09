@@ -2,13 +2,13 @@
 namespace tests\codeception\api;
 use tests\codeception\api\FunctionalTester;
 
-class StudentCest
+class LecturerCest
 {
     private $accessToken;
 
     public function _before(FunctionalTester $I)
     {
-        $this->accessToken = $I->loginStudent()->token;
+        $this->accessToken = $I->loginLecturer()->token;
         $I->amBearerAuthenticated($this->accessToken);
     }
 
@@ -18,15 +18,14 @@ class StudentCest
 
     public function getMyProfile(FunctionalTester $I)
     {
-        $I->wantTo('get my student profile');
-        $I->sendGET('v1/student/profile?expand=user');
+        $I->wantTo('get my lecturer profile');
+        $I->sendGET('v1/lecturer/profile?expand=user');
         $I->seeResponseCodeIs(200);
         $I->seeResponseMatchesJsonType([
             'id' => 'string',
             'name' => 'string',
-            'gender' => 'null|string',
             'acad' => 'string',
-            'uuid' => 'null|string',
+            'email' => 'string:email',
             'user_id' => 'integer'
         ]);
         $I->seeResponseMatchesJsonType([
