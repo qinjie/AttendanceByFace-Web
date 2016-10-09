@@ -69,7 +69,7 @@ class UserController extends CustomActiveController
                     ],
                     [
                         'actions' => ['logout', 'change-password', 'profile',
-                            'change-email', 'change-mobile', 'mine'],
+                            'mine'],
                         'allow' => true,
                         'roles' => ['@'],
                     ]
@@ -95,9 +95,22 @@ class UserController extends CustomActiveController
     }
 
     public function actionMine() {
-        $params = Yii::$app->request->queryParams;
-        $fields = explode(',', $params['fields']);
-        return Yii::$app->user->identity->toArray($fields);
+        if (Yii::$app->request->isGet) {
+            $params = Yii::$app->request->queryParams;
+            $fields = explode(',', $params['fields']);
+            $result = Yii::$app->user->identity->toArray($fields);
+            return $result;
+        } else if (Yii::$app->request->isPost) {
+            $postBody = Yii::$app->request->post();
+            if (isset($postBody['face_id']))
+                $postBody['face_id'] = json_encode($postBody['face_id']);
+            $user = Yii::$app->user->identity;
+            if ($user->load($postBody, '') && $user->save()) {
+                return $user->toArray([
+                    'person_id', 'face_id', 'username', 'email'
+                ]);
+            } else return null;
+        }
     }
 
     public function actionLoginLecturer()
@@ -235,6 +248,12 @@ class UserController extends CustomActiveController
                 throw new BadRequestHttpException(null, $model->getErrors('status')[0]);
         }
         throw new BadRequestHttpException('Invalid data');
+    }
+
+    public function actionLogout() {
+        $id = Yii::$app->user->identity->id;
+        UserToken::deleteAll(['user_id' => $id, 'action' => TokenHelper::TOKEN_ACTION_ACCESS]);
+        return 'logout successfully';
     }
 
     /**

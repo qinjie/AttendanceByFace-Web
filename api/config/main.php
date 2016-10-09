@@ -82,7 +82,8 @@ return [
                     'pluralize' => false,
                     'controller' => 'v1/user',
                     'extraPatterns' => [
-                        'GET mine' => 'mine'
+                        'GET,POST mine' => 'mine',
+                        'POST logout' => 'logout'
                     ]
                 ]
             ],

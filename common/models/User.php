@@ -178,6 +178,11 @@ class User extends CustomActiveRecord implements IdentityInterface
         $fields = parent::fields();
         unset($fields['auth_key'], $fields['password_hash'],
             $fields['updated_at'], $fields['created_at']);
+       $fields['face_id'] = function() {
+            $faceId = json_decode($this->face_id);
+            if (!$faceId) $faceId = [];
+            return $faceId;
+        };
         return $fields;
     }
 
