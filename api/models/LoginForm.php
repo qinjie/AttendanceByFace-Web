@@ -40,6 +40,8 @@ class LoginForm extends Model
     {
         return [
             [['username', 'password', 'device_hash'], 'required'],
+            ['username', 'filter', 'filter' => 'trim'],
+            ['username', 'string', 'min' => 4, 'max' => 255],
             ['password', 'validatePassword'],
             ['device_hash', 'validateDevice']
         ];
@@ -57,7 +59,7 @@ class LoginForm extends Model
         if (!$this->hasErrors()) {
             $user = $this->getUser();
             if ($user && !$user->validatePassword($this->password))
-                $this->addError($attribute, 'Incorrect username or password.');
+                $this->addError($attribute, 'Incorrect password.');
         }
     }
 

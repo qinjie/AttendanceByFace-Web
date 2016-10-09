@@ -51,9 +51,9 @@ class User extends CustomActiveRecord implements IdentityInterface
         self::STATUS_WAIT_EMAIL_DEVICE => 'Pending Email and Device Verification',
     ];
 
-    const ROLE_STUDENT = 2;
-    const ROLE_LECTURER = 3;
-    const ROLE_ADMINISTRATOR = 5;
+    const ROLE_STUDENT = 20;
+    const ROLE_LECTURER = 30;
+    const ROLE_ADMINISTRATOR = 40;
 
     public static $roleValues = [
         self::ROLE_STUDENT => 'Student',

@@ -96,7 +96,7 @@ class LoginStudentCest
         ]);
     }
 
-    public function loginStudent_ReturnsToken_IfValidUsernamePasswordDevice(FunctionalTester $I)
+    public function loginStudent_ReturnsToken_IfValidData(FunctionalTester $I)
     {
         $I->wantTo('login as student successfully');
         $deviceHash = $I->grabFromDatabase('user', 'device_hash', [

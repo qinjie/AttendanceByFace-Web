@@ -12,6 +12,7 @@ use api\components\CustomActiveController;
 use api\components\AccessRule;
 use api\models\LoginForm;
 use api\models\SignupForm;
+use api\models\RegisterDeviceForm;
 
 use Yii;
 use yii\web\NotFoundHttpException;
@@ -46,7 +47,7 @@ class UserController extends CustomActiveController
             'authenticator' => [
                 'class' => HttpBearerAuth::className(),
                 'except' => ['login-lecturer', 'login-student', 'signup-student', 'signup-lecturer',
-                    'reset-password', 'resend-email', 'confirm-email'],
+                    'reset-password', 'register-device', 'confirm-email'],
             ],
             'access' => [
                 'class' => AccessControl::className(),
@@ -56,7 +57,7 @@ class UserController extends CustomActiveController
                 'rules' => [
                     [
                         'actions' => ['login-lecturer', 'login-student', 'signup-student', 'signup-lecturer', 'reset-password',
-                            'resend-email', 'confirm-email'],
+                            'register-device', 'confirm-email'],
                         'allow' => true,
                         'roles' => ['?'],
                     ],
@@ -197,6 +198,24 @@ class UserController extends CustomActiveController
             return $this->redirect(Yii::$app->params['WEB_BASEURL'].'site/confirmation-success');
         }
         return $this->redirect(Yii::$app->params['WEB_BASEURL'].'site/confirmation-error');
+    }
+
+    public function actionRegisterDevice() {
+        $model = new RegisterDeviceForm();
+        if ($model->load(Yii::$app->request->post(), '') && $user = $model->registerDevice()) {
+            UserToken::deleteAll(['user_id' => $user->id, 'action' => TokenHelper::TOKEN_ACTION_ACCESS]);
+            return 'register device successfully';
+        } else {
+            if ($model->hasErrors('username'))
+                throw new BadRequestHttpException(null, self::CODE_INCORRECT_USERNAME);
+            if ($model->hasErrors('password'))
+                throw new BadRequestHttpException(null, self::CODE_INCORRECT_PASSWORD);
+            if ($model->hasErrors('device_hash'))
+                throw new BadRequestHttpException(null, self::CODE_DUPLICATE_DEVICE);
+            if ($model->hasErrors('status'))
+                throw new BadRequestHttpException(null, $model->getErrors('status')[0]);
+        }
+        throw new BadRequestHttpException('Invalid data');
     }
 
     /**

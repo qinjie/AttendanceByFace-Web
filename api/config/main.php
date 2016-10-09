@@ -75,6 +75,7 @@ return [
                 'POST <version:\w+>/student/signup' => '<version>/user/signup-student',
                 'POST <version:\w+>/lecturer/signup' => '<version>/user/signup-lecturer',
                 'GET <version:\w+>/user/confirm-email' => '<version>/user/confirm-email',
+                'POST <version:\w+>/student/register-device' => '<version>/user/register-device',
             ],
         ],
     ],

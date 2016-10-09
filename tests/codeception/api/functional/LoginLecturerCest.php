@@ -67,7 +67,7 @@ class LoginLecturerCest
         ]);
     }
 
-    public function loginLecturer_ReturnsToken_IfValidUsernameAndPassword(FunctionalTester $I)
+    public function loginLecturer_ReturnsToken_IfValidData(FunctionalTester $I)
     {
         $I->wantTo('login as lecturer successfully');
         $I->sendPOST(self::LOGIN_LECTURER_ROUTE, [
