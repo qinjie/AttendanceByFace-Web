@@ -79,13 +79,7 @@ class UserController extends CustomActiveController
                 'denyCallback' => function ($rule, $action) {
                     throw new UnauthorizedHttpException('You are not authorized');
                 },
-            ],
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
+            ]
         ];
     }
 
@@ -99,7 +93,9 @@ class UserController extends CustomActiveController
     public function actionMine() {
         if (Yii::$app->request->isGet) {
             $params = Yii::$app->request->queryParams;
-            $fields = explode(',', $params['fields']);
+            $fields = [];
+            if (isset($params['fields']))
+                $fields = explode(',', $params['fields']);
             $result = Yii::$app->user->identity->toArray($fields);
             return $result;
         } else if (Yii::$app->request->isPost) {

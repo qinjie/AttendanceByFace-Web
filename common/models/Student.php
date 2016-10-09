@@ -66,6 +66,16 @@ class Student extends \yii\db\ActiveRecord
     }
 
     /**
+     * @inheritdoc
+     */
+    public function fields()
+    {
+        $fields = parent::fields();
+        unset($fields['updated_at'], $fields['created_at']);
+        return $fields;
+    }
+
+    /**
      * @return \yii\db\ActiveQuery
      */
     public function getAttendances()

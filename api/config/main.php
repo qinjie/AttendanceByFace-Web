@@ -87,6 +87,14 @@ return [
                         'POST change-password' => 'change-password',
                         'POST reset-password' => 'reset-password'
                     ]
+                ],
+                [
+                    'class' => RestUrlRule::className(),
+                    'pluralize' => false,
+                    'controller' => 'v1/student',
+                    'extraPatterns' => [
+                        'GET profile' => 'profile'
+                    ]
                 ]
             ],
         ],

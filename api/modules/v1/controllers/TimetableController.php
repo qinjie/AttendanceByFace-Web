@@ -2,23 +2,17 @@
 
 namespace api\modules\v1\controllers;
 
-use api\components\AccessRule;
-use common\models\Student;
-use common\models\User;
-use common\models\search\StudentSearch;
-use api\components\CustomActiveController;
-
 use Yii;
+use common\models\Timetable;
+use common\models\search\TimetableSearch;
+use api\components\CustomActiveController;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use yii\filters\auth\HttpBearerAuth;
-use yii\filters\AccessControl;
-use yii\db\ActiveQuery;
 
 /**
- * StudentController implements the CRUD actions for Student model.
+ * TimetableController implements the CRUD actions for Timetable model.
  */
-class StudentController extends CustomActiveController
+class TimetableController extends CustomActiveController
 {
     /**
      * @inheritdoc
@@ -26,49 +20,22 @@ class StudentController extends CustomActiveController
     public function behaviors()
     {
         return [
-            'authenticator' => [
-                'class' => HttpBearerAuth::className()
+            'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => [
+                    'delete' => ['POST'],
+                ],
             ],
-            'access' => [
-                'class' => AccessControl::className(),
-                'ruleConfig' => [
-                    'class' => AccessRule::className(),
-                ],
-                'rules' => [
-                    [
-                        'actions' => ['profile'],
-                        'allow' => true,
-                        'roles' => [User::ROLE_STUDENT],
-                    ]
-                ],
-                'denyCallback' => function ($rule, $action) {
-                    throw new UnauthorizedHttpException('You are not authorized');
-                },
-            ]
         ];
     }
 
-    public function actionProfile() {
-        $student = Student::find()->where([
-                'user_id' => Yii::$app->user->identity->id
-            ])->with('user')->one();
-        $params = Yii::$app->request->queryParams;
-        $fields = [];
-        $expand = [];
-        if (isset($params['fields']))
-            $fields = explode(',', $params['fields']);
-        if (isset($params['expand']))
-            $expand = explode(',', $params['expand']);
-        return $student->toArray($fields, $expand);
-    }
-
     /**
-     * Lists all Student models.
+     * Lists all Timetable models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new StudentSearch();
+        $searchModel = new TimetableSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -78,8 +45,8 @@ class StudentController extends CustomActiveController
     }
 
     /**
-     * Displays a single Student model.
-     * @param string $id
+     * Displays a single Timetable model.
+     * @param integer $id
      * @return mixed
      */
     public function actionView($id)
@@ -90,13 +57,13 @@ class StudentController extends CustomActiveController
     }
 
     /**
-     * Creates a new Student model.
+     * Creates a new Timetable model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new Student();
+        $model = new Timetable();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -108,9 +75,9 @@ class StudentController extends CustomActiveController
     }
 
     /**
-     * Updates an existing Student model.
+     * Updates an existing Timetable model.
      * If update is successful, the browser will be redirected to the 'view' page.
-     * @param string $id
+     * @param integer $id
      * @return mixed
      */
     public function actionUpdate($id)
@@ -127,9 +94,9 @@ class StudentController extends CustomActiveController
     }
 
     /**
-     * Deletes an existing Student model.
+     * Deletes an existing Timetable model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param string $id
+     * @param integer $id
      * @return mixed
      */
     public function actionDelete($id)
@@ -140,15 +107,15 @@ class StudentController extends CustomActiveController
     }
 
     /**
-     * Finds the Student model based on its primary key value.
+     * Finds the Timetable model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param string $id
-     * @return Student the loaded model
+     * @param integer $id
+     * @return Timetable the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Student::findOne($id)) !== null) {
+        if (($model = Timetable::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
