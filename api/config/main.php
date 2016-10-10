@@ -104,7 +104,8 @@ return [
                     'controller' => 'v1/attendance',
                     'extraPatterns' => [
                         'GET day' => 'day',
-                        'GET week' => 'week'
+                        'GET week' => 'week',
+                        'GET history' => 'history'
                     ]
                 ]
             ],

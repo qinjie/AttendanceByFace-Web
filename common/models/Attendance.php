@@ -25,6 +25,9 @@ use Yii;
  */
 class Attendance extends \yii\db\ActiveRecord
 {
+    const SEMESTER_START_DATE = '2016-10-03';
+    const SEMESTER_END_DATE = '2016-10-16';
+
     /**
      * @inheritdoc
      */
