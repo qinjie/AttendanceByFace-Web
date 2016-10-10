@@ -95,4 +95,86 @@ class TimetableLecturerCest
             ]
         ], '$[*]');
     }
+
+    public function getLecturerTimetable_CurrentWeek(FunctionalTester $I)
+    {
+        $I->wantTo('get my lecturer timetable of current week');
+        $I->sendGET('v1/attendance/week', [
+            'expand' => 'lesson'
+        ]);
+        $I->seeResponseCodeIs(200);
+        $userId = $I->grabFromDatabase('user', 'id', [
+            'username' => 'zhangqinjie'
+        ]);
+        $lecturerId = $I->grabFromDatabase('lecturer', 'id', [
+            'user_id' => $userId
+        ]);
+        $week = Util::getWeekInSemester(strtotime('2016-10-3'), strtotime(date('Y-m-d')));
+        $startDate = Util::getStartDateInWeek(strtotime('2016-10-3'), $week);
+        $endDate = Util::getEndDateInWeek(strtotime('2016-10-3'), $week);
+        $response = json_decode($I->grabResponse());
+        foreach ($response as $item) {
+            $I->assertEquals($lecturerId, $item->lecturer_id);
+            $I->assertGreaterThanOrEqual($startDate, $item->recorded_date);
+            $I->assertLessThanOrEqual($endDate, $item->recorded_date);
+            $I->assertNotEquals('ODD', $item->lesson->meeting_pattern);
+        }
+        $I->seeResponseMatchesJsonType([
+            'id' => 'integer',
+            'student_id' => 'string',
+            'lesson_id' => 'integer',
+            'recorded_date' => 'string',
+            'lesson' => [
+                'id' => 'integer',
+                'semester' => 'string',
+                'module_id' => 'string',
+                'venue_id' => 'integer',
+                'weekday' => 'string',
+                'start_time' => 'string',
+                'end_time' => 'string',
+                'meeting_pattern' => 'string'
+            ]
+        ], '$[*]');
+    }
+
+    public function getLecturerTimetable_OneWeek(FunctionalTester $I)
+    {
+        $I->wantTo('get my lecturer timetable of current week');
+        $I->sendGET('v1/attendance/week', [
+            'weekNumber' => 1,
+            'expand' => 'lesson'
+        ]);
+        $I->seeResponseCodeIs(200);
+        $userId = $I->grabFromDatabase('user', 'id', [
+            'username' => 'zhangqinjie'
+        ]);
+        $lecturerId = $I->grabFromDatabase('lecturer', 'id', [
+            'user_id' => $userId
+        ]);
+        $startDate = Util::getStartDateInWeek(strtotime('2016-10-3'), 1);
+        $endDate = Util::getEndDateInWeek(strtotime('2016-10-3'), 1);
+        $response = json_decode($I->grabResponse());
+        foreach ($response as $item) {
+            $I->assertEquals($lecturerId, $item->lecturer_id);
+            $I->assertGreaterThanOrEqual($startDate, $item->recorded_date);
+            $I->assertLessThanOrEqual($endDate, $item->recorded_date);
+            $I->assertNotEquals('EVEN', $item->lesson->meeting_pattern);
+        }
+        $I->seeResponseMatchesJsonType([
+            'id' => 'integer',
+            'student_id' => 'string',
+            'lesson_id' => 'integer',
+            'recorded_date' => 'string',
+            'lesson' => [
+                'id' => 'integer',
+                'semester' => 'string',
+                'module_id' => 'string',
+                'venue_id' => 'integer',
+                'weekday' => 'string',
+                'start_time' => 'string',
+                'end_time' => 'string',
+                'meeting_pattern' => 'string'
+            ]
+        ], '$[*]');
+    }
 }
