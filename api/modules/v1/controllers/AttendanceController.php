@@ -50,6 +50,11 @@ class AttendanceController extends CustomActiveController
                         'allow' => true,
                         'roles' => [User::ROLE_STUDENT],
                     ],
+                    [
+                        'actions' => ['semester'],
+                        'allow' => true,
+                        'roles' => [User::ROLE_LECTURER],
+                    ],
                 ],
                 'denyCallback' => function ($rule, $action) {
                     throw new UnauthorizedHttpException('You are not authorized');
@@ -113,6 +118,32 @@ class AttendanceController extends CustomActiveController
         $query->orderBy([
             'recorded_date' => SORT_ASC,
             'lesson.start_time' => SORT_ASC
+        ]);
+        return $dataProvider;
+    }
+
+    public function actionSemester()
+    {
+        $searchModel = new AttendanceSearch();
+        $queryParams = Yii::$app->request->queryParams;
+        if (!isset($queryParams['fromDate']))
+            $queryParams['fromDate'] = date('Y-m-d');
+        $dataProvider = $searchModel->search($queryParams);
+        $dataProvider->pagination = false;
+        $query = $dataProvider->query;
+
+        $query->andWhere(['lecturer_id' => Yii::$app->user->identity->lecturer->id]);
+        $query->andWhere("[[recorded_date]]<='{$queryParams['fromDate']}'");
+
+        $query->joinWith('lesson');
+        $query->joinWith('student');
+        if (isset($queryParams['class_section']))
+            $query->andWhere(['lesson.class_section' => $queryParams['class_section']]);
+
+        $query->orderBy([
+            'recorded_date' => SORT_DESC,
+            'lesson.start_time' => SORT_ASC,
+            'lesson.id' => SORT_ASC
         ]);
         return $dataProvider;
     }

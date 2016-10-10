@@ -14,18 +14,33 @@ use yii\filters\VerbFilter;
  */
 class LessonController extends CustomActiveController
 {
+    public $modelClass = 'common\models\Lesson';
+
     /**
      * @inheritdoc
      */
     public function behaviors()
     {
         return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
+            'authenticator' => [
+                'class' => HttpBearerAuth::className()
             ],
+            'access' => [
+                'class' => AccessControl::className(),
+                'ruleConfig' => [
+                    'class' => AccessRule::className(),
+                ],
+                'rules' => [
+                    [
+                        'actions' => ['day', 'week'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+                'denyCallback' => function ($rule, $action) {
+                    throw new UnauthorizedHttpException('You are not authorized');
+                },
+            ]
         ];
     }
 

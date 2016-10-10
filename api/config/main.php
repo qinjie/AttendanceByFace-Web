@@ -105,7 +105,8 @@ return [
                     'extraPatterns' => [
                         'GET day' => 'day',
                         'GET week' => 'week',
-                        'GET history' => 'history'
+                        'GET history' => 'history',
+                        'GET semester' => 'semester'
                     ]
                 ]
             ],

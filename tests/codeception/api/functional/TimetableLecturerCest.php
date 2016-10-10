@@ -177,4 +177,49 @@ class TimetableLecturerCest
             ]
         ], '$[*]');
     }
+
+    public function getLecturerTimetable_CurrentSemester(FunctionalTester $I)
+    {
+        $I->wantTo('get my lecturer timetable of current semester');
+        $I->sendGET('v1/attendance/semester', [
+            'expand' => 'lesson,student'
+        ]);
+        $I->seeResponseCodeIs(200);
+        $userId = $I->grabFromDatabase('user', 'id', [
+            'username' => 'zhangqinjie'
+        ]);
+        $lecturerId = $I->grabFromDatabase('lecturer', 'id', [
+            'user_id' => $userId
+        ]);
+        $fromDate = date('Y-m-d');
+        $response = json_decode($I->grabResponse());
+        foreach ($response as $item) {
+            $I->assertEquals($lecturerId, $item->lecturer_id);
+            $I->assertLessThanOrEqual($fromDate, $item->recorded_date);
+            $I->assertEquals($item->lesson->id, $item->lesson_id);
+            $I->assertEquals($item->student->id, $item->student_id);
+        }
+        $I->seeResponseMatchesJsonType([
+            'id' => 'integer',
+            'student_id' => 'string',
+            'lesson_id' => 'integer',
+            'recorded_date' => 'string',
+            'lesson' => [
+                'id' => 'integer',
+                'semester' => 'string',
+                'module_id' => 'string',
+                'venue_id' => 'integer',
+                'weekday' => 'string',
+                'start_time' => 'string',
+                'end_time' => 'string',
+                'meeting_pattern' => 'string'
+            ],
+            'student' => [
+                'id' => 'string',
+                'name' => 'string',
+                'acad' => 'string',
+                'user_id' => 'integer'
+            ]
+        ], '$[*]');
+    }
 }
