@@ -20,7 +20,7 @@ modules:
     config:
         Yii2:
             configFile: '../config/api/functional.php'
-            part: ORM
+            part: [ORM, email]
         Db:
             dsn: 'mysql:host=localhost;dbname=atk_ble_test'
             user: 'root'

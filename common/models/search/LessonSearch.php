@@ -49,7 +49,7 @@ class LessonSearch extends Lesson
             'query' => $query,
         ]);
 
-        $this->load($params);
+        $this->load($params, Yii::$app->id=='app-api' ? '' : null);
 
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails

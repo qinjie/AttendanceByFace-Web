@@ -10,6 +10,7 @@ use api\components\CustomActiveController;
 
 use Yii;
 use yii\web\NotFoundHttpException;
+use yii\web\UnauthorizedHttpException;
 use yii\filters\VerbFilter;
 use yii\filters\auth\HttpBearerAuth;
 use yii\filters\AccessControl;
@@ -20,6 +21,8 @@ use yii\db\ActiveQuery;
  */
 class StudentController extends CustomActiveController
 {
+    public $modelClass = 'common\models\Student';
+
     /**
      * @inheritdoc
      */
@@ -52,14 +55,7 @@ class StudentController extends CustomActiveController
         $student = Student::find()->where([
                 'user_id' => Yii::$app->user->identity->id
             ])->with('user')->one();
-        $params = Yii::$app->request->queryParams;
-        $fields = [];
-        $expand = [];
-        if (isset($params['fields']))
-            $fields = explode(',', $params['fields']);
-        if (isset($params['expand']))
-            $expand = explode(',', $params['expand']);
-        return $student->toArray($fields, $expand);
+        return $student;
     }
 
     /**

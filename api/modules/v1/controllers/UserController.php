@@ -19,6 +19,7 @@ use api\models\ResetPasswordForm;
 use Yii;
 use yii\web\NotFoundHttpException;
 use yii\web\BadRequestHttpException;
+use yii\web\UnauthorizedHttpException;
 use yii\filters\VerbFilter;
 use yii\filters\auth\HttpBearerAuth;
 use yii\filters\AccessControl;

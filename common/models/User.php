@@ -1,13 +1,16 @@
 <?php
 namespace common\models;
 
+use common\components\CustomActiveRecord;
+use common\components\TokenHelper;
+use common\models\Student;
+use common\models\Lecturer;
+
 use Yii;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
-use common\components\CustomActiveRecord;
-use common\components\TokenHelper;
 
 /**
  * This is the model class for table "user".
@@ -324,5 +327,21 @@ class User extends CustomActiveRecord implements IdentityInterface
     public function removePasswordResetToken()
     {
         $this->password_reset_token = null;
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getStudent()
+    {
+        return $this->hasOne(Student::className(), ['user_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLecturer()
+    {
+        return $this->hasOne(Lecturer::className(), ['user_id' => 'id']);
     }
 }

@@ -95,6 +95,16 @@ return [
                     'extraPatterns' => [
                         'GET profile' => 'profile'
                     ]
+                ],
+
+                # Timetable API
+                [
+                    'class' => RestUrlRule::className(),
+                    'pluralize' => false,
+                    'controller' => 'v1/attendance',
+                    'extraPatterns' => [
+                        'GET mine' => 'mine'
+                    ]
                 ]
             ],
         ],

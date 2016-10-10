@@ -49,7 +49,7 @@ class AttendanceSearch extends Attendance
             'query' => $query,
         ]);
 
-        $this->load($params);
+        $this->load($params, Yii::$app->id=='app-api' ? '' : null);
 
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
@@ -61,7 +61,6 @@ class AttendanceSearch extends Attendance
         $query->andFilterWhere([
             'id' => $this->id,
             'lesson_id' => $this->lesson_id,
-            'recorded_date' => $this->recorded_date,
             'recorded_time' => $this->recorded_time,
             'is_absent' => $this->is_absent,
             'is_late' => $this->is_late,
@@ -70,7 +69,10 @@ class AttendanceSearch extends Attendance
             'updated_at' => $this->updated_at,
         ]);
 
-        $query->andFilterWhere(['like', 'student_id', $this->student_id]);
+        if ($this->student_id)
+            $query->andWhere(['student_id' => $this->student_id]);
+        if ($this->recorded_date)
+            $query->andWhere(['recorded_date' => $this->recorded_date]);
 
         return $dataProvider;
     }

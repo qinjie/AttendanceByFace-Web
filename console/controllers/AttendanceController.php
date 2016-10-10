@@ -5,6 +5,7 @@ namespace console\controllers;
 
 use common\models\search\LessonSearch;
 use common\models\Attendance;
+use common\components\Util;
 
 use yii\helpers\Console;
 
@@ -40,47 +41,6 @@ class AttendanceController extends \yii\console\Controller
         $startTime = strtotime($this->fromDate);
         $endTime = strtotime($this->toDate);
 
-        for ($iterDay = $startTime; $iterDay <= $endTime; $iterDay += self::SECONDS_IN_DAY) {
-            $weekday = $this->getWeekday($iterDay);
-            $meetingPattern = $this->getMeetingPattern($startTime, $iterDay);
-
-            echo $weekday . " " . $meetingPattern . " " . date('Y-m-d', $iterDay) ."\n";
-            $searchLesson = new LessonSearch();
-            $searchLesson->semester = $semester;
-            $searchLesson->weekday = $weekday;
-            $searchLesson->meeting_pattern = $meetingPattern;
-            $lessonProvider = $searchLesson->search(null);
-            $lessonQuery = $lessonProvider->query;
-            $lessonQuery->with('timetables');
-            $lessonProvider->pagination = false;
-            $lessons = $lessonProvider->getModels();
-            foreach ($lessons as $item) {
-                foreach ($item->timetables as $timetable) {
-                    $attendance = new Attendance();
-                    $attendance->student_id = $timetable->student_id;
-                    $attendance->lesson_id = $timetable->lesson_id;
-                    $attendance->recorded_date = date('Y-m-d', $iterDay);
-                    if ($attendance->save())
-                        $this->stdout("Insert " . $attendance->student_id . ", " . $attendance->lesson_id . ", " . $attendance->recorded_date. "\n", Console::FG_GREEN);
-                    else $this->stdout("Cannot insert " . $attendance->student_id . ", " . $attendance->lesson_id . ", " . $attendance->recorded_date. "\n", Console::FG_RED);
-                }
-            }
-            echo "=============================================\n";
-        }
+        Util::generateAttendance($semester, $startTime, $endTime);
     }
-
-    private function getWeekday($time) {
-        $dw = date('w', $time);
-        $weekdays = ['SUN', 'MON', 'TUES', 'WED', 'THUR', 'FRI', 'SAT'];
-        return $weekdays[$dw];
-    }
-
-    private function getMeetingPattern($startTime, $time) {
-        $meeting_pattern = '';
-        $week = intval(($time - $startTime + self::SECONDS_IN_WEEK) / self::SECONDS_IN_WEEK);
-        if ($week % 2 == 0) $meeting_pattern = 'EVEN';
-        else $meeting_pattern = 'ODD';
-        return $meeting_pattern;
-    }
-
 }

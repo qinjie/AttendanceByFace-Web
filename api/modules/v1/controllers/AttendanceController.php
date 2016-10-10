@@ -2,31 +2,70 @@
 
 namespace api\modules\v1\controllers;
 
-use Yii;
 use common\models\Attendance;
+use common\models\User;
 use common\models\search\AttendanceSearch;
 use api\components\CustomActiveController;
+use api\components\AccessRule;
+
+use Yii;
 use yii\web\NotFoundHttpException;
+use yii\web\BadRequestHttpException;
+use yii\web\UnauthorizedHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\auth\HttpBearerAuth;
+use yii\filters\AccessControl;
 
 /**
  * AttendanceController implements the CRUD actions for Attendance model.
  */
 class AttendanceController extends CustomActiveController
 {
+    public $modelClass = 'common\models\Attendance';
+
     /**
      * @inheritdoc
      */
     public function behaviors()
     {
         return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
+            'authenticator' => [
+                'class' => HttpBearerAuth::className()
             ],
+            'access' => [
+                'class' => AccessControl::className(),
+                'ruleConfig' => [
+                    'class' => AccessRule::className(),
+                ],
+                'rules' => [
+                    [
+                        'actions' => ['mine'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ]
+                ],
+                'denyCallback' => function ($rule, $action) {
+                    throw new UnauthorizedHttpException('You are not authorized');
+                },
+            ]
         ];
+    }
+
+    public function actionMine()
+    {
+        $searchModel = new AttendanceSearch();
+        $queryParams = Yii::$app->request->queryParams;
+        if (!isset($queryParams['recorded_date']))
+            $queryParams['recorded_date'] = date('Y-m-d');
+        $dataProvider = $searchModel->search($queryParams);
+        $dataProvider->pagination = false;
+        $query = $dataProvider->query;
+        $query->andWhere(['student_id' => Yii::$app->user->identity->student->id]);
+        $query->joinWith('lesson');
+        $query->orderBy([
+            'lesson.start_time' => SORT_ASC
+        ]);
+        return $dataProvider;
     }
 
     /**
@@ -74,7 +113,7 @@ class AttendanceController extends CustomActiveController
         }
     }
 
-    /**
+    /*
      * Updates an existing Attendance model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
