@@ -4,6 +4,8 @@ namespace common\models;
 
 use Yii;
 
+use common\components\Util;
+
 /**
  * This is the model class for table "lesson".
  *

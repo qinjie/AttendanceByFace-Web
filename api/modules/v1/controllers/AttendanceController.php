@@ -7,6 +7,7 @@ use common\models\User;
 use common\models\search\AttendanceSearch;
 use api\components\CustomActiveController;
 use api\components\AccessRule;
+use common\components\Util;
 
 use Yii;
 use yii\web\NotFoundHttpException;
@@ -15,6 +16,7 @@ use yii\web\UnauthorizedHttpException;
 use yii\filters\VerbFilter;
 use yii\filters\auth\HttpBearerAuth;
 use yii\filters\AccessControl;
+use yii\data\Sort;
 
 /**
  * AttendanceController implements the CRUD actions for Attendance model.
@@ -39,7 +41,7 @@ class AttendanceController extends CustomActiveController
                 ],
                 'rules' => [
                     [
-                        'actions' => ['mine'],
+                        'actions' => ['day', 'week'],
                         'allow' => true,
                         'roles' => ['@'],
                     ]
@@ -51,7 +53,7 @@ class AttendanceController extends CustomActiveController
         ];
     }
 
-    public function actionMine()
+    public function actionDay()
     {
         $searchModel = new AttendanceSearch();
         $queryParams = Yii::$app->request->queryParams;
@@ -60,10 +62,44 @@ class AttendanceController extends CustomActiveController
         $dataProvider = $searchModel->search($queryParams);
         $dataProvider->pagination = false;
         $query = $dataProvider->query;
-        $query->andWhere(['student_id' => Yii::$app->user->identity->student->id]);
+        if (Yii::$app->user->identity->isStudent()) {
+            $query->andWhere(['student_id' => Yii::$app->user->identity->student->id]);
+        } else if (Yii::$app->user->identity->isLecturer()) {
+            $query->andWhere(['lecturer_id' => Yii::$app->user->identity->lecturer->id]);
+        }
         $query->joinWith('lesson');
         $query->orderBy([
             'lesson.start_time' => SORT_ASC
+        ]);
+        return $dataProvider;
+    }
+
+    public function actionWeek()
+    {
+        $searchModel = new AttendanceSearch();
+        $queryParams = Yii::$app->request->queryParams;
+        if (!isset($queryParams['weekNumber']))
+            $queryParams['weekNumber'] = Util::getWeekInSemester(strtotime('2016-10-3'), strtotime(date('Y-m-d')));
+        $dataProvider = $searchModel->search($queryParams);
+        $dataProvider->pagination = false;
+        $query = $dataProvider->query;
+
+        if (Yii::$app->user->identity->isStudent()) {
+            $query->andWhere(['student_id' => Yii::$app->user->identity->student->id]);
+        } else if (Yii::$app->user->identity->isLecturer()) {
+            $query->andWhere(['lecturer_id' => Yii::$app->user->identity->lecturer->id]);
+        }
+
+        $startDate = Util::getStartDateInWeek(strtotime('2016-10-3'), $queryParams['weekNumber']);
+        $endDate = Util::getEndDateInWeek(strtotime('2016-10-3'), $queryParams['weekNumber']);
+        $query->andWhere("[[recorded_date]]>='$startDate'");
+        $query->andWhere("[[recorded_date]]<='$endDate'");
+
+        $query->joinWith('lesson');
+        $meeting_pattern = Util::getMeetingPatternOfWeek($queryParams['weekNumber']);
+        $query->andWhere(['or',
+            ['lesson.meeting_pattern' => $meeting_pattern],
+            ['lesson.meeting_pattern' => ''],
         ]);
         return $dataProvider;
     }

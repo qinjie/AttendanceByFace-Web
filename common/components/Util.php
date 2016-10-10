@@ -33,6 +33,7 @@ class Util
                         $attendance = new Attendance();
                         $attendance->student_id = $timetable->student_id;
                         $attendance->lesson_id = $timetable->lesson_id;
+                        $attendance->lecturer_id = $timetable->lecturer_id;
                         $attendance->recorded_date = date('Y-m-d', $iterDay);
                         if ($attendance->save()) {
                             // $this->stdout("Insert " . $attendance->student_id . ", " . $attendance->lesson_id . ", " . $attendance->recorded_date. "\n", Console::FG_GREEN);
@@ -56,6 +57,20 @@ class Util
         return $weekdays[$dw];
     }
 
+    public static function getWeekdayNumber($weekday)
+    {
+        $weekdayNumber = [
+            'MON' => 1,
+            'TUES' => 2,
+            'WED' => 3,
+            'THUR' => 4,
+            'FRI' => 5,
+            'SAT' => 6,
+            'SUN' => 7
+        ];
+        return $weekdayNumber[$weekday];
+    }
+
     public static function getMeetingPattern($startTime, $time)
     {
         $meeting_pattern = '';
@@ -64,4 +79,30 @@ class Util
         else $meeting_pattern = 'ODD';
         return $meeting_pattern;
     }
+
+    public static function getWeekInSemester($startTime, $time)
+    {
+        $duration = $time - $startTime + self::SECONDS_IN_DAY;
+        $week = intval(($duration + self::SECONDS_IN_WEEK - 1) / self::SECONDS_IN_WEEK);
+        return $week;
+    }
+
+    public static function getMeetingPatternOfWeek($weekNumber)
+    {
+        $meetingPattern = $weekNumber % 2 == 0 ? 'EVEN' : 'ODD';
+        return $meetingPattern;
+    }
+
+    public function getStartDateInWeek($startTime, $weekNumber)
+    {
+        $startDate = date('Y-m-d', $startTime + self::SECONDS_IN_WEEK * ($weekNumber - 1));
+        return $startDate;
+    }
+
+    public function getEndDateInWeek($startTime, $weekNumber)
+    {
+        $endDate = date('Y-m-d', $startTime + self::SECONDS_IN_WEEK * $weekNumber - 1);
+        return $endDate;
+    }
+
 }

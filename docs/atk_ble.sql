@@ -1947,6 +1947,7 @@ CREATE TABLE `attendance` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `student_id` varchar(10) NOT NULL,
   `lesson_id` int(10) unsigned NOT NULL,
+  `lecturer_id` varchar(10) NOT NULL,
   `recorded_date` date DEFAULT NULL,
   `recorded_time` time DEFAULT NULL,
   `is_absent` tinyint(1) unsigned DEFAULT NULL,
@@ -1961,7 +1962,8 @@ CREATE TABLE `attendance` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=42 ;
 ALTER TABLE `attendance`
   ADD CONSTRAINT `attendance_ibfk_1` FOREIGN KEY (`student_id`) REFERENCES `student` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `attendance_ibfk_2` FOREIGN KEY (`lesson_id`) REFERENCES `lesson` (`id`) ON UPDATE CASCADE;
+  ADD CONSTRAINT `attendance_ibfk_2` FOREIGN KEY (`lesson_id`) REFERENCES `lesson` (`id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `attendance_ibfk_3` FOREIGN KEY (`lecturer_id`) REFERENCES `lecturer` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 /*Data for the table `attendance` */
 

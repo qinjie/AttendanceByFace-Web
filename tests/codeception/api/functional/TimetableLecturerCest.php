@@ -5,13 +5,13 @@ namespace tests\codeception\api;
 use tests\codeception\api\FunctionalTester;
 use common\components\Util;
 
-class TimetableCest
+class TimetableLecturerCest
 {
     private $accessToken;
 
     public function _before(FunctionalTester $I)
     {
-        $this->accessToken = $I->loginStudent()->token;
+        $this->accessToken = $I->loginLecturer()->token;
         $I->amBearerAuthenticated($this->accessToken);
     }
 
@@ -19,29 +19,29 @@ class TimetableCest
     {
     }
 
-    public function getStudentTimetable_Today(FunctionalTester $I)
+    public function getLecturerTimetable_Today(FunctionalTester $I)
     {
-        $I->wantTo('get my student timetable of today');
-        $I->sendGET('v1/attendance/mine', [
+        $I->wantTo('get my lecturer timetable of today');
+        $I->sendGET('v1/attendance/day', [
             'expand' => 'lesson'
         ]);
         $I->seeResponseCodeIs(200);
         $userId = $I->grabFromDatabase('user', 'id', [
-            'username' => 'canhnht'
+            'username' => 'zhangqinjie'
         ]);
-        $studentId = $I->grabFromDatabase('student', 'id', [
+        $lecturerId = $I->grabFromDatabase('lecturer', 'id', [
             'user_id' => $userId
         ]);
-        $I->seeResponseContainsJson([
-            'student_id' => $studentId,
-            'recorded_date' => date('Y-m-d'),
-            'lesson' => [
-                'weekday' => Util::getWeekday(strtotime(date('Y-m-d')))
-            ]
-        ]);
+        $response = json_decode($I->grabResponse());
+        foreach ($response as $item) {
+            $I->assertEquals($lecturerId, $item->lecturer_id);
+            $I->assertEquals(date('Y-m-d'), $item->recorded_date);
+            $I->assertEquals(Util::getWeekday(strtotime(date('Y-m-d'))), $item->lesson->weekday);
+        }
         $I->seeResponseMatchesJsonType([
             'id' => 'integer',
             'student_id' => 'string',
+            'lecturer_id' => 'string',
             'lesson_id' => 'integer',
             'recorded_date' => 'string',
             'lesson' => [
@@ -57,30 +57,30 @@ class TimetableCest
         ], '$[*]');
     }
 
-    public function getStudentTimetable_OneDay(FunctionalTester $I)
+    public function getLecturerTimetable_OneDay(FunctionalTester $I)
     {
-        $I->wantTo('get my student timetable of an arbitrary day');
-        $I->sendGET('v1/attendance/mine', [
+        $I->wantTo('get my lecturer timetable of an arbitrary day');
+        $I->sendGET('v1/attendance/day', [
             'recorded_date' => '2016-10-12',
             'expand' => 'lesson'
         ]);
         $I->seeResponseCodeIs(200);
         $userId = $I->grabFromDatabase('user', 'id', [
-            'username' => 'canhnht'
+            'username' => 'zhangqinjie'
         ]);
-        $studentId = $I->grabFromDatabase('student', 'id', [
+        $lecturerId = $I->grabFromDatabase('lecturer', 'id', [
             'user_id' => $userId
         ]);
-        $I->seeResponseContainsJson([
-            'student_id' => $studentId,
-            'recorded_date' => '2016-10-12',
-            'lesson' => [
-                'weekday' => Util::getWeekday(strtotime('2016-10-12'))
-            ]
-        ]);
+        $response = json_decode($I->grabResponse());
+        foreach ($response as $item) {
+            $I->assertEquals($lecturerId, $item->lecturer_id);
+            $I->assertEquals('2016-10-12', $item->recorded_date);
+            $I->assertEquals(Util::getWeekday(strtotime('2016-10-12')), $item->lesson->weekday);
+        }
         $I->seeResponseMatchesJsonType([
             'id' => 'integer',
             'student_id' => 'string',
+            'lecturer_id' => 'string',
             'lesson_id' => 'integer',
             'recorded_date' => 'string',
             'lesson' => [

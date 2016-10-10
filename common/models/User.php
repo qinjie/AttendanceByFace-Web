@@ -344,4 +344,12 @@ class User extends CustomActiveRecord implements IdentityInterface
     {
         return $this->hasOne(Lecturer::className(), ['user_id' => 'id']);
     }
+
+    public function isStudent() {
+        return !!Yii::$app->user->identity->student;
+    }
+
+    public function isLecturer() {
+        return !!Yii::$app->user->identity->lecturer;
+    }
 }

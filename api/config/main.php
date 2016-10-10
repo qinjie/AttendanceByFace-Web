@@ -103,7 +103,8 @@ return [
                     'pluralize' => false,
                     'controller' => 'v1/attendance',
                     'extraPatterns' => [
-                        'GET mine' => 'mine'
+                        'GET day' => 'day',
+                        'GET week' => 'week'
                     ]
                 ]
             ],

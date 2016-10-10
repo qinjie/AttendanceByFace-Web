@@ -2,16 +2,20 @@
 
 namespace common\models\search;
 
+use common\models\Attendance;
+use common\models\Lesson;
+
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use common\models\Attendance;
 
 /**
  * AttendanceSearch represents the model behind the search form about `common\models\Attendance`.
  */
 class AttendanceSearch extends Attendance
 {
+    public $lesson;
+
     /**
      * @inheritdoc
      */
@@ -19,7 +23,8 @@ class AttendanceSearch extends Attendance
     {
         return [
             [['id', 'lesson_id', 'is_absent', 'is_late', 'late_min'], 'integer'],
-            [['student_id', 'recorded_date', 'recorded_time', 'created_at', 'updated_at'], 'safe'],
+            [['student_id', 'lecturer_id', 'recorded_date', 'recorded_time', 'created_at', 'updated_at'], 'safe'],
+            [['lesson'], 'safe'],
         ];
     }
 
@@ -39,6 +44,7 @@ class AttendanceSearch extends Attendance
      *
      * @return ActiveDataProvider
      */
+    public $lessonAttribute;
     public function search($params)
     {
         $query = Attendance::find();
@@ -50,6 +56,8 @@ class AttendanceSearch extends Attendance
         ]);
 
         $this->load($params, Yii::$app->id=='app-api' ? '' : null);
+        $this->lessonAttribute = new Lesson();
+        $this->lessonAttribute->load($params, Yii::$app->id=='app-api' ? '' : null);
 
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
@@ -71,6 +79,8 @@ class AttendanceSearch extends Attendance
 
         if ($this->student_id)
             $query->andWhere(['student_id' => $this->student_id]);
+        if ($this->lecturer_id)
+            $query->andWhere(['lecturer_id' => $this->lecturer_id]);
         if ($this->recorded_date)
             $query->andWhere(['recorded_date' => $this->recorded_date]);
 
