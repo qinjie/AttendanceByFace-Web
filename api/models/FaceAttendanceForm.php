@@ -78,19 +78,18 @@ class FaceAttendanceForm extends Model
     {
         if ($this->validate()) {
             $user = $this->getUser();
+
             $facepp = new Facepp();
             $facepp->api_key = Yii::$app->params['FACEPP_API_KEY'];
             $facepp->api_secret = Yii::$app->params['FACEPP_API_SECRET'];
-            $params = [
-                'person_id' => $user->person_id,
-                'face_id' => $this->face_id
-            ];
-            $response = $facepp->execute('/recognition/verify', $params);
+            $response = $facepp->verifyFace($user, $this->face_id);
             if ($response['http_code'] != 200) {
                 $this->addError('face_id', 'Invalid face.');
                 return;
             }
+            $facepp->trainNewFace($user, $this->face_id);
             $result = json_decode($response['body']);
+
             if ($result->confidence < self::FACE_THRESHOLD) {
                 $this->addError('face_id', 'Face is not matched.');
             } else {

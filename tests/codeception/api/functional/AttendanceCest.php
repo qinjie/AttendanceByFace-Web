@@ -100,28 +100,6 @@ class AttendanceCest
         ], '$[*]');
     }
 
-    public function takeAttendanceByFace_Today(FunctionalTester $I)
-    {
-        $I->wantTo('take attendance in today');
-        $attendance = $I->getValidAttendanceToday();
-        $I->sendPOST('v1/attendance/face', [
-            'id' => $attendance->id,
-            'face_id' => '0d3df55d5f5bbfab9d80b7457ecc461d'
-        ]);
-        $I->seeResponseCodeIs(200);
-        $I->seeResponseContainsJson([
-            'id' => $attendance->id,
-            'student_id' => $attendance->student_id,
-            'recorded_date' => date('Y-m-d'),
-            'recorded_time' => date('H:i')
-        ]);
-        $I->seeResponseMatchesJsonType([
-            'is_absent' => 'integer:<2',
-            'is_late' => 'integer:<2',
-            'late_min' => 'integer'
-        ]);
-    }
-
     public function takeAttendanceByFace_ThrowsException_IfFaceIsInvalid(FunctionalTester $I)
     {
         $I->wantTo('take attendance with invalid face');
@@ -146,6 +124,28 @@ class AttendanceCest
         $I->seeResponseCodeIs(400);
         $I->seeResponseContainsJson([
             'code' => AttendanceController::CODE_INVALID_ATTENDANCE
+        ]);
+    }
+
+    public function takeAttendanceByFace_Today(FunctionalTester $I)
+    {
+        $I->wantTo('take attendance in today');
+        $attendance = $I->getValidAttendanceToday();
+        $I->sendPOST('v1/attendance/face', [
+            'id' => $attendance->id,
+            'face_id' => '0d3df55d5f5bbfab9d80b7457ecc461d'
+        ]);
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseContainsJson([
+            'id' => $attendance->id,
+            'student_id' => $attendance->student_id,
+            'recorded_date' => date('Y-m-d'),
+            'recorded_time' => date('H:i')
+        ]);
+        $I->seeResponseMatchesJsonType([
+            'is_absent' => 'integer:<2',
+            'is_late' => 'integer:<2',
+            'late_min' => 'integer'
         ]);
     }
 }

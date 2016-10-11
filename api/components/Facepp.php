@@ -106,4 +106,44 @@ class Facepp
 
         return true;
     }
+
+    public function verifyFace($user, $faceId) {
+        $params = [
+            'person_id' => $user->person_id,
+            'face_id' => $faceId
+        ];
+        $response = $this->execute('/recognition/verify', $params);
+        return $response;
+    }
+
+    public function trainNewFace($user, $newFaceId, $clearFace = false) {
+        if ($clearFace) {
+            $user->face_id = [];
+            $params = [
+                'person_id' => $user->person_id,
+                'face_id' => 'all';
+            ];
+            $response = $facepp->execute('/person/remove_face', $params);
+        } else {
+            if (count($user->face_id) == 5) {
+                $params = [
+                    'person_id' => $user->person_id,
+                    'face_id' => $user->face_id[0]
+                ];
+                $response = $facepp->execute('/person/remove_face', $params);
+                array_splice($user->face_id, 0, 1);
+            }
+        }
+        $user->face_id[] = $newFaceId;
+        $params = [
+            'person_id' => $user->person_id,
+            'face_id' => $newFaceId
+        ];
+        $response = $facepp->execute('/person/add_face', $params);
+        $params = [
+            'person_id' => $user->person_id
+        ];
+        $response = $facepp->execute('/train/verify', $params);
+        return $response;
+    }
 }
