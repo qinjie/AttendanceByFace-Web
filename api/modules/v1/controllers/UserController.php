@@ -78,7 +78,12 @@ class UserController extends CustomActiveController
                     [
                         'actions' => ['allow-train-face', 'disallow-train-face'],
                         'allow' => true,
-                        'roles' => ['@'],
+                        'roles' => [User::ROLE_LECTURER],
+                    ],
+                    [
+                        'actions' => ['check-train-face'],
+                        'allow' => true,
+                        'roles' => [User::ROLE_STUDENT],
                     ]
                 ],
                 'denyCallback' => function ($rule, $action) {
@@ -310,5 +315,27 @@ class UserController extends CustomActiveController
         $userId = $student->user_id;
         UserToken::deleteAll(['user_id' => $userId, 'action' => TokenHelper::TOKEN_ACTION_TRAIN_FACE]);
         return 'disable training face successfully';
+    }
+
+    private function checkTrainFaceToken($userId) {
+        $userToken = UserToken::findOne([
+            'action' => TokenHelper::TOKEN_ACTION_TRAIN_FACE,
+            'user_id' => $userId,
+        ]);
+        if (!$userToken) return false;
+        $current = time();
+        $expire_date = strtotime($userToken->expire_date);
+        if ($expire_date < $current) {
+            UserToken::deleteAll(['id' => $userToken->id]);
+            return false;
+        }
+        return true;
+    }
+
+    public function actionCheckTrainFace() {
+        $userId = Yii::$app->user->identity->id;
+        return [
+            'result' => $this->checkTrainFaceToken($userId),
+        ];
     }
 }

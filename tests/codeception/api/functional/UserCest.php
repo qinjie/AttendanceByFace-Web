@@ -166,4 +166,15 @@ class UserCest
             'action' => TokenHelper::TOKEN_ACTION_TRAIN_FACE
         ]);
     }
+
+    public function checkTrainFace(FunctionalTester $I)
+    {
+        $I->wantTo('check if student can train face');
+        $I->amBearerAuthenticated($this->accessToken);
+        $I->sendGET('v1/user/check-train-face');
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseContainsJson([
+            'result' => false
+        ]);
+    }
 }

@@ -87,7 +87,8 @@ return [
                         'POST change-password' => 'change-password',
                         'POST reset-password' => 'reset-password',
                         'POST allow-train-face' => 'allow-train-face',
-                        'POST disallow-train-face' => 'disallow-train-face'
+                        'POST disallow-train-face' => 'disallow-train-face',
+                        'GET check-train-face' => 'check-train-face'
                     ]
                 ],
                 [
