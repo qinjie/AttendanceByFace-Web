@@ -74,6 +74,11 @@ class UserController extends CustomActiveController
                         'actions' => ['logout', 'change-password', 'mine'],
                         'allow' => true,
                         'roles' => ['@'],
+                    ],
+                    [
+                        'actions' => ['allow-train-face', 'disallow-train-face'],
+                        'allow' => true,
+                        'roles' => ['@'],
                     ]
                 ],
                 'denyCallback' => function ($rule, $action) {
@@ -280,5 +285,30 @@ class UserController extends CustomActiveController
             return 'reset password successfully';
         }
         throw new BadRequestHttpException('Invalid data');
+    }
+
+    public function actionAllowTrainFace()
+    {
+        $bodyParams = Yii::$app->request->post();
+        $studentId = $bodyParams['studentId'];
+        $student = Student::findOne(['id' => $studentId]);
+        if (!$student)
+            throw new BadRequestHttpException('No student with given user id');
+        $userId = $student->user_id;
+        UserToken::deleteAll(['user_id' => $userId, 'action' => TokenHelper::TOKEN_ACTION_TRAIN_FACE]);
+        $userToken = TokenHelper::createUserToken($userId, TokenHelper::TOKEN_ACTION_TRAIN_FACE);
+        return 'allow training face successfully';
+    }
+
+    public function actionDisallowTrainFace()
+    {
+        $bodyParams = Yii::$app->request->post();
+        $studentId = $bodyParams['studentId'];
+        $student = Student::findOne(['id' => $studentId]);
+        if (!$student)
+            throw new BadRequestHttpException('No student with given user id');
+        $userId = $student->user_id;
+        UserToken::deleteAll(['user_id' => $userId, 'action' => TokenHelper::TOKEN_ACTION_TRAIN_FACE]);
+        return 'disable training face successfully';
     }
 }

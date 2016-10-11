@@ -124,4 +124,46 @@ class UserCest
             'action' => TokenHelper::TOKEN_ACTION_RESET_PASSWORD
         ]);
     }
+
+    public function allowTrainFace_ByLecturer(FunctionalTester $I)
+    {
+        $I->wantTo('allow train face by lecturer');
+        $accessToken = $I->loginLecturer()->token;
+        $I->amBearerAuthenticated($accessToken);
+        $userId = $I->grabFromDatabase('user', 'id', [
+            'username' => 'canhnht'
+        ]);
+        $studentId = $I->grabFromDatabase('student', 'id', [
+            'user_id' => $userId
+        ]);
+        $I->sendPOST('v1/user/allow-train-face', [
+            'studentId' => $studentId
+        ]);
+        $I->seeResponseCodeIs(200);
+        $I->seeInDatabase('user_token', [
+            'user_id' => $userId,
+            'action' => TokenHelper::TOKEN_ACTION_TRAIN_FACE
+        ]);
+    }
+
+    public function disallowTrainFace_ByLecturer(FunctionalTester $I)
+    {
+        $I->wantTo('disallow train face by lecturer');
+        $accessToken = $I->loginLecturer()->token;
+        $I->amBearerAuthenticated($accessToken);
+        $userId = $I->grabFromDatabase('user', 'id', [
+            'username' => 'canhnht'
+        ]);
+        $studentId = $I->grabFromDatabase('student', 'id', [
+            'user_id' => $userId
+        ]);
+        $I->sendPOST('v1/user/disallow-train-face', [
+            'studentId' => $studentId
+        ]);
+        $I->seeResponseCodeIs(200);
+        $I->dontSeeInDatabase('user_token', [
+            'user_id' => $userId,
+            'action' => TokenHelper::TOKEN_ACTION_TRAIN_FACE
+        ]);
+    }
 }

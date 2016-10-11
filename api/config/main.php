@@ -85,7 +85,9 @@ return [
                         'GET,POST mine' => 'mine',
                         'POST logout' => 'logout',
                         'POST change-password' => 'change-password',
-                        'POST reset-password' => 'reset-password'
+                        'POST reset-password' => 'reset-password',
+                        'POST allow-train-face' => 'allow-train-face',
+                        'POST disallow-train-face' => 'disallow-train-face'
                     ]
                 ],
                 [

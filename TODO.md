@@ -8,3 +8,4 @@
 - [ ] Add email validation for student sign up
 - [ ] Implement train face in server. Reuse train face in User API
 - [ ] Add test for common\components\Util.php
+- [ ] Refactor test code by creating ```function amAuthenticatedAs{Student,Lecturer}```
