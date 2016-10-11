@@ -107,43 +107,44 @@ class Facepp
         return true;
     }
 
-    public function verifyFace($user, $faceId) {
+    public function verifyFace($personId, $faceId) {
         $params = [
-            'person_id' => $user->person_id,
+            'person_id' => $personId,
             'face_id' => $faceId
         ];
         $response = $this->execute('/recognition/verify', $params);
         return $response;
     }
 
-    public function trainNewFace($user, $newFaceId, $clearFace = false) {
+    public function trainNewFace($personId, $listFaceId, $newFaceId, $clearFace = false) {
         if ($clearFace) {
-            $user->face_id = [];
+            $listFaceId = [];
             $params = [
-                'person_id' => $user->person_id,
-                'face_id' => 'all';
+                'person_id' => $personId,
+                'face_id' => 'all'
             ];
-            $response = $facepp->execute('/person/remove_face', $params);
+            $response = $this->execute('/person/remove_face', $params);
         } else {
-            if (count($user->face_id) == 5) {
+            if (count($listFaceId) == 5) {
                 $params = [
-                    'person_id' => $user->person_id,
-                    'face_id' => $user->face_id[0]
+                    'person_id' => $personId,
+                    'face_id' => $listFaceId[0]
                 ];
-                $response = $facepp->execute('/person/remove_face', $params);
-                array_splice($user->face_id, 0, 1);
+                $response = $this->execute('/person/remove_face', $params);
+                array_splice($listFaceId, 0, 1);
             }
         }
-        $user->face_id[] = $newFaceId;
+        $listFaceId[] = $newFaceId;
         $params = [
-            'person_id' => $user->person_id,
+            'person_id' => $personId,
             'face_id' => $newFaceId
         ];
-        $response = $facepp->execute('/person/add_face', $params);
+        $response = $this->execute('/person/add_face', $params);
         $params = [
-            'person_id' => $user->person_id
+            'person_id' => $personId
         ];
-        $response = $facepp->execute('/train/verify', $params);
-        return $response;
+        $response = $this->execute('/train/verify', $params);
+        if ($response['http_code'] == 200) return $listFaceId;
+        else return null;
     }
 }

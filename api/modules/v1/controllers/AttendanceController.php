@@ -55,7 +55,7 @@ class AttendanceController extends CustomActiveController
                         'roles' => [User::ROLE_STUDENT],
                     ],
                     [
-                        'actions' => ['semester'],
+                        'actions' => ['semester', 'update'],
                         'allow' => true,
                         'roles' => [User::ROLE_LECTURER],
                     ],
@@ -65,6 +65,15 @@ class AttendanceController extends CustomActiveController
                 },
             ]
         ];
+    }
+
+    public function actions() {
+        $actions = parent::actions();
+        unset($actions['create']);
+        unset($actions['update']);
+        unset($actions['view']);
+
+        return $actions;
     }
 
     public function actionDay()
@@ -194,81 +203,18 @@ class AttendanceController extends CustomActiveController
         }
     }
 
-    /**
-     * Lists all Attendance models.
-     * @return mixed
-     */
-    public function actionIndex()
-    {
-        $searchModel = new AttendanceSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
-    }
-
-    /**
-     * Displays a single Attendance model.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
-    }
-
-    /**
-     * Creates a new Attendance model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
-    public function actionCreate()
-    {
-        $model = new Attendance();
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
-        }
-    }
-
     /*
      * Updates an existing Attendance model.
-     * If update is successful, the browser will be redirected to the 'view' page.
+     * If update is successful, the attendance will be returned.
      * @param integer $id
      * @return mixed
      */
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('update', [
-                'model' => $model,
-            ]);
-        }
-    }
-
-    /**
-     * Deletes an existing Attendance model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionDelete($id)
-    {
-        $this->findModel($id)->delete();
-
-        return $this->redirect(['index']);
+        if ($model->load(Yii::$app->request->post(), '') && $model->save()) {
+            return $model;
+        } else return null;
     }
 
     /**

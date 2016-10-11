@@ -2,6 +2,8 @@
 
 namespace common\models;
 
+use common\components\Util;
+
 use Yii;
 
 /**
@@ -95,5 +97,25 @@ class Attendance extends \yii\db\ActiveRecord
     public function getLecturer()
     {
         return $this->hasOne(Lecturer::className(), ['id' => 'lecturer_id']);
+    }
+
+    public function beforeSave($insert)
+    {
+        if(parent::beforeSave($insert)) {
+            // Cannot be absent and late at same time
+            if ($this->is_absent && $this->is_late) return false;
+
+            // If present (not absent, not late)
+            if (!$this->is_absent && !$this->is_late) $this->late_min = 0;
+
+            if (!$this->is_absent && $this->is_late) {
+                // If late, you have to pass recorded_time
+                if ($this->recorded_time)
+                    $this->late_min = Util::getDifferenceInMinutes(
+                        $this->lesson->start_time, $this->recorded_time);
+                else return false;
+            }
+            return true;
+        } else return false;
     }
 }

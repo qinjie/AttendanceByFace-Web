@@ -65,14 +65,13 @@ class UserController extends CustomActiveController
                 ],
                 'rules' => [
                     [
-                        'actions' => ['login-lecturer', 'login-student', 'signup-student', 'signup-lecturer', 'reset-password',
-                            'register-device', 'confirm-email'],
+                        'actions' => ['login-lecturer', 'login-student', 'signup-student', 'signup-lecturer',
+                            'reset-password', 'register-device', 'confirm-email'],
                         'allow' => true,
                         'roles' => ['?'],
                     ],
                     [
-                        'actions' => ['logout', 'change-password', 'profile',
-                            'mine'],
+                        'actions' => ['logout', 'change-password', 'mine'],
                         'allow' => true,
                         'roles' => ['@'],
                     ]

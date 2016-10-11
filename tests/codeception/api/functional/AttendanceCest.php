@@ -148,4 +148,82 @@ class AttendanceCest
             'late_min' => 'integer'
         ]);
     }
+
+    public function takeAttendanceByLecturer_Absent(FunctionalTester $I)
+    {
+        $accessToken = $I->loginLecturer()->token;
+        $I->amBearerAuthenticated($accessToken);
+        $I->wantTo('take attendance by lecturer');
+        $attendance = $I->getValidAttendanceToday();
+        $I->sendPUT("v1/attendance/{$attendance->id}", [
+            'is_absent' => 1,
+            'is_late' => 0
+        ]);
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseContainsJson([
+            'id' => $attendance->id,
+            'is_absent' => 1,
+            'is_late' => 0,
+            'recorded_date' => date('Y-m-d')
+        ]);
+    }
+
+    public function takeAttendanceByLecturer_Late(FunctionalTester $I)
+    {
+        $accessToken = $I->loginLecturer()->token;
+        $I->amBearerAuthenticated($accessToken);
+        $I->wantTo('take attendance by lecturer');
+        $attendance = $I->getValidAttendanceToday();
+        $I->sendPUT("v1/attendance/{$attendance->id}", [
+            'is_absent' => 0,
+            'is_late' => 1,
+            'recorded_time' => '10:10'
+        ]);
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseContainsJson([
+            'id' => $attendance->id,
+            'is_absent' => 0,
+            'is_late' => 1,
+            'recorded_date' => date('Y-m-d'),
+            'recorded_time' => '10:10',
+            'late_min' => 10
+        ]);
+    }
+
+    public function takeAttendanceByLecturer_Present(FunctionalTester $I)
+    {
+        $accessToken = $I->loginLecturer()->token;
+        $I->amBearerAuthenticated($accessToken);
+        $I->wantTo('take attendance by lecturer');
+        $attendance = $I->getValidAttendanceToday();
+        $I->sendPUT("v1/attendance/{$attendance->id}", [
+            'is_absent' => 0,
+            'is_late' => 0,
+            'recorded_time' => '10:00'
+        ]);
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseContainsJson([
+            'id' => $attendance->id,
+            'is_absent' => 0,
+            'is_late' => 0,
+            'recorded_date' => date('Y-m-d'),
+            'recorded_time' => '10:00',
+            'late_min' => 0
+        ]);
+    }
+
+    public function takeAttendanceByLecturer_ReturnsNull_InvalidData(FunctionalTester $I)
+    {
+        $accessToken = $I->loginLecturer()->token;
+        $I->amBearerAuthenticated($accessToken);
+        $I->wantTo('take attendance by lecturer with invalid data');
+        $attendance = $I->getValidAttendanceToday();
+        $I->sendPUT("v1/attendance/{$attendance->id}", [
+            'is_absent' => 1,
+            'is_late' => 1,
+            'recorded_time' => '10:00'
+        ]);
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseEquals(null);
+    }
 }

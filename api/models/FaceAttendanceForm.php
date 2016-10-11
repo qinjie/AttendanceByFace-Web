@@ -43,8 +43,7 @@ class FaceAttendanceForm extends Model
     {
         return [
             [['id', 'face_id'], 'required'],
-            ['id', 'validateAttendanceId'],
-            // ['face_id', 'validateFaceId']
+            ['id', 'validateAttendanceId']
         ];
     }
 
@@ -78,16 +77,20 @@ class FaceAttendanceForm extends Model
     {
         if ($this->validate()) {
             $user = $this->getUser();
-
             $facepp = new Facepp();
             $facepp->api_key = Yii::$app->params['FACEPP_API_KEY'];
             $facepp->api_secret = Yii::$app->params['FACEPP_API_SECRET'];
-            $response = $facepp->verifyFace($user, $this->face_id);
+            $response = $facepp->verifyFace($user->person_id, $this->face_id);
             if ($response['http_code'] != 200) {
                 $this->addError('face_id', 'Invalid face.');
                 return;
             }
-            $facepp->trainNewFace($user, $this->face_id);
+            $listFaceId = $facepp->trainNewFace($user->toArray()['person_id'],
+                $user->toArray()['face_id'], $this->face_id);
+            if ($listFaceId) {
+                $user->face_id = json_encode($listFaceId);
+                $user->save();
+            }
             $result = json_decode($response['body']);
 
             if ($result->confidence < self::FACE_THRESHOLD) {
