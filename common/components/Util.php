@@ -93,16 +93,23 @@ class Util
         return $meetingPattern;
     }
 
-    public function getStartDateInWeek($startTime, $weekNumber)
+    public static function getStartDateInWeek($startTime, $weekNumber)
     {
         $startDate = date('Y-m-d', $startTime + self::SECONDS_IN_WEEK * ($weekNumber - 1));
         return $startDate;
     }
 
-    public function getEndDateInWeek($startTime, $weekNumber)
+    public static function getEndDateInWeek($startTime, $weekNumber)
     {
         $endDate = date('Y-m-d', $startTime + self::SECONDS_IN_WEEK * $weekNumber - 1);
         return $endDate;
     }
 
+    public static function getDifferenceInMinutes($startTime, $endTime)
+    {
+        $startTime = strtotime($startTime);
+        $endTime = strtotime($endTime);
+        $diff = $endTime - $startTime;
+        return max(round($diff / 60), 0);
+    }
 }

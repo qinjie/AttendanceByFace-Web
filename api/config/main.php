@@ -106,7 +106,8 @@ return [
                         'GET day' => 'day',
                         'GET week' => 'week',
                         'GET history' => 'history',
-                        'GET semester' => 'semester'
+                        'GET semester' => 'semester',
+                        'POST face' => 'face'
                     ]
                 ]
             ],

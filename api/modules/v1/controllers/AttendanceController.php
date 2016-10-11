@@ -8,6 +8,7 @@ use common\models\search\AttendanceSearch;
 use api\components\CustomActiveController;
 use api\components\AccessRule;
 use common\components\Util;
+use api\models\FaceAttendanceForm;
 
 use Yii;
 use yii\web\NotFoundHttpException;
@@ -24,6 +25,9 @@ use yii\data\Sort;
 class AttendanceController extends CustomActiveController
 {
     public $modelClass = 'common\models\Attendance';
+
+    const CODE_INVALID_FACE = 30;
+    const CODE_INVALID_ATTENDANCE = 31;
 
     /**
      * @inheritdoc
@@ -46,7 +50,7 @@ class AttendanceController extends CustomActiveController
                         'roles' => ['@'],
                     ],
                     [
-                        'actions' => ['history'],
+                        'actions' => ['history', 'face'],
                         'allow' => true,
                         'roles' => [User::ROLE_STUDENT],
                     ],
@@ -175,6 +179,19 @@ class AttendanceController extends CustomActiveController
             'lesson.start_time' => SORT_ASC
         ]);
         return $dataProvider;
+    }
+
+    public function actionFace() {
+        $model = new FaceAttendanceForm(Yii::$app->user->identity);
+        if ($model->load(Yii::$app->request->post(), '')
+            && $attendance = $model->takeAttendance()) {
+            return $attendance;
+        } else {
+            if ($model->hasErrors('id'))
+                throw new BadRequestHttpException(null, self::CODE_INVALID_ATTENDANCE);
+            if ($model->hasErrors('face_id'))
+                throw new BadRequestHttpException(null, self::CODE_INVALID_FACE);
+        }
     }
 
     /**

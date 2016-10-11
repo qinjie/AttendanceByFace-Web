@@ -49,4 +49,14 @@ class FunctionalTester extends \Codeception\Actor
         $I->sendPOST('v1/lecturer/login', $user);
         return json_decode($I->grabResponse());
     }
+
+    public function getValidAttendanceToday() {
+        $I = $this;
+        $I->sendGET('v1/attendance/day', [
+            'expand' => 'lesson'
+        ]);
+        $response = json_decode($I->grabResponse());
+        // Need to check which attendance is allowed in current time
+        return $response[0];
+    }
 }
