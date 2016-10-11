@@ -54,7 +54,7 @@ class UserCest
         $I->wantTo('update person id');
         $I->amBearerAuthenticated($this->accessToken);
         $I->sendPOST('v1/user/mine', [
-            'person_id' => 'new-person-id'
+            'person_id' => '2bab14e81845032bd184f2f08e181300'
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseMatchesJsonType([
@@ -144,6 +144,17 @@ class UserCest
             'user_id' => $userId,
             'action' => TokenHelper::TOKEN_ACTION_TRAIN_FACE
         ]);
+    }
+
+    public function trainFace(FunctionalTester $I)
+    {
+        $I->wantTo('train new face');
+        $I->amBearerAuthenticated($this->accessToken);
+        $I->sendPOST('v1/user/train-face', [
+            'faceId' => '0d3df55d5f5bbfab9d80b7457ecc461d',
+            'clearFace' => false
+        ]);
+        $I->seeResponseCodeIs(200);
     }
 
     public function disallowTrainFace_ByLecturer(FunctionalTester $I)

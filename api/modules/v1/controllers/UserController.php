@@ -15,6 +15,7 @@ use api\models\SignupForm;
 use api\models\RegisterDeviceForm;
 use api\models\ChangePasswordForm;
 use api\models\ResetPasswordForm;
+use api\components\Facepp;
 
 use Yii;
 use yii\web\NotFoundHttpException;
@@ -81,7 +82,7 @@ class UserController extends CustomActiveController
                         'roles' => [User::ROLE_LECTURER],
                     ],
                     [
-                        'actions' => ['check-train-face'],
+                        'actions' => ['check-train-face', 'train-face'],
                         'allow' => true,
                         'roles' => [User::ROLE_STUDENT],
                     ]
@@ -337,5 +338,29 @@ class UserController extends CustomActiveController
         return [
             'result' => $this->checkTrainFaceToken($userId),
         ];
+    }
+
+    public function actionTrainFace() {
+        $user = Yii::$app->user->identity;
+        if (!$this->checkTrainFaceToken($user->id))
+            throw new BadRequestHttpException('You are not allowed to train face');
+        $bodyParams = Yii::$app->request->post();
+        $newFaceId = $bodyParams['faceId'];
+        $clearFace = $bodyParams['clearFace'] == 'true';
+
+        $facepp = new Facepp();
+        $facepp->api_key = Yii::$app->params['FACEPP_API_KEY'];
+        $facepp->api_secret = Yii::$app->params['FACEPP_API_SECRET'];
+
+        $listFaceId = $facepp->trainNewFace($user->toArray()['person_id'],
+                $user->toArray()['face_id'], $newFaceId, $clearFace);
+        if ($listFaceId) {
+            $user->face_id = json_encode($listFaceId);
+            if ($user->save()) {
+                $userId = $user->id;
+                UserToken::deleteAll(['user_id' => $userId, 'action' => TokenHelper::TOKEN_ACTION_TRAIN_FACE]);
+                return $user;
+            } else throw new BadRequestHttpException('Error save list face id');
+        } else throw new BadRequestHttpException('Error train new face');
     }
 }
