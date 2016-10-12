@@ -10,9 +10,9 @@
 * **API URL**: ```128.199.209.227/atk-ble/api/web/index.php/v1/```
 
 ## Resources
-* [API Reference](https://github.com/qinjie/AttendanceByFace-Web/blob/develop/API.md)
+* [API Reference](API.md)
 * [Helpful commands when working with server code](COMMANDS.md)
-* [Database Reference](https://github.com/qinjie/HopOn-Web/blob/develop/Database.md)
+* [Database Reference](DATABASE.md)
 * [Yii2 documentation](http://www.yiiframework.com/doc-2.0/guide-index.html)
 
 ## Set up server in Ubuntu
