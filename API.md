@@ -1,29 +1,32 @@
 # Attendance Taking: API Reference
 Attendance Taking server provides the following list of API
 ## User API
-- [Log in for student]
-- [Log in for lecturer]
-- [Sign up for student]
-- [Sign up for lecturer]
-- [Get person id]
-- [Get face id]
-- [Set person id]
-- [Set face id]
-- [Log out]
-- [Change password]
-- [Reset password]
-- [Allow training face for lecturer]
-- [Disallow training face for lecturer]
-- [Check training face for student]
-- [Train face for student]
-- [Get student profile]
-- [Get lecturer profile]
+- [Log in for student](#post-studentlogin)
+- [Log in for lecturer](#post-lecturerlogin)
+- [Sign up for student](#post-studentsignup)
+- [Sign up for lecturer](#post-lecturersignup)
+- [Register new device for student](#post-studentregister-device)
+- [Get person id](#get-userminefieldsperson_id)
+- [Get face id](#get-userminefieldsface_id)
+- [Set person id](#post-usermine)
+- [Set face id](#post-usermine_1)
+- [Log out](#post-userlogout)
+- [Change password](#post-userchange-password)
+- [Reset password](#post-userreset-password)
+- [Allow training face for lecturer](#post-userallow-train-face)
+- [Disallow training face for lecturer](#post-userdisallow-train-face)
+- [Check training face for student](#get-usercheck-train-face)
+- [Train face for student](#post-usertrain-face)
+- [Get student profile](#get-studentprofileexpanduser)
+- [Get lecturer profile](#get-lecturerprofileexpanduser)
 
 ## Attendance API
-- [Get timetable of one day for student/lecturer]
-- [Get timetable of one week for student/lecturer]
-- [Get timetable of current semester for lecturer]
-- [Get attendance history for student]
+- [Get timetable of one day for student/lecturer](#get-attendancedayrecorded_date2016-10-12expandlesson)
+- [Get timetable of one week for student/lecturer](#get-attendanceweekweeknumber1expandlesson)
+- [Get timetable of current semester for lecturer](#get-attendancesemesterfromdate2016-10-05class_sectionll12expandlessonstudent)
+- [Get attendance history for student](#get-attendancehistoryfromdate2016-10-5todate2016-10-15class_sectiont1m2expandlesson)
+- [Take attendance by face for student](#post-attendanceface)
+- [Update attendance of student for lecturer](#post-attendanceattendance-id)
 
 ## API Details
 ###POST ```student/login```

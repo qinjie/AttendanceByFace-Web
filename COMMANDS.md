@@ -1,4 +1,4 @@
-# Helpful Yii commands
+# Helpful commands
 
 ## Intro
 - Go to project folder
@@ -21,4 +21,10 @@
 
 ```
 ./yii gii/model --tableName="attendance" --ns="common\models" --modelClass="Attendance"
+```
+
+## Generate attendance for semester
+
+```
+./yii attendance/generate --fromDate="YYYY-MM-DD" --toDate="YYYY-MM-DD" --semester="number"
 ```
