@@ -63,8 +63,8 @@ class FaceAttendanceForm extends Model
             $allowedTo = date('H:i', $lessonTo);
 
             // For testing, comment these 2 lines
-            // if ($currentTime < $allowedFrom || $currentTime > $allowedTo)
-            //     $this->addError($attribute, 'Invalid attendance info.');
+            if ($currentTime < $allowedFrom || $currentTime > $allowedTo)
+                $this->addError($attribute, 'Invalid attendance info.');
         }
     }
 
