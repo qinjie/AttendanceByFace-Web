@@ -11,6 +11,7 @@
 
 ## Resources
 * [API Reference](https://github.com/qinjie/AttendanceByFace-Web/blob/develop/API.md)
+* [Helpful commands when working with server code](https://github.com/qinjie/AttendanceByFace-Web/blob/develop/COMMANDS.md)
 * [Database Reference](https://github.com/qinjie/HopOn-Web/blob/develop/Database.md)
 * [Yii2 documentation](http://www.yiiframework.com/doc-2.0/guide-index.html)
 
