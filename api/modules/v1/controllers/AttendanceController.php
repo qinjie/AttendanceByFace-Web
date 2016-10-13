@@ -6,7 +6,7 @@ use common\models\Attendance;
 use common\models\User;
 use common\models\search\AttendanceSearch;
 use api\components\CustomActiveController;
-use api\components\AccessRule;
+use common\components\AccessRule;
 use common\components\Util;
 use api\models\FaceAttendanceForm;
 

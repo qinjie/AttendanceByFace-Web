@@ -2,7 +2,7 @@
 
 namespace api\modules\v1\controllers;
 
-use api\components\AccessRule;
+use common\components\AccessRule;
 use common\models\Lecturer;
 use common\models\User;
 use common\models\search\LecturerSearch;

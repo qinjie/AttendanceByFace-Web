@@ -9,7 +9,7 @@ use common\models\UserToken;
 use common\models\search\UserSearch;
 use common\components\TokenHelper;
 use api\components\CustomActiveController;
-use api\components\AccessRule;
+use common\components\AccessRule;
 use api\models\LoginForm;
 use api\models\SignupForm;
 use api\models\RegisterDeviceForm;

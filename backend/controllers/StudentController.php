@@ -2,12 +2,16 @@
 
 namespace backend\controllers;
 
+use common\components\AccessRule;
+use common\models\User;
+
 use Yii;
 use common\models\Student;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 
 /**
  * StudentController implements the CRUD actions for Student model.
@@ -20,6 +24,18 @@ class StudentController extends Controller
     public function behaviors()
     {
         return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'ruleConfig' => [
+                    'class' => AccessRule::className(),
+                ],
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => [User::ROLE_LECTURER]
+                    ]
+                ]
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [

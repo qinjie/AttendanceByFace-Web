@@ -1,5 +1,5 @@
 <?php
-namespace api\components;
+namespace common\components;
 
 class AccessRule extends \yii\filters\AccessRule {
 
