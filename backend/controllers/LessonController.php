@@ -2,21 +2,17 @@
 
 namespace backend\controllers;
 
-use common\components\AccessRule;
-use common\models\User;
-
 use Yii;
-use common\models\Timetable;
+use common\models\Lesson;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use yii\filters\AccessControl;
 
 /**
- * TimetableController implements the CRUD actions for Timetable model.
+ * LessonController implements the CRUD actions for Lesson model.
  */
-class TimetableController extends Controller
+class LessonController extends Controller
 {
     /**
      * @inheritdoc
@@ -24,18 +20,6 @@ class TimetableController extends Controller
     public function behaviors()
     {
         return [
-            'access' => [
-                'class' => AccessControl::className(),
-                'ruleConfig' => [
-                    'class' => AccessRule::className(),
-                ],
-                'rules' => [
-                    [
-                        'allow' => true,
-                        'roles' => [User::ROLE_LECTURER]
-                    ]
-                ]
-            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -46,18 +30,26 @@ class TimetableController extends Controller
     }
 
     /**
-     * Lists all Timetable models.
+     * Lists all Lesson models.
      * @return mixed
      */
     public function actionIndex()
     {
         $dataProvider = new ActiveDataProvider([
-            'query' => Timetable::find(),
+            'query' => Lesson::find(),
         ]);
         $query = $dataProvider->query;
-        $query->where([
-            'lecturer_id' => Yii::$app->user->identity->lecturer->id,
+        $query->joinWith('attendances');
+        $query->andWhere([
+            'attendance.recorded_date' => date('Y-m-d'),
+            'attendance.lecturer_id' => Yii::$app->user->identity->lecturer->id
         ]);
+        $query->orderBy([
+            'start_time' => SORT_ASC
+        ]);
+        $query->joinWith('venue');
+        $dataProvider->pagination = false;
+        $dataProvider->sort = false;
 
         return $this->render('index', [
             'dataProvider' => $dataProvider,
@@ -65,7 +57,7 @@ class TimetableController extends Controller
     }
 
     /**
-     * Displays a single Timetable model.
+     * Displays a single Lesson model.
      * @param integer $id
      * @return mixed
      */
@@ -77,13 +69,13 @@ class TimetableController extends Controller
     }
 
     /**
-     * Creates a new Timetable model.
+     * Creates a new Lesson model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new Timetable();
+        $model = new Lesson();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -95,7 +87,7 @@ class TimetableController extends Controller
     }
 
     /**
-     * Updates an existing Timetable model.
+     * Updates an existing Lesson model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -114,7 +106,7 @@ class TimetableController extends Controller
     }
 
     /**
-     * Deletes an existing Timetable model.
+     * Deletes an existing Lesson model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -127,15 +119,15 @@ class TimetableController extends Controller
     }
 
     /**
-     * Finds the Timetable model based on its primary key value.
+     * Finds the Lesson model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Timetable the loaded model
+     * @return Lesson the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Timetable::findOne($id)) !== null) {
+        if (($model = Lesson::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

@@ -4,6 +4,7 @@ namespace backend\controllers;
 
 use common\components\AccessRule;
 use common\models\User;
+use common\models\search\AttendanceSearch;
 
 use Yii;
 use common\models\Attendance;
@@ -45,6 +46,32 @@ class AttendanceController extends Controller
         ];
     }
 
+    public function actionDay()
+    {
+        $searchModel = new AttendanceSearch();
+        $queryParams = Yii::$app->request->queryParams;
+        if (!isset($queryParams['recorded_date']))
+            $queryParams['recorded_date'] = date('Y-m-d');
+        $dataProvider = $searchModel->search($queryParams);
+        $dataProvider->pagination = false;
+        $query = $dataProvider->query;
+        $query->andWhere(['recorded_date' => $queryParams['recorded_date']]);
+        if (Yii::$app->user->identity->isStudent()) {
+            $query->andWhere(['student_id' => Yii::$app->user->identity->student->id]);
+        } else if (Yii::$app->user->identity->isLecturer()) {
+            $query->andWhere(['lecturer_id' => Yii::$app->user->identity->lecturer->id]);
+        }
+        $query->joinWith('lesson');
+        $query->orderBy([
+            'lesson.start_time' => SORT_ASC,
+            'lesson.id' => SORT_ASC,
+        ]);
+        return $this->render('day', [
+            'dataProvider' => $dataProvider,
+            'searchModel' => $searchModel
+        ]);
+    }
+
     /**
      * Lists all Attendance models.
      * @return mixed
@@ -54,9 +81,19 @@ class AttendanceController extends Controller
         $dataProvider = new ActiveDataProvider([
             'query' => Attendance::find(),
         ]);
+        $query = $dataProvider->query;
+        $query->where([
+            'lecturer_id' => Yii::$app->user->identity->lecturer->id
+        ]);
+        $query->joinWith('lesson');
+        $query->orderBy([
+            'recorded_date' => SORT_ASC,
+            'lesson.start_time' => SORT_ASC,
+            'lesson.id' => SORT_ASC
+        ]);
 
         return $this->render('index', [
-            'dataProvider' => $dataProvider,
+            'dataProvider' => $dataProvider
         ]);
     }
 

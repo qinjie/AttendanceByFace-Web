@@ -69,7 +69,7 @@ class Attendance extends \yii\db\ActiveRecord
             'recorded_time' => 'Recorded Time',
             'is_absent' => 'Is Absent',
             'is_late' => 'Is Late',
-            'late_min' => 'Late Min',
+            'late_min' => 'Late Minutes',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];

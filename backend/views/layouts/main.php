@@ -36,8 +36,7 @@ AppAsset::register($this);
     ]);
     $menuItems = [
         ['label' => 'Home', 'url' => ['/site/index']],
-        ['label' => 'Student', 'url' => ['/student/index']],
-        ['label' => 'Timetable', 'url' => ['/timetable/index']],
+        ['label' => 'Today Lessons', 'url' => ['/lesson/index']],
         ['label' => 'Attendance', 'url' => ['/attendance/index']],
     ];
     if (Yii::$app->user->isGuest) {

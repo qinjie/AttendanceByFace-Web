@@ -6,7 +6,7 @@ use yii\grid\GridView;
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Attendances';
+$this->title = 'Today Lessons';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="attendance-index">
@@ -15,23 +15,23 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
+        'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-
-            'id',
-            'student_id',
-            'lesson_id',
-            'lecturer_id',
-            'recorded_date',
-            'recorded_time',
-            'is_absent',
-            'is_late',
-            'late_min',
+            'lesson.semester',
+            'lesson.module_id',
+            'lesson.class_section',
+            'lesson.component',
+            'lesson.facility',
+            'lesson.weekday',
             'lesson.start_time',
-            // 'created_at',
-            // 'updated_at',
-
-            ['class' => 'yii\grid\ActionColumn'],
+            'lesson.end_time',
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'visibleButtons' => [
+                    'delete' => false
+                ]
+            ],
         ],
     ]); ?>
 </div>
