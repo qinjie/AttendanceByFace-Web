@@ -91,6 +91,7 @@ class AttendanceController extends CustomActiveController
             $query->andWhere(['lecturer_id' => Yii::$app->user->identity->lecturer->id]);
         }
         $query->joinWith('lesson');
+        $query->joinWith('lesson.venue');
         $query->orderBy([
             'lesson.start_time' => SORT_ASC
         ]);
@@ -121,6 +122,7 @@ class AttendanceController extends CustomActiveController
         $query->andWhere("[[recorded_date]]<='$endDate'");
 
         $query->joinWith('lesson');
+        $query->joinWith('lesson.venue');
 
         $meeting_pattern = Util::getMeetingPatternOfWeek($queryParams['weekNumber']);
         $query->andWhere(['or',

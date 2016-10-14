@@ -118,4 +118,13 @@ class Attendance extends \yii\db\ActiveRecord
             return true;
         } else return false;
     }
+
+    public function extraFields()
+    {
+        $extraFields = parent::extraFields();
+        $extraFields['venue'] = function($model) {
+            return $model->lesson->venue;
+        };
+        return $extraFields;
+    }
 }
