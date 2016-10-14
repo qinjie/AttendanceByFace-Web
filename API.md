@@ -523,7 +523,7 @@ Authorization: 'Bearer <token>'
 
 ***
 
-###GET ```attendance/day?recorded_date=2016-10-12&expand=lesson```
+###GET ```attendance/day?recorded_date=2016-10-12&expand=lesson,venue```
 ```
 => Get all lessons of a student/lecturer for one day, sorted by start time.
 If there's no recorded_date, lessons of today will be returned.
@@ -571,7 +571,7 @@ Authorization: 'Bearer <token>'
 
 ********************
 
-###GET ```attendance/week?weekNumber=1&expand=lesson```
+###GET ```attendance/week?weekNumber=1&expand=lesson,venue```
 ```
 => Get all lessons of a student/lecturer for one week, sorted by day and start time.
 If there's no weekNumber, lessons of current week will be returned.
