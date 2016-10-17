@@ -59,12 +59,4 @@ class Venue extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Lesson::className(), ['venue_id' => 'id']);
     }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getVenueBeacons()
-    {
-        return $this->hasMany(VenueBeacon::className(), ['venue_id' => 'id']);
-    }
 }

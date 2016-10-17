@@ -22,33 +22,18 @@ USE `atk_ble_test`;
 DROP TABLE IF EXISTS `beacon`;
 
 CREATE TABLE `beacon` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id` varchar(10) NOT NULL,
   `uuid` varchar(100) NOT NULL,
-  `major` varchar(10) DEFAULT NULL,
-  `minor` varchar(10) DEFAULT NULL,
+  `major` varchar(10) NOT NULL,
+  `minor` varchar(10) NOT NULL,
+  `user_id` int(11) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT '0000-00-00 00:00:00',
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  PRIMARY KEY (`id`),
+  UNIQUE KEY (`uuid`, `major`, `minor`)
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=latin1;
 
 /*Data for the table `beacon` */
-
-insert into `beacon` (`id`, `uuid`, `major`, `minor`, `created_at`, `updated_at`) values
-  (1, 'B9407F30-F5F8-466E-AFF9-25556B57FE6D', '52689', '51570', '0000-00-00 00:00:00','2016-04-26 11:09:19'),
-  (2, 'B9407F30-F5F8-466E-AFF9-25556B57FE6D', '16717', '179', '0000-00-00 00:00:00','2016-04-26 11:09:19'),
-  (3, 'B9407F30-F5F8-466E-AFF9-25556B57FE6D', '23254', '34430', '0000-00-00 00:00:00','2016-04-26 11:09:19'),
-  (4, 'B9407F30-F5F8-466E-AFF9-25556B57FE6D', '33078', '31465', '0000-00-00 00:00:00','2016-04-26 11:09:19'),
-  (5, 'B9407F30-F5F8-466E-AFF9-25556B57FE6D', '58949', '29933', '0000-00-00 00:00:00','2016-04-26 11:09:19'),
-
-  (11, '4f4c9c21-03f3-457a-8a7f-5e0d09401654', '27949', '47408', '0000-00-00 00:00:00','2016-04-26 11:09:19'),
-  (12, '4f4c9c21-03f3-457a-8a7f-5e0d09401654', '16502', '55820', '0000-00-00 00:00:00','2016-04-26 11:09:19'),
-  (13, '4f4c9c21-03f3-457a-8a7f-5e0d09401654', '57374', '31445', '0000-00-00 00:00:00','2016-04-26 11:09:19'),
-  (14, '4f4c9c21-03f3-457a-8a7f-5e0d09401654', '45661', '1852', '0000-00-00 00:00:00','2016-04-26 11:09:19'),
-  (15, '4f4c9c21-03f3-457a-8a7f-5e0d09401654', '43786', '29322', '0000-00-00 00:00:00','2016-04-26 11:09:19'),
-  (16, '4f4c9c21-03f3-457a-8a7f-5e0d09401654', '34520', '7890', '0000-00-00 00:00:00','2016-04-26 11:09:19'),
-  (17, '4f4c9c21-03f3-457a-8a7f-5e0d09401654', '8828', '34668', '0000-00-00 00:00:00','2016-04-26 11:09:19'),
-  (18, '4f4c9c21-03f3-457a-8a7f-5e0d09401654', '3396', '63844', '0000-00-00 00:00:00','2016-04-26 11:09:19');
-
 
 /*Table structure for table `lecturer` */
 
@@ -1905,40 +1890,7 @@ insert into `venue` (`id`, `location`, `name`) values
   (17, 'Room 05 - 03', 'Test Room 7'),
   (18, 'Room 05 - 04', 'Test Room 8');
   
-
-/*Table structure for table `venue_beacon` */
-
-DROP TABLE IF EXISTS `venue_beacon`;
-
-CREATE TABLE `venue_beacon` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `venue_id` int(10) unsigned DEFAULT NULL,
-  `beacon_id` int(10) unsigned DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  KEY `venue_id` (`venue_id`),
-  KEY `beacon_id` (`beacon_id`),
-  CONSTRAINT `venue_beacon_ibfk_1` FOREIGN KEY (`venue_id`) REFERENCES `venue` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `venue_beacon_ibfk_2` FOREIGN KEY (`beacon_id`) REFERENCES `beacon` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-insert into `venue_beacon` (`id`, `venue_id`, `beacon_id`) values
-  (1, 1, 1),
-  (2, 2, 1),
-  (3, 3, 1),
-
-  (11, 14, 11),
-  (12, 12, 12),
-  (13, 13, 13),
-  (14, 11, 14),
-  (15, 15, 15),
-  (16, 16, 16),
-  (17, 17, 17),
-  (18, 18, 18);
-
-/*Data for the table `venue_beacon` */
-
-/*Table structure for table `venue_beacon` */
+/*Table structure for table `attendance` */
 
 DROP TABLE IF EXISTS `attendance`;
 

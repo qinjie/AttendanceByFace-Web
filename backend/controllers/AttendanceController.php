@@ -13,6 +13,7 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
+use moonland\phpexcel\Excel;
 
 /**
  * AttendanceController implements the CRUD actions for Attendance model.
@@ -72,6 +73,13 @@ class AttendanceController extends Controller
         ]);
     }
 
+    public function actionExport()
+    {
+        $allModels = Attendance::find()->where([
+            'lecturer_id' => Yii::$app->user->identity->lecturer->id
+        ]);
+    }
+
     /**
      * Lists all Attendance models.
      * @return mixed
@@ -85,12 +93,19 @@ class AttendanceController extends Controller
         $query->where([
             'lecturer_id' => Yii::$app->user->identity->lecturer->id
         ]);
-        $query->joinWith('lesson');
+        $query->joinWith('lesson', 'student');
         $query->orderBy([
             'recorded_date' => SORT_ASC,
             'lesson.start_time' => SORT_ASC,
-            'lesson.id' => SORT_ASC
+            'lesson.id' => SORT_ASC,
         ]);
+        $dataProvider->sort->attributes['lesson.class_section'] = [
+            'asc' => ['lesson.class_section' => SORT_ASC],
+            'desc' => ['lesson.class_section' => SORT_DESC]
+        ];
+        unset($dataProvider->sort->attributes['is_absent'],
+            $dataProvider->sort->attributes['is_late'],
+            $dataProvider->sort->attributes['late_min']);
 
         return $this->render('index', [
             'dataProvider' => $dataProvider
