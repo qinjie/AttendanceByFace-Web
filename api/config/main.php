@@ -113,6 +113,16 @@ return [
                         'GET semester' => 'semester',
                         'POST face' => 'face'
                     ]
+                ],
+
+                # Beacon API
+                [
+                    'class' => RestUrlRule::className(),
+                    'pluralize' => false,
+                    'controller' => 'v1/beacon',
+                    'extraPatterns' => [
+                        'POST take-attendance' => 'take-attendance'
+                    ]
                 ]
             ],
         ],

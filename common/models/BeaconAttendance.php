@@ -5,28 +5,25 @@ namespace common\models;
 use Yii;
 
 /**
- * This is the model class for table "beacon".
+ * This is the model class for table "beacon_attendance".
  *
  * @property integer $id
- * @property string $uuid
- * @property integer $major
- * @property integer $minor
  * @property integer $user_id
- * @property integer $lesson_id
+ * @property integer $scanned_user_id
  * @property string $created_at
  * @property string $updated_at
  *
  * @property User $user
- * @property Lesson $lesson
+ * @property User $scannedUser
  */
-class Beacon extends \yii\db\ActiveRecord
+class BeaconAttendance extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'beacon';
+        return 'beacon_attendance';
     }
 
     /**
@@ -35,13 +32,10 @@ class Beacon extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['uuid', 'major', 'minor'], 'required'],
-            [['major', 'minor', 'user_id', 'lesson_id'], 'integer'],
+            [['user_id', 'scanned_user_id'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
-            [['uuid'], 'string', 'max' => 100],
-            [['uuid', 'major', 'minor'], 'unique', 'targetAttribute' => ['uuid', 'major', 'minor'], 'message' => 'The combination of Uuid, Major and Minor has already been taken.'],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
-            [['lesson_id'], 'exist', 'skipOnError' => true, 'targetClass' => Lesson::className(), 'targetAttribute' => ['lesson_id' => 'id']],
+            [['scanned_user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['scanned_user_id' => 'id']],
         ];
     }
 
@@ -52,11 +46,8 @@ class Beacon extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'uuid' => 'Uuid',
-            'major' => 'Major',
-            'minor' => 'Minor',
             'user_id' => 'User ID',
-            'lesson_id' => 'Lesson ID',
+            'scanned_user_id' => 'Scanned User ID',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
@@ -73,8 +64,8 @@ class Beacon extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getLesson()
+    public function getScannedUser()
     {
-        return $this->hasOne(Lesson::className(), ['id' => 'lesson_id']);
+        return $this->hasOne(User::className(), ['id' => 'scanned_user_id']);
     }
 }

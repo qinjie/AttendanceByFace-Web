@@ -346,10 +346,10 @@ class User extends CustomActiveRecord implements IdentityInterface
     }
 
     public function isStudent() {
-        return !!Yii::$app->user->identity->student;
+        return $this->role == self::ROLE_STUDENT;
     }
 
     public function isLecturer() {
-        return !!Yii::$app->user->identity->lecturer;
+        return $this->role == self::ROLE_LECTURER;
     }
 }

@@ -67,7 +67,8 @@ class AttendanceController extends CustomActiveController
         ];
     }
 
-    public function actions() {
+    public function actions()
+    {
         $actions = parent::actions();
         unset($actions['create']);
         unset($actions['update']);

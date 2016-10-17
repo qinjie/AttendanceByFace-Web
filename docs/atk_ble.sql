@@ -17,24 +17,6 @@ CREATE DATABASE /*!32312 IF NOT EXISTS*/`atk_ble` /*!40100 DEFAULT CHARACTER SET
 
 USE `atk_ble`;
 
-/*Table structure for table `beacon` */
-
-DROP TABLE IF EXISTS `beacon`;
-
-CREATE TABLE `beacon` (
-  `id` varchar(10) NOT NULL,
-  `uuid` varchar(100) NOT NULL,
-  `major` varchar(10) NOT NULL,
-  `minor` varchar(10) NOT NULL,
-  `user_id` int(11) DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT '0000-00-00 00:00:00',
-  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY (`uuid`, `major`, `minor`)
-) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=latin1;
-
-/*Data for the table `beacon` */
-
 /*Table structure for table `lecturer` */
 
 DROP TABLE IF EXISTS `lecturer`;
@@ -1890,6 +1872,44 @@ insert into `venue` (`id`, `location`, `name`) values
   (16, 'Room 05 - 02', 'Test Room 6'),
   (17, 'Room 05 - 03', 'Test Room 7'),
   (18, 'Room 05 - 04', 'Test Room 8');
+
+/*Table structure for table `beacon` */
+
+DROP TABLE IF EXISTS `beacon`;
+
+CREATE TABLE `beacon` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `uuid` varchar(100) NOT NULL,
+  `major` int(10) unsigned NOT NULL,
+  `minor` int(10) unsigned NOT NULL,
+  `user_id` int(11) DEFAULT NULL,
+  `lesson_id` int(10) unsigned DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT '0000-00-00 00:00:00',
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY (`uuid`, `major`, `minor`),
+  CONSTRAINT `beacon_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `beacon_ibfk_2` FOREIGN KEY (`lesson_id`) REFERENCES `lesson` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=latin1;
+
+/*Data for the table `beacon` */
+
+/*Table structure for table `beacon_attendance` */
+
+DROP TABLE IF EXISTS `beacon_attendance`;
+
+CREATE TABLE `beacon_attendance` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) DEFAULT NULL,
+  `scanned_user_id` int(11) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT '0000-00-00 00:00:00',
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `beacon_attendance_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `beacon_attendance_ibfk_2` FOREIGN KEY (`scanned_user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=latin1;
+
+/*Data for the table `beacon_attendance` */
 
 /* Table structure for table `attendance` */
 
