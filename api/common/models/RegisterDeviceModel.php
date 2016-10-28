@@ -17,7 +17,7 @@ class RegisterDeviceModel extends Model
     {
         return [
             [['username', 'password', 'device_hash'], 'required'],
-            ['password', 'validatePassword'],,
+            ['password', 'validatePassword'],
             ['device_hash', 'unique', 'targetClass' => 'api\common\models\User', 'message' => 'This device has already been taken.'],
             ['device_hash', 'validateDevice'],
         ];
