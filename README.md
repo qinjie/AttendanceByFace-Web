@@ -882,7 +882,7 @@ Authorization: 'Bearer <token>'
 
 ***
 
-###GET ```attendance/attendance-history```
+###GET ```attendance/attendance-history?semester=2```
 ```
 => Get attendance history of a student, based on following filters:
 - class_section (Ex: T1M2, L1M2)
@@ -905,67 +905,599 @@ Authorization: 'Bearer <token>'
 ```
 {
   "result": {
-    "T1M2": [
+    "P3J1": [
       {
-        "date": "2016-06-13",
-        "lesson_id": "1",
-        "class_section": "L2L",
+        "date": "2017-01-04",
+        "lesson_id": "3132",
+        "class_section": "P3J1",
         "component": "LEC",
-        "semester": "1",
-        "weekday": "MON",
-        "status": 0,
-        "start_time": "10:00",
-        "end_time": "12:00",
-        "lecturer_name": "Zhang Qinjie"
+        "semester": "2",
+        "weekday": "WED",
+        "start_time": "08:00",
+        "end_time": "11:00",
+        "lecturer_name": "NORDIN BIN SALLEH",
+        "status": 3
       },
       {
-        "date": "2016-06-16",
-        "lesson_id": "12",
-        "class_section": "L2L",
+        "date": "2017-01-05",
+        "lesson_id": "3138",
+        "class_section": "P3J1",
         "component": "LEC",
-        "semester": "1",
+        "semester": "2",
         "weekday": "THUR",
-        "status": 0,
         "start_time": "10:00",
         "end_time": "12:00",
-        "lecturer_name": "Zhang Qinjie"
+        "lecturer_name": "TEE BOON LYE",
+        "status": 3
+      },
+      {
+        "date": "2017-01-05",
+        "lesson_id": "3139",
+        "class_section": "P3J1",
+        "component": "LEC",
+        "semester": "2",
+        "weekday": "THUR",
+        "start_time": "13:00",
+        "end_time": "15:00",
+        "lecturer_name": "TEE BOON LYE",
+        "status": 3
+      },
+      {
+        "date": "2017-01-06",
+        "lesson_id": "3140",
+        "class_section": "P3J1",
+        "component": "LEC",
+        "semester": "2",
+        "weekday": "FRI",
+        "start_time": "8:00",
+        "end_time": "12:00",
+        "lecturer_name": "NORDIN BIN SALLEH",
+        "status": 3
+      },
+      {
+        "date": "2017-01-11",
+        "lesson_id": "3132",
+        "class_section": "P3J1",
+        "component": "LEC",
+        "semester": "2",
+        "weekday": "WED",
+        "start_time": "08:00",
+        "end_time": "11:00",
+        "lecturer_name": "NORDIN BIN SALLEH",
+        "status": 2
+      },
+      {
+        "date": "2017-01-12",
+        "lesson_id": "3138",
+        "class_section": "P3J1",
+        "component": "LEC",
+        "semester": "2",
+        "weekday": "THUR",
+        "start_time": "10:00",
+        "end_time": "12:00",
+        "lecturer_name": "TEE BOON LYE",
+        "status": 2
+      },
+      {
+        "date": "2017-01-12",
+        "lesson_id": "3139",
+        "class_section": "P3J1",
+        "component": "LEC",
+        "semester": "2",
+        "weekday": "THUR",
+        "start_time": "13:00",
+        "end_time": "15:00",
+        "lecturer_name": "TEE BOON LYE",
+        "status": 2
+      },
+      {
+        "date": "2017-01-13",
+        "lesson_id": "3140",
+        "class_section": "P3J1",
+        "component": "LEC",
+        "semester": "2",
+        "weekday": "FRI",
+        "start_time": "8:00",
+        "end_time": "12:00",
+        "lecturer_name": "NORDIN BIN SALLEH",
+        "status": 2
       }
     ],
-    "PL23": [
+    "T3J1": [
       {
-        "date": "2016-06-15",
-        "lesson_id": "16",
-        "class_section": "PL23",
-        "component": "PRA",
-        "semester": "1",
+        "date": "2017-01-04",
+        "lesson_id": "3133",
+        "class_section": "T3J1",
+        "component": "LEC",
+        "semester": "2",
         "weekday": "WED",
-        "status": 0,
-        "start_time": "10:00",
+        "start_time": "11:00",
+        "end_time": "13:00",
+        "lecturer_name": "TEE BOON LYE",
+        "status": 3
+      },
+      {
+        "date": "2017-01-06",
+        "lesson_id": "3141",
+        "class_section": "T3J1",
+        "component": "LEC",
+        "semester": "2",
+        "weekday": "FRI",
+        "start_time": "13:00",
+        "end_time": "15:00",
+        "lecturer_name": "NORDIN BIN SALLEH",
+        "status": 3
+      },
+      {
+        "date": "2017-01-11",
+        "lesson_id": "3133",
+        "class_section": "T3J1",
+        "component": "LEC",
+        "semester": "2",
+        "weekday": "WED",
+        "start_time": "11:00",
+        "end_time": "13:00",
+        "lecturer_name": "TEE BOON LYE",
+        "status": 3
+      },
+      {
+        "date": "2017-01-13",
+        "lesson_id": "3141",
+        "class_section": "T3J1",
+        "component": "LEC",
+        "semester": "2",
+        "weekday": "FRI",
+        "start_time": "13:00",
+        "end_time": "15:00",
+        "lecturer_name": "NORDIN BIN SALLEH",
+        "status": 2
+      }
+    ],
+    "L3J1": [
+      {
+        "date": "2017-01-04",
+        "lesson_id": "3134",
+        "class_section": "L3J1",
+        "component": "LEC",
+        "semester": "2",
+        "weekday": "WED",
+        "start_time": "14:00",
+        "end_time": "16:00",
+        "lecturer_name": "NORDIN BIN SALLEH",
+        "status": 3
+      },
+      {
+        "date": "2017-01-11",
+        "lesson_id": "3134",
+        "class_section": "L3J1",
+        "component": "LEC",
+        "semester": "2",
+        "weekday": "WED",
+        "start_time": "14:00",
+        "end_time": "16:00",
+        "lecturer_name": "NORDIN BIN SALLEH",
+        "status": 3
+      }
+    ],
+    "P602": [
+      {
+        "date": "2017-01-02",
+        "lesson_id": "3135",
+        "class_section": "P602",
+        "component": "LEC",
+        "semester": "2",
+        "weekday": "MON",
+        "start_time": "8:00",
         "end_time": "12:00",
-        "lecturer_name": "Zhang Qinjie"
+        "lecturer_name": "KIM CHEE WEE",
+        "status": 3
+      },
+      {
+        "date": "2017-01-02",
+        "lesson_id": "3136",
+        "class_section": "P602",
+        "component": "LEC",
+        "semester": "2",
+        "weekday": "MON",
+        "start_time": "13:00",
+        "end_time": "17:00",
+        "lecturer_name": "KIM CHEE WEE",
+        "status": 3
+      },
+      {
+        "date": "2017-01-03",
+        "lesson_id": "3137",
+        "class_section": "P602",
+        "component": "LEC",
+        "semester": "2",
+        "weekday": "TUES",
+        "start_time": "8:00",
+        "end_time": "12:00",
+        "lecturer_name": "KIM CHEE WEE",
+        "status": 3
+      },
+      {
+        "date": "2017-01-09",
+        "lesson_id": "3135",
+        "class_section": "P602",
+        "component": "LEC",
+        "semester": "2",
+        "weekday": "MON",
+        "start_time": "8:00",
+        "end_time": "12:00",
+        "lecturer_name": "KIM CHEE WEE",
+        "status": 3
+      },
+      {
+        "date": "2017-01-09",
+        "lesson_id": "3136",
+        "class_section": "P602",
+        "component": "LEC",
+        "semester": "2",
+        "weekday": "MON",
+        "start_time": "13:00",
+        "end_time": "17:00",
+        "lecturer_name": "KIM CHEE WEE",
+        "status": 2
+      },
+      {
+        "date": "2017-01-10",
+        "lesson_id": "3137",
+        "class_section": "P602",
+        "component": "LEC",
+        "semester": "2",
+        "weekday": "TUES",
+        "start_time": "8:00",
+        "end_time": "12:00",
+        "lecturer_name": "KIM CHEE WEE",
+        "status": 2
+      },
+      {
+        "date": "2017-01-16",
+        "lesson_id": "3135",
+        "class_section": "P602",
+        "component": "LEC",
+        "semester": "2",
+        "weekday": "MON",
+        "start_time": "8:00",
+        "end_time": "12:00",
+        "lecturer_name": "KIM CHEE WEE",
+        "status": 0
+      },
+      {
+        "date": "2017-01-16",
+        "lesson_id": "3136",
+        "class_section": "P602",
+        "component": "LEC",
+        "semester": "2",
+        "weekday": "MON",
+        "start_time": "13:00",
+        "end_time": "17:00",
+        "lecturer_name": "KIM CHEE WEE",
+        "status": 1
       }
     ]
   },
   "summary": {
-    "L2L": {
-      "total_lessons": 10,
-      "absent_lessons": 0
+    "P3J1": {
+      "total_lessons": 68,
+      "absent_lessons": 4
     },
-    "P2L1": {
-      "total_lessons": 20,
-      "absent_lessons": 0
+    "T3J1": {
+      "total_lessons": 34,
+      "absent_lessons": 3
     },
-    "T2L1": {
-      "total_lessons": 20,
-      "absent_lessons": 0
+    "L3J1": {
+      "total_lessons": 17,
+      "absent_lessons": 2
     },
-    "LL12": {
-      "total_lessons": 20,
-      "absent_lessons": 0
+    "P602": {
+      "total_lessons": 51,
+      "absent_lessons": 4
+    }
+  },
+  "subject_area": {
+    "1CSAA": [
+      {
+        "date": "2017-01-04",
+        "lesson_id": "3132",
+        "subject_area": "1CSAA",
+        "component": "LEC",
+        "semester": "2",
+        "weekday": "WED",
+        "start_time": "08:00",
+        "end_time": "11:00",
+        "lecturer_name": "NORDIN BIN SALLEH",
+        "status": 3
+      },
+      {
+        "date": "2017-01-04",
+        "lesson_id": "3134",
+        "subject_area": "1CSAA",
+        "component": "LEC",
+        "semester": "2",
+        "weekday": "WED",
+        "start_time": "14:00",
+        "end_time": "16:00",
+        "lecturer_name": "NORDIN BIN SALLEH",
+        "status": 3
+      },
+      {
+        "date": "2017-01-11",
+        "lesson_id": "3132",
+        "subject_area": "1CSAA",
+        "component": "LEC",
+        "semester": "2",
+        "weekday": "WED",
+        "start_time": "08:00",
+        "end_time": "11:00",
+        "lecturer_name": "NORDIN BIN SALLEH",
+        "status": 2
+      },
+      {
+        "date": "2017-01-11",
+        "lesson_id": "3134",
+        "subject_area": "1CSAA",
+        "component": "LEC",
+        "semester": "2",
+        "weekday": "WED",
+        "start_time": "14:00",
+        "end_time": "16:00",
+        "lecturer_name": "NORDIN BIN SALLEH",
+        "status": 3
+      }
+    ],
+    "1DATACM": [
+      {
+        "date": "2017-01-04",
+        "lesson_id": "3133",
+        "subject_area": "1DATACM",
+        "component": "LEC",
+        "semester": "2",
+        "weekday": "WED",
+        "start_time": "11:00",
+        "end_time": "13:00",
+        "lecturer_name": "TEE BOON LYE",
+        "status": 3
+      },
+      {
+        "date": "2017-01-11",
+        "lesson_id": "3133",
+        "subject_area": "1DATACM",
+        "component": "LEC",
+        "semester": "2",
+        "weekday": "WED",
+        "start_time": "11:00",
+        "end_time": "13:00",
+        "lecturer_name": "TEE BOON LYE",
+        "status": 3
+      }
+    ],
+    "1PDD2": [
+      {
+        "date": "2017-01-02",
+        "lesson_id": "3135",
+        "subject_area": "1PDD2",
+        "component": "LEC",
+        "semester": "2",
+        "weekday": "MON",
+        "start_time": "8:00",
+        "end_time": "12:00",
+        "lecturer_name": "KIM CHEE WEE",
+        "status": 3
+      },
+      {
+        "date": "2017-01-02",
+        "lesson_id": "3136",
+        "subject_area": "1PDD2",
+        "component": "LEC",
+        "semester": "2",
+        "weekday": "MON",
+        "start_time": "13:00",
+        "end_time": "17:00",
+        "lecturer_name": "KIM CHEE WEE",
+        "status": 3
+      },
+      {
+        "date": "2017-01-03",
+        "lesson_id": "3137",
+        "subject_area": "1PDD2",
+        "component": "LEC",
+        "semester": "2",
+        "weekday": "TUES",
+        "start_time": "8:00",
+        "end_time": "12:00",
+        "lecturer_name": "KIM CHEE WEE",
+        "status": 3
+      },
+      {
+        "date": "2017-01-09",
+        "lesson_id": "3135",
+        "subject_area": "1PDD2",
+        "component": "LEC",
+        "semester": "2",
+        "weekday": "MON",
+        "start_time": "8:00",
+        "end_time": "12:00",
+        "lecturer_name": "KIM CHEE WEE",
+        "status": 3
+      },
+      {
+        "date": "2017-01-09",
+        "lesson_id": "3136",
+        "subject_area": "1PDD2",
+        "component": "LEC",
+        "semester": "2",
+        "weekday": "MON",
+        "start_time": "13:00",
+        "end_time": "17:00",
+        "lecturer_name": "KIM CHEE WEE",
+        "status": 2
+      },
+      {
+        "date": "2017-01-10",
+        "lesson_id": "3137",
+        "subject_area": "1PDD2",
+        "component": "LEC",
+        "semester": "2",
+        "weekday": "TUES",
+        "start_time": "8:00",
+        "end_time": "12:00",
+        "lecturer_name": "KIM CHEE WEE",
+        "status": 2
+      },
+      {
+        "date": "2017-01-16",
+        "lesson_id": "3135",
+        "subject_area": "1PDD2",
+        "component": "LEC",
+        "semester": "2",
+        "weekday": "MON",
+        "start_time": "8:00",
+        "end_time": "12:00",
+        "lecturer_name": "KIM CHEE WEE",
+        "status": 0
+      },
+      {
+        "date": "2017-01-16",
+        "lesson_id": "3136",
+        "subject_area": "1PDD2",
+        "component": "LEC",
+        "semester": "2",
+        "weekday": "MON",
+        "start_time": "13:00",
+        "end_time": "17:00",
+        "lecturer_name": "KIM CHEE WEE",
+        "status": 1
+      }
+    ],
+    "1DATCM": [
+      {
+        "date": "2017-01-05",
+        "lesson_id": "3138",
+        "subject_area": "1DATCM",
+        "component": "LEC",
+        "semester": "2",
+        "weekday": "THUR",
+        "start_time": "10:00",
+        "end_time": "12:00",
+        "lecturer_name": "TEE BOON LYE",
+        "status": 3
+      },
+      {
+        "date": "2017-01-12",
+        "lesson_id": "3138",
+        "subject_area": "1DATCM",
+        "component": "LEC",
+        "semester": "2",
+        "weekday": "THUR",
+        "start_time": "10:00",
+        "end_time": "12:00",
+        "lecturer_name": "TEE BOON LYE",
+        "status": 2
+      }
+    ],
+    "1DIGCM": [
+      {
+        "date": "2017-01-05",
+        "lesson_id": "3139",
+        "subject_area": "1DIGCM",
+        "component": "LEC",
+        "semester": "2",
+        "weekday": "THUR",
+        "start_time": "13:00",
+        "end_time": "15:00",
+        "lecturer_name": "TEE BOON LYE",
+        "status": 3
+      },
+      {
+        "date": "2017-01-12",
+        "lesson_id": "3139",
+        "subject_area": "1DIGCM",
+        "component": "LEC",
+        "semester": "2",
+        "weekday": "THUR",
+        "start_time": "13:00",
+        "end_time": "15:00",
+        "lecturer_name": "TEE BOON LYE",
+        "status": 2
+      }
+    ],
+    "1MDTE": [
+      {
+        "date": "2017-01-06",
+        "lesson_id": "3140",
+        "subject_area": "1MDTE",
+        "component": "LEC",
+        "semester": "2",
+        "weekday": "FRI",
+        "start_time": "8:00",
+        "end_time": "12:00",
+        "lecturer_name": "NORDIN BIN SALLEH",
+        "status": 3
+      },
+      {
+        "date": "2017-01-06",
+        "lesson_id": "3141",
+        "subject_area": "1MDTE",
+        "component": "LEC",
+        "semester": "2",
+        "weekday": "FRI",
+        "start_time": "13:00",
+        "end_time": "15:00",
+        "lecturer_name": "NORDIN BIN SALLEH",
+        "status": 3
+      },
+      {
+        "date": "2017-01-13",
+        "lesson_id": "3140",
+        "subject_area": "1MDTE",
+        "component": "LEC",
+        "semester": "2",
+        "weekday": "FRI",
+        "start_time": "8:00",
+        "end_time": "12:00",
+        "lecturer_name": "NORDIN BIN SALLEH",
+        "status": 2
+      },
+      {
+        "date": "2017-01-13",
+        "lesson_id": "3141",
+        "subject_area": "1MDTE",
+        "component": "LEC",
+        "semester": "2",
+        "weekday": "FRI",
+        "start_time": "13:00",
+        "end_time": "15:00",
+        "lecturer_name": "NORDIN BIN SALLEH",
+        "status": 2
+      }
+    ]
+  },
+  "summary_subject_area": {
+    "1CSAA": {
+      "total_lessons": 34,
+      "absent_lessons": 3
     },
-    "PL23": {
-      "total_lessons": 5,
-      "absent_lessons": 0
+    "1DATACM": {
+      "total_lessons": 17,
+      "absent_lessons": 2
+    },
+    "1PDD2": {
+      "total_lessons": 51,
+      "absent_lessons": 4
+    },
+    "1DATCM": {
+      "total_lessons": 17,
+      "absent_lessons": 1
+    },
+    "1DIGCM": {
+      "total_lessons": 17,
+      "absent_lessons": 1
+    },
+    "1MDTE": {
+      "total_lessons": 34,
+      "absent_lessons": 2
     }
   }
 }
