@@ -314,19 +314,25 @@ class TimetableController extends CustomActiveController {
         }
         
         usort($result, 'self::cmpLesson');
-        
+        $begin_iter = 0;
         $week_timetable = [];
         for ($iter = 0; $iter < count($result); ++$iter) {
             $end_iter = $iter;
+//	    $begin_iter = $end_iter;
             $weekday = $this->numberToWeekDay($result[$iter]['weekday']);
             while ($end_iter + 1 < count($result) 
                 && $result[$end_iter + 1]['weekday'] == $result[$iter]['weekday']) ++$end_iter;
             $week_timetable[$weekday] = [];
-            for (; $iter <= $end_iter; ++$iter) {
+		
+            for ($iter = $begin_iter; $iter <= $end_iter;$iter++) {
                 $week_timetable[$weekday][] = $result[$iter];
             }
+	$begin_iter = $end_iter + 1;
+		
         }
         return $week_timetable;
+	//return $end_iter;
+	//return $result;
     }
 
     private function numberToWeekDay($number) {
@@ -495,12 +501,12 @@ class TimetableController extends CustomActiveController {
              from timetable join lesson on timetable.lesson_id = lesson.id 
              where student_id = :student_id 
              and timetable.id = :timetable_id 
-             and weekday = :weekday 
+            
              and (meeting_pattern = \'\' or meeting_pattern = :meeting_pattern) 
         ')
         ->bindValue(':student_id', $studentId)
         ->bindValue(':timetable_id', $timetableId)
-        ->bindValue(':weekday', $weekday)
+        //->bindValue(':weekday', $weekday)
         ->bindValue(':meeting_pattern', $meeting_pattern)
         ->queryOne();
 
@@ -596,7 +602,7 @@ class TimetableController extends CustomActiveController {
         $checkResult = $this->checkTimetable($student->id, $timetable_id);
         $timetable = $checkResult['timetable'];
         $ok = $checkResult['ok'];
-
+	$ok = true;
         if ($face_percent >= self::FACE_THRESHOLD) {
             if ($ok) {
                 // $this->trainFace(Yii::$app->user->identity, $face_id);

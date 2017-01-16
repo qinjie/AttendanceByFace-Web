@@ -27,9 +27,8 @@ class AttendanceController extends CustomActiveController {
 
     const ATTENDANCE_INTERVAL = 15; // 15 minutes
     const FACE_THRESHOLD = 30;
-
-    const DEFAULT_START_DATE = '2016-06-13';    // Monday
-    const DEFAULT_END_DATE = '2016-08-21';  // Sunday, 5 weeks
+    const DEFAULT_START_DATE = '2017-01-02';    // Monday
+    const DEFAULT_END_DATE = '2017-04-30';  // Sunday, 5 weeks
 
     const SECONDS_IN_DAY = 86400;
 
@@ -220,7 +219,11 @@ class AttendanceController extends CustomActiveController {
         } else {
             $class_section = array($class_section);
         }
-        
+        if (!$subject_area) {
+            $subject_area = $this->getAllSubjectAreas($student->id, $semester);
+        } else {
+            $subject_area = array($subject_area);
+        }
         $result = [];
         $summary = [];
         for ($iter = 0; $iter < count($class_section); ++$iter) {
@@ -233,15 +236,38 @@ class AttendanceController extends CustomActiveController {
             $summaryClass['absent_lessons'] = 0;
             foreach ($attendanceForClass as $lesson) {
                 if ($lesson['status'] == self::STATUS_ABSENT) {
+		//if($lesson['status'] == 1) {
                     $summaryClass['absent_lessons'] += 1;
                 }
             }
             $result[$class_section[$iter]] = $attendanceForClass;
             $summary[$class_section[$iter]] = $summaryClass;
         }
+$result_subject_area = [];
+        $summary_subject_area = [];
+        for ($iter = 0; $iter < count($subject_area); ++$iter) {
+            $listLesson = $this->getAllLessonsOfClassbySubjectArea($student->id, $semester, $subject_area[$iter]);
+            $attendanceHistory = $this->getAttendanceHistoryForClassbySubjectArea($student->id,
+                $semester, $subject_area[$iter], $listLesson, $start_time, $end_time);
+            $attendanceForClass = $attendanceHistory['attendanceHistory'];
+            $summaryClass = [];
+            $summaryClass['total_lessons'] = $attendanceHistory['totalLessons'];
+            $summaryClass['absent_lessons'] = 0;
+            foreach ($attendanceForClass as $lesson) {
+                if ($lesson['status'] == self::STATUS_ABSENT) {
+                    $summaryClass['absent_lessons'] += 1;
+                }
+            }
+            $result_subject_area[$subject_area[$iter]] = $attendanceForClass;
+            $summary_subject_area[$subject_area[$iter]] = $summaryClass;
+        }
         return [
             'result' => (object)$result,
-            'summary' => (object)$summary,
+           'summary' => (object)$summary,
+//	'attendace' => (object)$attendanceHistory
+'subject_area' => (object)$result_subject_area,
+            'summary_subject_area' => (object)$summary_subject_area
+
         ];
     }
 
@@ -269,6 +295,31 @@ class AttendanceController extends CustomActiveController {
 
         return $listLesson;
     }
+ private function getAllLessonsOfClassbySubjectArea($studentId, $semester, $subject_area) {
+        $listLesson = Yii::$app->db->createCommand('
+            select subject_area, 
+                   lesson_id, 
+                   weekday, 
+                   meeting_pattern, 
+                   component, 
+                   semester, 
+                   start_time, 
+                   end_time, 
+                   lecturer.name as lecturer_name 
+             from timetable join lesson on timetable.lesson_id = lesson.id 
+             join lecturer on timetable.lecturer_id = lecturer.id 
+             where subject_area = :subject_area 
+             and semester = :semester 
+             and student_id = :student_id
+        ')
+            ->bindValue(':subject_area', $subject_area)
+            ->bindValue(':semester', $semester)
+            ->bindValue(':student_id', $studentId)
+            ->queryAll();
+
+        return $listLesson;
+    }
+
 
     private function getAttendanceHistoryForClass($student_id, $semester, $class_section, 
         $listLesson, $start_time, $end_time) {
@@ -368,6 +419,103 @@ class AttendanceController extends CustomActiveController {
         ];
     }
 
+private function getAttendanceHistoryForClassbySubjectArea($student_id, $semester, $subject_area,
+                                                  $listLesson, $start_time, $end_time) {
+        $start_date = date('Y-m-d', $start_time);
+        $end_date = date('Y-m-d', $end_time);
+        $listAttendance = Yii::$app->db->createCommand('
+            select attendance.recorded_date as date, 
+                   subject_area, 
+                   component, 
+                   semester, 
+                   is_absent, 
+                   is_late, 
+                   late_min, 
+                   attendance.lesson_id, 
+                   weekday, 
+                   start_time, 
+                   end_time, 
+                   lecturer.name as lecturer_name, 
+                   attendance.student_id 
+             from attendance join lesson on attendance.lesson_id = lesson.id 
+             join timetable on (attendance.student_id = timetable.student_id 
+                                and attendance.lesson_id = timetable.lesson_id) 
+             join lecturer on lecturer.id = timetable.lecturer_id 
+             where attendance.student_id = :student_id 
+             and subject_area = :subject_area 
+             and attendance.recorded_date >= :start_date 
+             and attendance.recorded_date <= :end_date 
+             and semester = :semester 
+             order by attendance.recorded_date
+        ')
+            ->bindValue(':student_id', $student_id)
+            ->bindValue(':subject_area', $subject_area)
+            ->bindValue(':start_date', $start_date)
+            ->bindValue(':end_date', $end_date)
+            ->bindValue(':semester', $semester)
+            ->queryAll();
+
+        $attendanceHistory = [];
+        $today_time = strtotime(date('Y-m-d'));
+        $totalLessons = 0;
+        // For each week
+        $count = 0;
+        for ($iter_week = $start_time; $iter_week <= $end_time; $iter_week += self::SECONDS_IN_DAY * 7) {
+            ++$count;
+
+            for ($iter = 0; $iter < count($listLesson); ++$iter) {
+                ++$totalLessons;
+
+                $lesson = $listLesson[$iter];
+                $lessonId = $lesson['lesson_id'];
+                $meeting_pattern = $lesson['meeting_pattern'];
+                if ($meeting_pattern == 'ODD' && $count % 2 == 0) continue;
+                if ($meeting_pattern == 'EVEN' && $count % 2 == 1) continue;
+                $numberInWeek = $this->weekDayToNumber($lesson['weekday']);
+                $iter_time = $iter_week + self::SECONDS_IN_DAY * $numberInWeek;
+                if ($iter_time > $today_time) continue;
+                $currentDate = date('Y-m-d', $iter_time);
+
+                $foundAttendance = $this->getAttendanceInDate($listAttendance, $currentDate, $lessonId);
+                $attendance = [];
+                if ($foundAttendance) {
+                    $attendance['date'] = $foundAttendance['date'];
+                    $attendance['lesson_id'] = $foundAttendance['lesson_id'];
+                    $attendance['subject_area'] = $foundAttendance['subject_area'];
+                    $attendance['component'] = $foundAttendance['component'];
+                    $attendance['semester'] = $foundAttendance['semester'];
+                    $attendance['weekday'] = $foundAttendance['weekday'];
+                    $attendance['start_time'] = $foundAttendance['start_time'];
+                    $attendance['end_time'] = $foundAttendance['end_time'];
+                    $attendance['lecturer_name'] = $foundAttendance['lecturer_name'];
+                    $status = self::STATUS_PRESENT;
+                    if ($foundAttendance['is_absent'])
+                        $status = self::STATUS_ABSENT;
+                    else if ($foundAttendance['is_late'])
+                        $status = self::STATUS_LATE;
+                    $attendance['status'] = $status;
+                } else {
+                    $attendance['date'] = $currentDate;
+                    $attendance['lesson_id'] = $lesson['lesson_id'];
+                    $attendance['subject_area'] = $lesson['subject_area'];
+                    $attendance['component'] = $lesson['component'];
+                    $attendance['semester'] = $lesson['semester'];
+                    $attendance['weekday'] = $lesson['weekday'];
+                    $attendance['start_time'] = $lesson['start_time'];
+                    $attendance['end_time'] = $lesson['end_time'];
+                    $attendance['lecturer_name'] = $lesson['lecturer_name'];
+                    $attendance['status'] = self::STATUS_NOTYET;
+                }
+                $attendanceHistory[] = $attendance;
+            }
+        }
+
+        usort($attendanceHistory, 'self::cmpAttendance');
+        return [
+            'attendanceHistory' => $attendanceHistory,
+            'totalLessons' => $totalLessons,
+        ];
+    }
     private static function cmpTime($t1, $t2) {
         $a1 = explode(':', $t1);
         $a2 = explode(':', $t2);
@@ -419,6 +567,24 @@ class AttendanceController extends CustomActiveController {
         };
         $listClassSection = array_map($func, $listClassSection);
         return $listClassSection;
+    }
+
+private function getAllSubjectAreas($student_id, $semester) {
+        $listSubjectArea = Yii::$app->db->createCommand('
+            select distinct subject_area 
+             from timetable join lesson on timetable.lesson_id = lesson.id 
+             where student_id = :student_id 
+             and semester = :semester
+        ')
+            ->bindValue(':student_id', $student_id)
+            ->bindValue(':semester', $semester)
+            ->queryAll();
+
+        $func = function($val) {
+            return $val['subject_area'];
+        };
+        $listSubjectArea = array_map($func, $listSubjectArea);
+        return $listSubjectArea;
     }
 
     public function actionListClassSection($semester = '') {
