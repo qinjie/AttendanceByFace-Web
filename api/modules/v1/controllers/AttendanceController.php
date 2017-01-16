@@ -198,7 +198,7 @@ class AttendanceController extends CustomActiveController {
         return $result[$weekday];
     }
 
-    public function actionAttendanceHistory($semester = '', $class_section = null, 
+    public function actionAttendanceHistory($semester = '', $class_section = null,$subject_area = null,
         $status = null, $start_date = null, $end_date = null) {
         $userId = Yii::$app->user->identity->id;
         $student = Student::findOne(['user_id' => $userId]);
